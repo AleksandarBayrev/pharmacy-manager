@@ -36,7 +36,7 @@ Object {
             </div>
           </div>
           <div
-            class="App-header App-page-container"
+            class="App-page-container"
           >
             Select one of the actions from the menu above
           </div>
@@ -76,7 +76,7 @@ Object {
           </div>
         </div>
         <div
-          class="App-header App-page-container"
+          class="App-page-container"
         >
           Select one of the actions from the menu above
         </div>

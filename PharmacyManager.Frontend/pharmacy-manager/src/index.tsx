@@ -12,7 +12,7 @@ window.RenderPharmacyManager = (rootDiv: string) => {
   );
   root.render(
     <React.StrictMode>
-      <PharmacyManagerApp backendService={new BackendService(window.pharmacyManagerConfiguration.baseApiUrl)} />
+      <PharmacyManagerApp backendService={new BackendService(window.pharmacyManagerConfiguration.baseApiUrl)} activePage={window.pharmacyManagerConfiguration.activePage} />
     </React.StrictMode>
   );
 }

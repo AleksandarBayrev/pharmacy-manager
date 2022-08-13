@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text;
 using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
 using MediatR;
 using PharmacyManager.API.MediatRFeatures;
@@ -8,7 +7,9 @@ using PharmacyManager.API.Interfaces.Base;
 namespace PharmacyManager.API.Controllers
 {
     [Route("/")]
-    [Route("/app")]
+    [Route("/getmedicinelist")]
+    [Route("/addmedicine")]
+    [Route("/updatemedicine")]
     [ApiController]
     public class AppController : ControllerBase
     {

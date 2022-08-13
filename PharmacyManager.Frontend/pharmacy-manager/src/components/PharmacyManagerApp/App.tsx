@@ -5,10 +5,11 @@ import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineLis
 
 export type PharmacyManagerAppProps = {
   backendService: IBackendService;
+  activePage: PageList;
 }
 
 export type PharmacyManagerAppState = {
-  activePage: PageList
+  activePage: PageList;
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
@@ -18,7 +19,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
     super(props);
     this.backendService = props.backendService;
     this.state = {
-      activePage: "HomePage"
+      activePage: props.activePage
     }
   }
 
@@ -42,6 +43,8 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
     this.setState({
       activePage: page
     });
+    const finalUrlPath = page === "HomePage" ? "/" : page.toLowerCase().replace("page", "");
+    window.history.replaceState(null, '', finalUrlPath);
   }
   
   render() {
@@ -54,7 +57,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
             <div className='App-menu-item' onClick={() => this.setActivePage('AddMedicinePage')}>Add Medicine</div>
             <div className='App-menu-item' onClick={() => this.setActivePage('UpdateMedicinePage')}>Update Medicine</div>
           </div>
-          <div className='App-header App-page-container'>
+          <div className='App-page-container'>
             {(this as any)["render"+this.state.activePage]()}
           </div>
         </header>

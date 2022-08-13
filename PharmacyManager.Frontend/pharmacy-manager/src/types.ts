@@ -26,6 +26,7 @@ export type MedicineResponse = {
 
 export type PharmacyManagerConfiguration = {
     baseApiUrl: string
+    activePage: PageList
 }
 
 export interface IBackendService {

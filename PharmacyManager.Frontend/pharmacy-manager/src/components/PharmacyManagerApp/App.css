@@ -7,6 +7,12 @@
   pointer-events: none;
 }
 
+.App-menu {
+  position: relative;
+  bottom: 300px;
+  display: inline-flex;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -38,5 +44,12 @@
 }
 
 .App-menu-item {
+  text-decoration: underline;
   cursor: pointer;
+  margin-left: 20px;
+}
+
+.App-page-container {
+  position: relative;
+  top: 200px;
 }

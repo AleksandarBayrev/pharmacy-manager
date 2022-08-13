@@ -7,9 +7,9 @@ using PharmacyManager.API.Interfaces.Base;
 namespace PharmacyManager.API.Controllers
 {
     [Route("/")]
-    [Route("/getmedicinelist")]
-    [Route("/addmedicine")]
-    [Route("/updatemedicine")]
+    [Route("/medicines/get")]
+    [Route("/medicines/add")]
+    [Route("/medicines/update")]
     [ApiController]
     public class AppController : ControllerBase
     {

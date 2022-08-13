@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { IBackendService, PageList } from '../../types';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
+import { Pages } from './constants';
 
 export type PharmacyManagerAppProps = {
   backendService: IBackendService;
@@ -43,7 +44,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
     this.setState({
       activePage: page
     });
-    const finalUrlPath = page === "HomePage" ? "/" : page.toLowerCase().replace("page", "");
+    const finalUrlPath = Pages[page.replace("Page", "")];
     window.history.replaceState(null, '', finalUrlPath);
   }
   

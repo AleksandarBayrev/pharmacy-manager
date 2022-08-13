@@ -11,15 +11,15 @@ window.pharmacyManagerUtils = {
 
         const locationString = window.location.href.toLowerCase();
 
-        if (locationString.includes("getmedicine")) {
+        if (locationString.includes("/get")) {
             activePage = "GetMedicineListPage";
         }
 
-        if (locationString.includes("addmedicine")) {
+        if (locationString.includes("/add")) {
             activePage = "AddMedicinePage"
         }
 
-        if (locationString.includes("updatemedicine")) {
+        if (locationString.includes("/update")) {
             activePage = "UpdateMedicinePage"
         }
 

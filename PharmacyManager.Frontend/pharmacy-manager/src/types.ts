@@ -1,5 +1,5 @@
 export type PageList = "HomePage" | "GetMedicineListPage" | "AddMedicinePage" | "UpdateMedicinePage";
-
+export type ValidURL = "/" | "/medicines/get" | "/medicines/add" | "/medicines/update"
 export type MedicineRequest = {
     availableOnly: boolean;
     notExpired: boolean;
@@ -25,10 +25,10 @@ export type MedicineResponse = {
 }
 
 export type PharmacyManagerConfiguration = {
-    baseApiUrl: string
-    activePage: PageList
+    baseApiUrl: string;
+    activePage: PageList;
 }
 
 export interface IBackendService {
-    getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse>
+    getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse>;
 }

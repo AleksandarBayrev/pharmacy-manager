@@ -39,6 +39,9 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   <script>
+    window.pharmacyManagerConfiguration = Object.freeze({
+      baseApiUrl: ''
+    });
     window.addEventListener("load", () => {
       console.log('Starting frontend application...');
       RenderPharmacyManager('root');

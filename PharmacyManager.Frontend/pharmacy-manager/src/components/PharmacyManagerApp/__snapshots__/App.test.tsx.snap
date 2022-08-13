@@ -11,29 +11,35 @@ Object {
         <header
           class="App-header"
         >
-          <input
-            placeholder="Page"
-            type="text"
-            value="1"
-          />
-          <input
-            placeholder="Items Per Page"
-            type="text"
-            value="10"
-          />
-          <button>
-            Get medicines
-          </button>
-          <button>
-            Reset to default request
-          </button>
-          <input
-            readonly=""
-            value="Avaliable pages: 1"
-          />
-          <textarea
-            readonly=""
-          />
+          <div
+            class="App-menu"
+          >
+            <div
+              class="App-menu-item"
+            >
+              Home
+            </div>
+            <div
+              class="App-menu-item"
+            >
+              Get Medicine List
+            </div>
+            <div
+              class="App-menu-item"
+            >
+              Add Medicine
+            </div>
+            <div
+              class="App-menu-item"
+            >
+              Update Medicine
+            </div>
+          </div>
+          <div
+            class="App-header App-page-container"
+          >
+            Select one of the actions from the menu above
+          </div>
         </header>
       </div>
     </div>
@@ -45,29 +51,35 @@ Object {
       <header
         class="App-header"
       >
-        <input
-          placeholder="Page"
-          type="text"
-          value="1"
-        />
-        <input
-          placeholder="Items Per Page"
-          type="text"
-          value="10"
-        />
-        <button>
-          Get medicines
-        </button>
-        <button>
-          Reset to default request
-        </button>
-        <input
-          readonly=""
-          value="Avaliable pages: 1"
-        />
-        <textarea
-          readonly=""
-        />
+        <div
+          class="App-menu"
+        >
+          <div
+            class="App-menu-item"
+          >
+            Home
+          </div>
+          <div
+            class="App-menu-item"
+          >
+            Get Medicine List
+          </div>
+          <div
+            class="App-menu-item"
+          >
+            Add Medicine
+          </div>
+          <div
+            class="App-menu-item"
+          >
+            Update Medicine
+          </div>
+        </div>
+        <div
+          class="App-header App-page-container"
+        >
+          Select one of the actions from the menu above
+        </div>
       </header>
     </div>
   </div>,

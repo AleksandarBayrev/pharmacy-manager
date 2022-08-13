@@ -1,3 +1,5 @@
+export type PageList = "HomePage" | "GetMedicineListPage" | "AddMedicinePage" | "UpdateMedicinePage";
+
 export type MedicineRequest = {
     availableOnly: boolean;
     notExpired: boolean;

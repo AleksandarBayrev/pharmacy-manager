@@ -1,57 +1,46 @@
 import React from 'react';
 import './App.css';
-import { IBackendService, MedicineModel, MedicineRequest, MedicineResponse } from '../../types';
+import { IBackendService, PageList } from '../../types';
+import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
 
 export type PharmacyManagerAppProps = {
   backendService: IBackendService;
 }
 
 export type PharmacyManagerAppState = {
-  request: MedicineRequest;
-  medicines: MedicineModel[];
-  pages: number;
+  activePage: PageList
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
   private readonly backendService: IBackendService;
-  private readonly defaultRequest: MedicineRequest = {
-    availableOnly: false,
-    notExpired: false,
-    manufacturer: '',
-    page: 1,
-    itemsPerPage: 10
-  };
 
   constructor(props: PharmacyManagerAppProps) {
     super(props);
     this.backendService = props.backendService;
     this.state = {
-      request: { ...this.defaultRequest },
-      medicines: [],
-      pages: 1
-    };
+      activePage: "HomePage"
+    }
   }
 
-  private async getMedicines(request: MedicineRequest) {
-    const medicinesResponse: MedicineResponse = await this.backendService.getAllMedicines(request);
-    this.setState({
-      medicines: medicinesResponse.medicines,
-      pages: medicinesResponse.pages
-    });
+  private renderHomePage() {
+    return <>Select one of the actions from the menu above</>;
   }
 
-  private updateRequest(request: Partial<MedicineRequest>) {
-    this.setState({
-      request: {
-        ...this.state.request,
-        ...request
-      }
-    });
+  private renderGetMedicineListPage() {
+    return <GetMedicineListPage backendService={this.backendService} />;
   }
 
-  private resetRequestToDefaults() {
+  private renderAddMedicinePage() {
+    return <>Add Medicine page coming soon</>;
+  }
+
+  private renderUpdateMedicinePage() {
+    return <>Update Medicine page coming soon</>;
+  }
+
+  private setActivePage(page: PageList) {
     this.setState({
-      request: { ...this.defaultRequest }
+      activePage: page
     });
   }
   
@@ -59,13 +48,15 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
     return (
       <div className="App">
         <header className="App-header">
-          <input type="text" onChange={(e) => this.updateRequest({page: parseInt(e.target.value)})} placeholder={'Page'} value={this.state.request.page} />
-          <input type="text" onChange={(e) => this.updateRequest({itemsPerPage: parseInt(e.target.value)})} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} />
-          <input type="text" onChange={(e) => this.updateRequest({manufacturer: e.target.value})} placeholder={'Manufacturer'} value={this.state.request.manufacturer} />
-          <button onClick={async () => await this.getMedicines(this.state.request)}>Get medicines</button>
-          <button onClick={() => this.resetRequestToDefaults()}>Reset to default request</button>
-          <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} />
-          <textarea readOnly={true} value={this.state.medicines.map(x => JSON.stringify(x)).join('\n')}></textarea>
+          <div className='App-menu'>
+            <div className='App-menu-item' onClick={() => this.setActivePage('HomePage')}>Home</div>
+            <div className='App-menu-item' onClick={() => this.setActivePage('GetMedicineListPage')}>Get Medicine List</div>
+            <div className='App-menu-item'>Add Medicine</div>
+            <div className='App-menu-item'>Update Medicine</div>
+          </div>
+          <div className='App-header App-page-container'>
+            {(this as any)["render"+this.state.activePage]()}
+          </div>
         </header>
       </div>
     );

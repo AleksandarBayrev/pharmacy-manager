@@ -6,7 +6,7 @@ export type MedicineRequest = {
     page: number;
 }
 
-export type MedicineResponse = {
+export type MedicineModel = {
     id: number;
     manufacturer: string;
     name: string;
@@ -17,10 +17,15 @@ export type MedicineResponse = {
     quantity: number;
 }
 
+export type MedicineResponse = {
+    medicines: MedicineModel[];
+    pages: number;
+}
+
 export type PharmacyManagerConfiguration = {
     baseApiUrl: string
 }
 
 export interface IBackendService {
-    getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse[]>
+    getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse>
 }

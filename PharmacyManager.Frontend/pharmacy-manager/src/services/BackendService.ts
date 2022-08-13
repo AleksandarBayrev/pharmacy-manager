@@ -7,7 +7,7 @@ export class BackendService implements IBackendService {
         this.baseUrl = baseUrl;
     }
 
-    public async getAllMedicines(request: MedicineRequest) {
+    public async getAllMedicines(request: MedicineRequest): Promise<MedicineResponse> {
         try {
             const result = await fetch(`${this.baseUrl}/api/medicines/getAllMedicines`, {
                 method: "POST",
@@ -16,9 +16,13 @@ export class BackendService implements IBackendService {
                 },
                 body: JSON.stringify(request)
             });
-            return await result.json();
+            return await result.json() as MedicineResponse;
         } catch (err) {
             console.error(err);
+            return {
+                medicines: [],
+                pages: 1
+            }
         }
     }
 

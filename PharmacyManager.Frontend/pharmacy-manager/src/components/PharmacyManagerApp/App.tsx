@@ -1,14 +1,15 @@
 import React from 'react';
 import './App.css';
-import { IBackendService, MedicineRequest, MedicineResponse } from '../../types';
+import { IBackendService, MedicineModel, MedicineRequest, MedicineResponse } from '../../types';
 
 export type PharmacyManagerAppProps = {
-  backendService: IBackendService
+  backendService: IBackendService;
 }
 
 export type PharmacyManagerAppState = {
-  request: MedicineRequest
-  medicines: MedicineResponse[]
+  request: MedicineRequest;
+  medicines: MedicineModel[];
+  pages: number;
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
@@ -26,13 +27,16 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
     this.backendService = props.backendService;
     this.state = {
       request: { ...this.defaultRequest },
-      medicines: []
+      medicines: [],
+      pages: 1
     };
   }
 
   private async getMedicines(request: MedicineRequest) {
+    const medicinesResponse: MedicineResponse = await this.backendService.getAllMedicines(request);
     this.setState({
-      medicines: await this.backendService.getAllMedicines(request)
+      medicines: medicinesResponse.medicines,
+      pages: medicinesResponse.pages
     });
   }
 
@@ -59,6 +63,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
           <input type="text" onChange={(e) => this.updateRequest({itemsPerPage: parseInt(e.target.value)})} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} />
           <button onClick={async () => await this.getMedicines(this.state.request)}>Get medicines</button>
           <button onClick={() => this.resetRequestToDefaults()}>Reset to default request</button>
+          <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} />
           <textarea readOnly={true} value={this.state.medicines.map(x => JSON.stringify(x)).join('\n')}></textarea>
         </header>
       </div>

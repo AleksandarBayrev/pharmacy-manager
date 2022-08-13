@@ -22,7 +22,6 @@ namespace PharmacyManager.API.MediatRFeatures
 
             public async Task<IApplicationConfiguration> Handle(Query request, CancellationToken cancellationToken)
             {
-                throw new Exception();
                 await logger.Log(nameof(GetConfigurationFeature), $"Received request for fetching {nameof(IApplicationConfiguration)}");
                 return configuration;
             }

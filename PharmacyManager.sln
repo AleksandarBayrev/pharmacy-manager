@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.Interfaces", "PharmacyManager.API.Interfaces\PharmacyManager.API.Interfaces.csproj", "{0D07AD5A-BE06-4C55-B516-7B8BD3E5E25A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PharmacyManager.API.MediatRFeatures", "PharmacyManager.API.MediatRFeatures\PharmacyManager.API.MediatRFeatures.csproj", "{EF260092-9C99-443A-BBCE-D91433688148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.MediatRFeatures", "PharmacyManager.API.MediatRFeatures\PharmacyManager.API.MediatRFeatures.csproj", "{EF260092-9C99-443A-BBCE-D91433688148}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

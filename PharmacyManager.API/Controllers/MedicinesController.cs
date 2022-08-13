@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyManager.API.MediatRFeatures;
-using PharmacyManager.API.Models;
 using PharmacyManager.API.Models.APIRequests;
+using PharmacyManager.API.Models.APIResponses;
 
 namespace PharmacyManager.API.Controllers
 {
@@ -19,7 +18,7 @@ namespace PharmacyManager.API.Controllers
         }
 
         [HttpPost("getAllMedicines")]
-        public Task<IList<MedicineModel>> GetMedicines([FromBody] GetMedicinesRequest request)
+        public Task<MedicinesResponse> GetMedicines([FromBody] GetMedicinesRequest request)
         {
             return this.mediator.Send(new GetMedicinesFeature.Query
             {

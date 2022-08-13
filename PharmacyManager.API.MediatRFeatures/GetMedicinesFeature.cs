@@ -2,13 +2,14 @@
 using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
+using PharmacyManager.API.Models.APIResponses;
 using System.Text.Json;
 
 namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetMedicinesFeature
     {
-        public class Query : IRequest<IList<MedicineModel>>
+        public class Query : IRequest<MedicinesResponse>
         {
             public bool AvailableOnly { get; init; }
             public bool NotExpired { get; init; }
@@ -16,7 +17,7 @@ namespace PharmacyManager.API.MediatRFeatures
             public int Page { get; init; }
             public int ItemsPerPage { get; init; }
         }
-        public class QueryHandler : IRequestHandler<Query, IList<MedicineModel>>
+        public class QueryHandler : IRequestHandler<Query, MedicinesResponse>
         {
             private readonly ILogger logger;
             private readonly IMedicinesProvider<MedicineModel> medicinesProvider;
@@ -29,30 +30,29 @@ namespace PharmacyManager.API.MediatRFeatures
                 this.logger = logger;
                 this.medicinesProvider = medicinesProvider;
             }
-            public async Task<IList<MedicineModel>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<MedicinesResponse> Handle(Query request, CancellationToken cancellationToken)
             {
                 await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}");
-                return await GetPageItems(
-                    await OrderDescending(
-                        await ApplyFilters(this.medicinesProvider.Medicines, request)
-                    ),
-                    request
-                );
+                return new MedicinesResponse
+                {
+                    Medicines = await GetPageItems(await OrderDescending(await ApplyFilters(this.medicinesProvider.Medicines, request)), request),
+                    Pages = Math.Round((decimal)(this.medicinesProvider.Medicines.Count() / request.ItemsPerPage), MidpointRounding.ToPositiveInfinity)
+                };
             }
 
-            private async Task<IList<MedicineModel>> GetPageItems(IList<MedicineModel> medicines, Query request)
+            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, Query request)
             {
                 await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}");
-                return medicines.Skip(request.ItemsPerPage * (request.Page - 1)).Take(request.ItemsPerPage).ToList();
+                return medicines.Skip(request.ItemsPerPage * (request.Page - 1)).Take(request.ItemsPerPage);
             }
 
-            private async Task<IList<MedicineModel>> OrderDescending(IList<MedicineModel> medicines)
+            private async Task<IEnumerable<MedicineModel>> OrderDescending(IEnumerable<MedicineModel> medicines)
             {
                 await logger.Log(this.loggerContext, "Ordering medicines by expiration date");
-                return medicines.OrderByDescending(x => x.ExpirationDate).ToList();
+                return medicines.OrderByDescending(x => x.ExpirationDate);
             }
 
-            private async Task<IList<MedicineModel>> ApplyFilters(IEnumerable<MedicineModel> medicines, Query request)
+            private async Task<IEnumerable<MedicineModel>> ApplyFilters(IEnumerable<MedicineModel> medicines, Query request)
             {
                 var filteredMedicines = medicines.AsEnumerable();
                 if (request.AvailableOnly)
@@ -70,7 +70,7 @@ namespace PharmacyManager.API.MediatRFeatures
                     await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}");
                     filteredMedicines = filteredMedicines.Where(x => x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower()));
                 }
-                return filteredMedicines.ToList();
+                return filteredMedicines;
             }
         }
     }

@@ -68,7 +68,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "shx rm -rf ./build && node scripts/build.js",
-    "copy-to-server": "shx cp -R ./build/static/* ../../PharmacyManager.API/wwwroot",
+    "copy-to-server": "shx cp -R ./build/static/* ../../PharmacyManager.API/wwwroot && shx cp -R ./build/manifest.json ../../PharmacyManager.API/wwwroot",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {

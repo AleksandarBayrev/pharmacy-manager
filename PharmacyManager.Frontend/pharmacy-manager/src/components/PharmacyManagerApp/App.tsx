@@ -61,6 +61,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
         <header className="App-header">
           <input type="text" onChange={(e) => this.updateRequest({page: parseInt(e.target.value)})} placeholder={'Page'} value={this.state.request.page} />
           <input type="text" onChange={(e) => this.updateRequest({itemsPerPage: parseInt(e.target.value)})} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} />
+          <input type="text" onChange={(e) => this.updateRequest({manufacturer: e.target.value})} placeholder={'Manufacturer'} value={this.state.request.manufacturer} />
           <button onClick={async () => await this.getMedicines(this.state.request)}>Get medicines</button>
           <button onClick={() => this.resetRequestToDefaults()}>Reset to default request</button>
           <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} />

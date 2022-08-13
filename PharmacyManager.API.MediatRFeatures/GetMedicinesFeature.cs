@@ -33,23 +33,22 @@ namespace PharmacyManager.API.MediatRFeatures
             public async Task<MedicinesResponse> Handle(Query request, CancellationToken cancellationToken)
             {
                 await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}");
+                var filteredMedicines = await OrderDescending(
+                await ApplyFilters(
+                    this.medicinesProvider.Medicines,
+                    request
+                ));
+
                 return new MedicinesResponse
                 {
-                    Medicines = await GetPageItems(
-                        await OrderDescending(
-                            await ApplyFilters(
-                                this.medicinesProvider.Medicines,
-                                request
-                            )
-                        ),
-                    request),
-                    Pages = await CalculatePages(request)
+                    Medicines = await GetPageItems(filteredMedicines, request),
+                    Pages = await CalculatePages(request, filteredMedicines)
                 };
             }
 
-            private async Task<decimal> CalculatePages(Query request)
+            private async Task<decimal> CalculatePages(Query request, IEnumerable<MedicineModel> filteredMedicines)
             {
-                var medicinesCount = this.medicinesProvider.Medicines.Count();
+                var medicinesCount = filteredMedicines.Count();
                 var itemsPerPage = request.ItemsPerPage;
                 var calculation = (decimal)(medicinesCount) / (decimal)(itemsPerPage);
                 var roundedCalculation = Math.Ceiling((decimal)(medicinesCount / itemsPerPage));

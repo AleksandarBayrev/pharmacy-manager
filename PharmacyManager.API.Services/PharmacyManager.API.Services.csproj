@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PharmacyManager.API.Interfaces\PharmacyManager.API.Interfaces.csproj" />
+    <ProjectReference Include="..\PharmacyManager.API.Models\PharmacyManager.API.Models.csproj" />
   </ItemGroup>
 
 </Project>

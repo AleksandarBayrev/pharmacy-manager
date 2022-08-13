@@ -3,5 +3,6 @@
     public interface IApplicationConfiguration
     {
         public bool EnableSwagger { get; }
+        public bool UseMocks { get; }
     }
 }

@@ -51,8 +51,8 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
           <div className='App-menu'>
             <div className='App-menu-item' onClick={() => this.setActivePage('HomePage')}>Home</div>
             <div className='App-menu-item' onClick={() => this.setActivePage('GetMedicineListPage')}>Get Medicine List</div>
-            <div className='App-menu-item'>Add Medicine</div>
-            <div className='App-menu-item'>Update Medicine</div>
+            <div className='App-menu-item' onClick={() => this.setActivePage('AddMedicinePage')}>Add Medicine</div>
+            <div className='App-menu-item' onClick={() => this.setActivePage('UpdateMedicinePage')}>Update Medicine</div>
           </div>
           <div className='App-header App-page-container'>
             {(this as any)["render"+this.state.activePage]()}

@@ -45,7 +45,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
       activePage: page
     });
     const finalUrlPath = Pages[page.replace("Page", "")];
-    window.history.replaceState(null, '', finalUrlPath);
+    window.history.pushState(null, '', finalUrlPath);
   }
   
   render() {

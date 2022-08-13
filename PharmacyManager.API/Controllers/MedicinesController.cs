@@ -7,7 +7,7 @@ using PharmacyManager.API.Models.APIRequests;
 
 namespace PharmacyManager.API.Controllers
 {
-    [Route("api/pharmacy")]
+    [Route("api/medicines")]
     [ApiController]
     public class MedicinesController : ControllerBase
     {

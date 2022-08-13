@@ -1,4 +1,5 @@
-﻿using PharmacyManager.API.Interfaces.Base;
+﻿using Microsoft.Extensions.FileProviders;
+using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Middlewares;
 
 namespace PharmacyManager.API.Extensions
@@ -18,7 +19,11 @@ namespace PharmacyManager.API.Extensions
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot")),
+                RequestPath = "/static"
+            });
             app.UseAuthorization();
 
 

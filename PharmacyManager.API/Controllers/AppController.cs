@@ -24,7 +24,7 @@ namespace PharmacyManager.API.Controllers
         public async Task<IActionResult> GetHTML()
         {
             await logger.Log(this.loggerContext, "Rendering App UI");
-            return new FileContentResult(Encoding.UTF8.GetBytes("<html><head><title>Index</title></head><body></body></html>"), this.contentType);
+            return new FileContentResult(Encoding.UTF8.GetBytes("<html><head><title>Index</title><script src='/static/test.js'></script></head><body><div id='test'></div></body></html>"), this.contentType);
         }
     }
 }

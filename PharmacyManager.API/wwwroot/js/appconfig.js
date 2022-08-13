@@ -19,7 +19,7 @@ window.pharmacyManagerUtils = {
             activePage = "AddMedicinePage"
         }
 
-        if (locationString.includes("updateMedicine")) {
+        if (locationString.includes("updatemedicine")) {
             activePage = "UpdateMedicinePage"
         }
 

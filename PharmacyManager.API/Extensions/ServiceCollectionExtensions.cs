@@ -5,6 +5,8 @@ using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using PharmacyManager.API.Services.Medicines;
+using PharmacyManager.API.Interfaces.Frontend;
+using PharmacyManager.API.Services.Frontend;
 
 namespace PharmacyManager.API.Extensions
 {
@@ -35,7 +37,8 @@ namespace PharmacyManager.API.Extensions
 
                 return new ApplicationConfiguration(
                     configuration.GetSection("EnableSwagger").Get<bool>(),
-                    configuration.GetSection("UseMocks").Get<bool>()
+                    configuration.GetSection("UseMocks").Get<bool>(),
+                    configuration.GetSection("RelativeHtmlPath").Get<string>()
                 );
             });
             #endregion
@@ -60,6 +63,10 @@ namespace PharmacyManager.API.Extensions
                 }
                 return new MedicinesProvider();
             });
+            #endregion
+
+            #region Setup Frontend File Reader
+            services.AddSingleton<IFrontendReader, FrontendReader>();
             #endregion
         }
 

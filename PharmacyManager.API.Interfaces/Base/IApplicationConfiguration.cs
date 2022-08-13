@@ -4,5 +4,6 @@
     {
         public bool EnableSwagger { get; }
         public bool UseMocks { get; }
+        public string RelativeHtmlPath { get; }
     }
 }

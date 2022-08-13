@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using PharmacyManager.API.Interfaces.Base;
 using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
+using MediatR;
+using PharmacyManager.API.MediatRFeatures;
+using PharmacyManager.API.Interfaces.Base;
 
 namespace PharmacyManager.API.Controllers
 {
@@ -12,19 +13,44 @@ namespace PharmacyManager.API.Controllers
     public class AppController : ControllerBase
     {
         private readonly string contentType = "text/html";
-        private readonly Interfaces.Base.ILogger logger;
+        private readonly ILogger logger;
+        private readonly IWebHostEnvironment env;
+        private readonly IMediator mediator;
+        private readonly IApplicationConfiguration applicationConfiguration;
         private readonly string loggerContext = nameof(AppController);
 
-        public AppController(ILogger logger)
+        public AppController(
+            ILogger logger,
+            IWebHostEnvironment env,
+            IMediator mediator,
+            IApplicationConfiguration applicationConfiguration)
         {
             this.logger = logger;
+            this.env = env;
+            this.mediator = mediator;
+            this.applicationConfiguration = applicationConfiguration;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetHTML()
         {
             await logger.Log(this.loggerContext, "Rendering App UI");
-            return new FileContentResult(Encoding.UTF8.GetBytes("<html><head><title>Index</title><script src='/static/test.js'></script></head><body><div id='test'></div></body></html>"), this.contentType);
+            return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.Query
+            {
+                Path = this.BuildAbsolutePath()
+            }), this.contentType);
         }
+
+        [HttpGet("reload")]
+        public async Task<bool> ReloadHTML()
+        {
+            await logger.Log(this.loggerContext, "Reloading App UI");
+            return await mediator.Send(new GetFrontendHTMLReloadFeature.Query
+            {
+                Path = this.BuildAbsolutePath()
+            });
+        }
+
+        private string BuildAbsolutePath() => Path.Combine(env.ContentRootPath, this.applicationConfiguration.RelativeHtmlPath);
     }
 }

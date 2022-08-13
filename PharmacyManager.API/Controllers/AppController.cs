@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using PharmacyManager.API.Interfaces.Base;
+using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
 
 namespace PharmacyManager.API.Controllers
 {
@@ -9,15 +11,20 @@ namespace PharmacyManager.API.Controllers
     [ApiController]
     public class AppController : ControllerBase
     {
-        public AppController()
-        {
+        private readonly string contentType = "text/html";
+        private readonly Interfaces.Base.ILogger logger;
+        private readonly string loggerContext = nameof(AppController);
 
+        public AppController(ILogger logger)
+        {
+            this.logger = logger;
         }
 
         [HttpGet]
-        public IActionResult GetHTML()
+        public async Task<IActionResult> GetHTML()
         {
-            return new FileContentResult(Encoding.UTF8.GetBytes("<html><head><title>Index</title></head><body></body></html>"), "text/html");
+            await logger.Log(this.loggerContext, "Rendering App UI");
+            return new FileContentResult(Encoding.UTF8.GetBytes("<html><head><title>Index</title></head><body></body></html>"), this.contentType);
         }
     }
 }

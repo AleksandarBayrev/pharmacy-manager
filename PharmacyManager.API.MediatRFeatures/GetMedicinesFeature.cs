@@ -51,7 +51,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 var medicinesCount = filteredMedicines.Count();
                 var itemsPerPage = request.ItemsPerPage;
                 var calculation = (decimal)(medicinesCount) / (decimal)(itemsPerPage);
-                var roundedCalculation = medicinesCount > itemsPerPage ? Math.Ceiling((decimal)(medicinesCount / itemsPerPage)) : 1;
+                var roundedCalculation = medicinesCount > itemsPerPage ? Math.Ceiling(calculation) : 1;
                 await logger.Log(this.loggerContext, $"Calculation for medicines count = {medicinesCount} and items per page = {itemsPerPage} = {calculation}, rounded calculation = {roundedCalculation}");
                 return roundedCalculation;
             }

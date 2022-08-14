@@ -1,8 +1,8 @@
-import { ValidURL } from "../../types";
+import { Pages } from "../../types";
 
-export const Pages: {[key: string]: ValidURL}= {
+export const pages: Pages= {
     Home: "/",
-    GetMedicineList: "/medicines/get",
-    AddMedicine: "/medicines/add",
-    UpdateMedicine: "/medicines/update"
+    GetMedicinesList: "/medicines/get",
+    AddMedicines: "/medicines/add",
+    UpdateMedicines: "/medicines/update"
 }

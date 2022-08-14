@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders learn react link 1`] = `
+exports[`matches snapshot 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -14,26 +14,30 @@ Object {
           <div
             class="App-menu"
           >
-            <div
+            <a
               class="App-menu-item"
+              href="/"
             >
               Home
-            </div>
-            <div
+            </a>
+            <a
               class="App-menu-item"
+              href="/medicines/get"
             >
               Get Medicine List
-            </div>
-            <div
+            </a>
+            <a
               class="App-menu-item"
+              href="/medicines/add"
             >
               Add Medicine
-            </div>
-            <div
+            </a>
+            <a
               class="App-menu-item"
+              href="/medicines/update"
             >
               Update Medicine
-            </div>
+            </a>
           </div>
           <div
             class="App-page-container"
@@ -54,26 +58,30 @@ Object {
         <div
           class="App-menu"
         >
-          <div
+          <a
             class="App-menu-item"
+            href="/"
           >
             Home
-          </div>
-          <div
+          </a>
+          <a
             class="App-menu-item"
+            href="/medicines/get"
           >
             Get Medicine List
-          </div>
-          <div
+          </a>
+          <a
             class="App-menu-item"
+            href="/medicines/add"
           >
             Add Medicine
-          </div>
-          <div
+          </a>
+          <a
             class="App-menu-item"
+            href="/medicines/update"
           >
             Update Medicine
-          </div>
+          </a>
         </div>
         <div
           class="App-page-container"

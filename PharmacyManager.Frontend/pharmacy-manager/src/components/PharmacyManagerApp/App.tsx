@@ -1,16 +1,15 @@
 import React from 'react';
 import './App.css';
-import { IBackendService, PageList } from '../../types';
+import { IBackendService } from '../../types';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
-import { Pages } from './constants';
+import { pages } from './constants';
+import { BrowserRouter, Link, Route, Router, Routes } from 'react-router-dom';
 
 export type PharmacyManagerAppProps = {
   backendService: IBackendService;
-  activePage: PageList;
 }
 
 export type PharmacyManagerAppState = {
-  activePage: PageList;
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
@@ -19,9 +18,6 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
   constructor(props: PharmacyManagerAppProps) {
     super(props);
     this.backendService = props.backendService;
-    this.state = {
-      activePage: props.activePage
-    }
   }
 
   private renderHomePage() {
@@ -39,29 +35,28 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
   private renderUpdateMedicinePage() {
     return <>Update Medicine page coming soon</>;
   }
-
-  private setActivePage(page: PageList) {
-    this.setState({
-      activePage: page
-    });
-    const finalUrlPath = Pages[page.replace("Page", "")];
-    window.history.pushState(null, '', finalUrlPath);
-  }
   
   render() {
     return (
       <div className="App">
+      <BrowserRouter>
         <header className="App-header">
           <div className='App-menu'>
-            <div className='App-menu-item' onClick={() => this.setActivePage('HomePage')}>Home</div>
-            <div className='App-menu-item' onClick={() => this.setActivePage('GetMedicineListPage')}>Get Medicine List</div>
-            <div className='App-menu-item' onClick={() => this.setActivePage('AddMedicinePage')}>Add Medicine</div>
-            <div className='App-menu-item' onClick={() => this.setActivePage('UpdateMedicinePage')}>Update Medicine</div>
+              <Link to={`${pages.Home}`} className='App-menu-item'>Home</Link>
+              <Link to={`${pages.GetMedicinesList}`} className='App-menu-item'>Get Medicine List</Link>
+              <Link to={`${pages.AddMedicines}`} className='App-menu-item'>Add Medicine</Link>
+              <Link to={`${pages.UpdateMedicines}`} className='App-menu-item'>Update Medicine</Link>
           </div>
           <div className='App-page-container'>
-            {(this as any)["render"+this.state.activePage]()}
+            <Routes>
+              <Route path={`${pages.Home}`} element={this.renderHomePage()} />
+              <Route path={`${pages.GetMedicinesList}`} element={this.renderGetMedicineListPage()} />
+              <Route path={`${pages.AddMedicines}`} element={this.renderAddMedicinePage()} />
+              <Route path={`${pages.UpdateMedicines}`} element={this.renderUpdateMedicinePage()} />
+            </Routes>
           </div>
         </header>
+      </BrowserRouter>
       </div>
     );
   }

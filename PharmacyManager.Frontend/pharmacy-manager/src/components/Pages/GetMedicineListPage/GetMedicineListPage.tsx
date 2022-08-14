@@ -86,13 +86,48 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
   render() {
     return (
       <div className='App-page'>
-        <input type="text" onChange={(e) => this.updateRequest({ page: parseInt(e.target.value) })} placeholder={'Page'} value={this.state.request.page} />
-        <input type="text" onChange={(e) => this.updateRequest({ itemsPerPage: parseInt(e.target.value) })} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} />
-        <input type="text" onChange={(e) => this.updateRequest({ manufacturer: e.target.value })} placeholder={'Manufacturer'} value={this.state.request.manufacturer} />
-        <button onClick={async () => await this.getMedicines(this.state.request)} disabled={this.state.loadingData}>Get medicines</button>
-        <button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button>
-        <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} />
-        {this.renderLoaderOrData()}
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><input id='only-available-medicines' type="checkbox" onChange={(e) => this.updateRequest({ availableOnly: e.target.checked })} /></div>
+            <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" onChange={(e) => this.updateRequest({ notExpired: e.target.checked })} /></div>
+            <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Page</div>
+            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ page: parseInt(e.target.value) })} placeholder={'Page'} value={this.state.request.page} /></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Items Per Page</div>
+            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ itemsPerPage: parseInt(e.target.value) })} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} /></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Manufacturer</div>
+            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ manufacturer: e.target.value })} placeholder={'Manufacturer'} value={this.state.request.manufacturer} /></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><button onClick={async () => await this.getMedicines(this.state.request)} disabled={this.state.loadingData}>Get medicines</button></div>
+            <div className='column'><button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>        <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
+          </div>
+        </div>
+        <div className='App-page-results'>
+          {this.renderLoaderOrData()}
+        </div>
       </div>
     )
   }

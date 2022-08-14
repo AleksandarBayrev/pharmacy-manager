@@ -23,6 +23,10 @@ export class Medicine extends React.Component<MedicineProps> {
                     <div className='column'>{new Date(this.props.medicine.manufacturingDate).toDateString()}</div>
                     <Separator />
                     <div className='column'>{new Date(this.props.medicine.expirationDate).toDateString()}</div>
+                    <Separator />
+                    <div className='column'>{this.props.medicine.price}</div>
+                    <Separator />
+                    <div className='column'>{this.props.medicine.quantity}</div>
                 </div>
             </div>
         )

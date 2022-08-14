@@ -25,6 +25,10 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                     <div className='row-header'>Manufacturing Date</div>
                     <Separator />
                     <div className='row-header'>Expiration Date</div>
+                    <Separator />
+                    <div className='row-header'>Price</div>
+                    <Separator />
+                    <div className='row-header'>Quantity</div>
                 </div>
                 <div className="Medicines-list">
                     {this.props.medicines.map(medicine => <Medicine medicine={medicine} />)}

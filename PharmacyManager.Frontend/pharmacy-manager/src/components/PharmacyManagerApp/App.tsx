@@ -5,6 +5,7 @@ import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineLis
 import { pages } from './constants';
 import { BrowserRouter, Link, Route, Router, Routes } from 'react-router-dom';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
+import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
 
 export type PharmacyManagerAppProps = {
   backendService: IBackendService;
@@ -34,7 +35,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
   }
 
   private renderUpdateMedicinePage() {
-    return <>Update Medicine page coming soon</>;
+    return <UpdateMedicinePage backendService={this.backendService} />;
   }
   
   render() {

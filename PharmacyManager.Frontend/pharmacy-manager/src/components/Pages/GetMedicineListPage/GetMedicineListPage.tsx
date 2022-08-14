@@ -83,17 +83,25 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       this.renderMedicines()
     )
   }
+
+  private clearSearchResults() {
+    this.setState({
+      medicines: [],
+      isInitialRequestMade: false
+    });
+  }
+
   render() {
     return (
       <div className='App-page'>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-available-medicines' type="checkbox" onChange={(e) => this.updateRequest({ availableOnly: e.target.checked })} /></div>
+            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} onChange={(e) => this.updateRequest({ availableOnly: e.target.checked })} /></div>
             <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-not-expired-medicines' type="checkbox" onChange={(e) => this.updateRequest({ notExpired: e.target.checked })} /></div>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} onChange={(e) => this.updateRequest({ notExpired: e.target.checked })} /></div>
             <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
@@ -118,11 +126,12 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
           <div className='row'>
             <div className='column'><button onClick={async () => await this.getMedicines(this.state.request)} disabled={this.state.loadingData}>Get medicines</button></div>
             <div className='column'><button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button></div>
+            <div className='column'><button onClick={() => this.clearSearchResults()} disabled={this.state.loadingData}>Clear results</button></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'>        <input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
+            <div className='column'><input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
           </div>
         </div>
         <div className='App-page-results'>

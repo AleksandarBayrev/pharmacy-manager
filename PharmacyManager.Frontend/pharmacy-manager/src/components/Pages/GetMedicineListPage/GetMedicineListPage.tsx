@@ -38,18 +38,11 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     this.setState({
       loadingData: true
     });
-    this.backendService.getAllMedicines(request).then((medicinesResponse) => {
-      this.setState({
-        medicines: medicinesResponse.medicines,
-        pages: medicinesResponse.pages,
-        loadingData: false
-      });
-    }).catch((medicinesResponse) => {
-      this.setState({
-        medicines: medicinesResponse.medicines,
-        pages: medicinesResponse.pages,
-        loadingData: false
-      });
+    const response = await this.backendService.getAllMedicines(request);
+    this.setState({
+      medicines: response.medicines,
+      pages: response.pages,
+      loadingData: false
     });
   }
 

@@ -11,9 +11,7 @@ export class BackendService implements IBackendService {
         try {
             const result = await fetch(`${this.baseUrl}/api/medicines/getAllMedicines`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: this.getHeaders(),
                 body: JSON.stringify(request)
             });
             return await result.json() as MedicineResponse;
@@ -26,4 +24,9 @@ export class BackendService implements IBackendService {
         }
     }
 
+    private getHeaders(): HeadersInit {
+        return {
+            "Content-Type": "application/json"
+        }
+    }
 }

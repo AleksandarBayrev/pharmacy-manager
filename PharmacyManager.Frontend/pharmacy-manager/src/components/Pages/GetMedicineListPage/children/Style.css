@@ -1,0 +1,13 @@
+.row {
+    display: inline-flex;
+}
+
+.column {
+    font-size: 14pt;
+}
+
+.column-separator {
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+}

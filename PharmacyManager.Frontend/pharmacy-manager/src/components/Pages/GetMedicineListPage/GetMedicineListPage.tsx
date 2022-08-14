@@ -1,6 +1,7 @@
 import React from 'react';
 import { IBackendService, MedicineModel, MedicineRequest, MedicineResponse } from '../../../types';
 import "../../Shared/Styles.css";
+import { Medicine } from './children/Medicine';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
@@ -68,9 +69,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     return (
       this.state.loadingData ? <div className='App-data-loading'>Loading data, please wait...</div>
       :
-      this.state.medicines.map((medicine) => (
-        <div className='row'><div className='column'>ID: {medicine.id}</div><div className='column'>Name: {medicine.name}</div></div>
-      ))
+      this.state.medicines.map((medicine) => <Medicine medicine={medicine} />)
     )
   }
   render() {

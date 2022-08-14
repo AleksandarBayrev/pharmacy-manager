@@ -15,6 +15,7 @@ export type GetMedicineListPageState = {
 
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
   private readonly backendService: IBackendService;
+  private readonly loadingTimeout: number = 1000;
   private readonly defaultRequest: MedicineRequest = {
     availableOnly: false,
     notExpired: false,
@@ -39,11 +40,13 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       loadingData: true
     });
     const response = await this.backendService.getAllMedicines(request);
-    this.setState({
-      medicines: response.medicines,
-      pages: response.pages,
-      loadingData: false
-    });
+    setTimeout(() => {
+      this.setState({
+        medicines: response.medicines,
+        pages: response.pages,
+        loadingData: false
+      });
+    }, this.loadingTimeout);
   }
 
   private updateRequest(request: Partial<MedicineRequest>) {

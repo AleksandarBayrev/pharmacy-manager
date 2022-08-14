@@ -49,6 +49,15 @@
   margin-left: 20px;
 }
 
+a {
+  color: #fff;
+}
+
+a:hover {
+  font-style: italic;
+  font-weight: bolder;
+}
+
 .App-page-container {
   position: relative;
   top: 200px;

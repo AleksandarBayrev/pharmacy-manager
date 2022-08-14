@@ -1,7 +1,7 @@
 import React from 'react';
-import { IBackendService, MedicineModel, MedicineRequest, MedicineResponse } from '../../../types';
+import { IBackendService, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
-import { Medicine } from './children/Medicine';
+import { MedicinesWrapper } from './children/MedicinesWrapper';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
@@ -12,6 +12,7 @@ export type GetMedicineListPageState = {
   medicines: MedicineModel[];
   pages: number;
   loadingData: boolean;
+  isInitialRequestMade: boolean;
 }
 
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
@@ -32,13 +33,15 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       request: { ...this.defaultRequest },
       medicines: [],
       pages: 1,
-      loadingData: false
+      loadingData: false,
+      isInitialRequestMade: false
     };
   }
 
   private async getMedicines(request: MedicineRequest) {
     this.setState({
-      loadingData: true
+      loadingData: true,
+      isInitialRequestMade: true
     });
     const response = await this.backendService.getAllMedicines(request);
     setTimeout(() => {
@@ -65,11 +68,19 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     });
   }
 
+  private renderMedicines() {
+    return (
+      !this.state.isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
+      :
+      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : <MedicinesWrapper medicines={this.state.medicines} />
+    )
+  }
+
   private renderLoaderOrData() {
     return (
       this.state.loadingData ? <div className='App-data-loading'>Loading data, please wait...</div>
       :
-      this.state.medicines.map((medicine) => <Medicine medicine={medicine} />)
+      this.renderMedicines()
     )
   }
   render() {

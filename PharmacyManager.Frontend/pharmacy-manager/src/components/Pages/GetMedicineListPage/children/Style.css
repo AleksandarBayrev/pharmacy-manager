@@ -1,3 +1,7 @@
+.row-headers {
+    display: inline-flex;
+}
+
 .row {
     display: inline-flex;
 }

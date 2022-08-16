@@ -65,9 +65,9 @@ export class DependencyInjection {
     private getMessageForServiceFetching(baseType: string, serviceDescription: ServiceDescription) {
         switch (serviceDescription.serviceLifespan) {
             case 'singleton':
-                return `Returning ${serviceDescription.classDefinition.serviceName} class instance with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
+                return `Returning ${serviceDescription.classDefinition.className} class instance with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             case 'transient':
-                return `Creating and returning new instance of ${serviceDescription.classDefinition.prototype.serviceName} class with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
+                return `Creating and returning new instance of ${serviceDescription.classDefinition.prototype.className} class with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             default:
                 throw new Error(`Invalid service lifespan!`);
         }

@@ -1,11 +1,14 @@
+import { IServiceName } from "../base";
 import { IBackendService, MedicineRequest, MedicineResponse } from "../types";
 
-export class BackendService implements IBackendService {
+export class BackendService implements IBackendService, IServiceName {
     private readonly baseUrl: string;
     
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
     }
+
+    public serviceName: string = "BackendService";
 
     public async getAllMedicines(request: MedicineRequest): Promise<MedicineResponse> {
         try {

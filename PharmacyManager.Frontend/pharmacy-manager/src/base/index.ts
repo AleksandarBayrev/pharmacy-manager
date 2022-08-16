@@ -6,10 +6,6 @@ type ServiceDescription = {
     constructorParameters: any[];
 }
 
-export interface IServiceName {
-    getServiceName(): string;
-}
-
 export type DIClassDefinition<T> = new (...params: any[]) => T;
 
 export class DependencyInjection {
@@ -69,7 +65,7 @@ export class DependencyInjection {
     private getMessageForServiceFetching(baseType: string, serviceDescription: ServiceDescription) {
         switch (serviceDescription.serviceLifespan) {
             case 'singleton':
-                return `Returning ${serviceDescription.classDefinition.getServiceName()} class instance with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
+                return `Returning ${serviceDescription.classDefinition.serviceName} class instance with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             case 'transient':
                 return `Creating and returning new instance of ${serviceDescription.classDefinition.prototype.serviceName} class with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             default:

@@ -277,7 +277,7 @@ module.exports = function (webpackEnv) {
               safari10: true,
             },
             // Added for profiling in devtools
-            keep_classnames: isEnvProductionProfile,
+            keep_classnames: true,
             keep_fnames: isEnvProductionProfile,
             output: {
               ecma: 5,

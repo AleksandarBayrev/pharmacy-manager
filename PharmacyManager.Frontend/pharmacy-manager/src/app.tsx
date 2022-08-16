@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { PharmacyManagerApp } from './components';
 import { DependencyInjection } from './base';
-import { IBackendService } from './types';
 
 let root: ReactDOM.Root
 
@@ -17,7 +16,7 @@ export const app = (setup: () => void) => {
                 );
                 root.render(
                     <React.StrictMode>
-                        <PharmacyManagerApp backendService={DependencyInjection.getService<IBackendService>("IBackendService")} />
+                        <PharmacyManagerApp DependencyInjection={DependencyInjection} />
                     </React.StrictMode>
                 );
             }

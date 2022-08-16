@@ -3,39 +3,33 @@ import './App.css';
 import { IBackendService } from '../../types';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
 import { pages } from './constants';
-import { BrowserRouter, Link, Route, Router, Routes } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
+import { DependencyInjection } from '../../base';
 
 export type PharmacyManagerAppProps = {
-  backendService: IBackendService;
+  DependencyInjection: DependencyInjection;
 }
 
 export type PharmacyManagerAppState = {
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
-  private readonly backendService: IBackendService;
-
-  constructor(props: PharmacyManagerAppProps) {
-    super(props);
-    this.backendService = props.backendService;
-  }
-
   private renderHomePage() {
     return <>Select one of the actions from the menu above</>;
   }
 
   private renderGetMedicineListPage() {
-    return <GetMedicineListPage backendService={this.backendService} />;
+    return <GetMedicineListPage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")} />;
   }
 
   private renderAddMedicinePage() {
-    return <AddMedicinePage backendService={this.backendService}/>;
+    return <AddMedicinePage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")}/>;
   }
 
   private renderUpdateMedicinePage() {
-    return <UpdateMedicinePage backendService={this.backendService} />;
+    return <UpdateMedicinePage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")} />;
   }
   
   render() {

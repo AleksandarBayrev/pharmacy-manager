@@ -1,12 +1,4 @@
-type DILogger = (message: string) => void;
-type ServiceLifespan = "singleton" | "transient";
-type ServiceDescription = {
-    classDefinition: any;
-    serviceLifespan: ServiceLifespan;
-    constructorParameters: any[];
-}
-
-export type DIClassDefinition<T> = new (...params: any[]) => T;
+import { DILogger, ServiceDescription, ServiceLifespan, DIClassDefinition } from "./types";
 
 export class DependencyInjection {
     private static instance: DependencyInjection | null = null;

@@ -67,7 +67,7 @@ export class DependencyInjection {
             case 'singleton':
                 return `Returning ${serviceDescription.classDefinition.className} class instance with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             case 'transient':
-                return `Creating and returning new instance of ${serviceDescription.classDefinition.prototype.className} class with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
+                return `Creating and returning new instance of ${serviceDescription.classDefinition.className} class with lifespan ${serviceDescription.serviceLifespan} for ${baseType}`;
             default:
                 throw new Error(`Invalid service lifespan!`);
         }

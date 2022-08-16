@@ -1,14 +1,12 @@
-import { IServiceName } from "../base";
+import { enhanceClass } from "../base/enhanceClass";
 import { IBackendService, MedicineRequest, MedicineResponse } from "../types";
 
-export class BackendService implements IBackendService, IServiceName {
+class BackendService implements IBackendService {
     private readonly baseUrl: string;
     
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
     }
-
-    public serviceName: string = "BackendService";
 
     public async getAllMedicines(request: MedicineRequest): Promise<MedicineResponse> {
         try {
@@ -33,3 +31,7 @@ export class BackendService implements IBackendService, IServiceName {
         }
     }
 }
+
+enhanceClass(BackendService, "BackendService");
+
+export { BackendService };

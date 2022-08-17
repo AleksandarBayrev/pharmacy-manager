@@ -10,6 +10,7 @@ namespace PharmacyManager.API.Controllers
     [Route("/medicines/get")]
     [Route("/medicines/add")]
     [Route("/medicines/update")]
+    [Route("/404")]
     [ApiController]
     public class AppController : ControllerBase
     {

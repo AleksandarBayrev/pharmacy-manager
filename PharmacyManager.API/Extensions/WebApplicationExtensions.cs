@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿using MediatR;
+using Microsoft.Extensions.FileProviders;
 using PharmacyManager.API.Interfaces.Base;
+using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Middlewares;
 
 namespace PharmacyManager.API.Extensions
@@ -28,6 +30,12 @@ namespace PharmacyManager.API.Extensions
 
 
             app.MapControllers();
+            app.Use(async (HttpContext httpContext, RequestDelegate next) => {
+                await next(httpContext);
+                if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound) {
+                    httpContext.Response.Redirect("/404");
+                }
+            });
             return app;
         }
     }

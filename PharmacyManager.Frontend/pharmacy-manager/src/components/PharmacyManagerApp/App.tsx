@@ -7,6 +7,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
 import { DependencyInjection } from '../../base';
+import { NotFoundPage } from '../Pages/NotFoundPage/NotFoundPage';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -31,6 +32,10 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
   private renderUpdateMedicinePage() {
     return <UpdateMedicinePage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")} />;
   }
+
+  private renderNotFoundPage() {
+    return <NotFoundPage path={window.location.pathname} />
+  }
   
   render() {
     return (
@@ -49,6 +54,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
               <Route path={`${pages.GetMedicinesList}`} element={this.renderGetMedicineListPage()} />
               <Route path={`${pages.AddMedicines}`} element={this.renderAddMedicinePage()} />
               <Route path={`${pages.UpdateMedicines}`} element={this.renderUpdateMedicinePage()} />
+              <Route path={`*`} element={this.renderNotFoundPage()} />
             </Routes>
           </div>
         </header>

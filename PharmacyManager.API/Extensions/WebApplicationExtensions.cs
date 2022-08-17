@@ -30,12 +30,15 @@ namespace PharmacyManager.API.Extensions
 
 
             app.MapControllers();
+
+            #region Handle 404 redirection
             app.Use(async (HttpContext httpContext, RequestDelegate next) => {
                 await next(httpContext);
                 if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound) {
                     httpContext.Response.Redirect("/404");
                 }
             });
+            #endregion
             return app;
         }
     }

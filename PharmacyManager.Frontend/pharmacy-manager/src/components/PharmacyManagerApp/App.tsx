@@ -34,7 +34,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
   }
 
   private renderNotFoundPage() {
-    return <NotFoundPage path={window.location.pathname} />
+    return <NotFoundPage />
   }
   
   render() {

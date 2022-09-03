@@ -97,14 +97,8 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     )
   }
 
-  private renderPageCount() {
-    return this.state.showPageCount ? (
-      <div className='App-page-row-setting'>
-        <div className='row'>
-          <div className='column'><input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
-        </div>
-      </div>
-    ) : <></>
+  private renderPageCountText() {
+    return this.state.showPageCount ? `Avaliable pages: ${this.state.pages}` : 'Loading page count...';
   }
 
   private clearSearchResults() {
@@ -152,7 +146,11 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
             <div className='column'><button onClick={() => this.clearSearchResults()} disabled={this.state.loadingData}>Clear results</button></div>
           </div>
         </div>
-        {this.renderPageCount()}
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><input readOnly={true} value={this.renderPageCountText()} /></div>
+          </div>
+        </div>
         <div className='App-page-results'>
           {this.renderLoaderOrData()}
         </div>

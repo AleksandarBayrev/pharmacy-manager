@@ -47,7 +47,7 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
         const options: JSX.Element[] = [];
         if (maxPageCount < 20) {
             for (let i = 1; i <= maxPageCount; i++) {
-                const option = <a className={`hover${currentPage == i ? ' selected' : ''}`} onClick={() => setPage(i)}>{i}</a>;
+                const option = <a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>;
                 options.push(option);
             }
             return options;
@@ -55,22 +55,38 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
 
         if (currentPage < 3) {
             for (let i = 1; i <= 3; i++) {
-                options.push(<a className={`hover${currentPage == i ? ' selected' : ''}`} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
             }
+            options.push(<>...</>);
         }
 
         if (currentPage < 3 && maxPageCount <= 3) {
             for (let i = 1; i <= maxPageCount; i++) {
-                options.push(<a className={`hover${currentPage == i ? ' selected' : ''}`} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
             }
         }
 
-        if (currentPage >= 3 && currentPage + 2 <= maxPageCount) {
+        if (currentPage >= 3 && currentPage <= maxPageCount - 3) {
+            if (currentPage - 2 > 1) {
+                options.push(<>...</>);
+            }
             for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-                options.push(<a className={`hover${currentPage == i ? ' selected' : ''}`} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
+            }
+            options.push(<>...</>);
+        }
+
+        if (currentPage >= maxPageCount - 2 && currentPage <= maxPageCount) {
+            options.push(<>...</>);
+            for (let i = currentPage - 2; i <= maxPageCount; i++) {
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
             }
         }
         
         return options;
+    }
+
+    private getClasses(currentPage: number, page: number) {
+        return `page-button hover${currentPage == page ? ' selected' : ''}`;
     }
 }

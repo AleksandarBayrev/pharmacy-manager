@@ -36,6 +36,12 @@ a {
 a:hover {
   font-style: italic;
   font-weight: bolder;
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: bolder;
+  cursor: pointer;
 }
 
 .App-page-container {

@@ -85,8 +85,22 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     return (
       !this.state.isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
       :
-      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : <MedicinesWrapper medicines={this.state.medicines} />
+      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : <MedicinesWrapper setPage={this.setPageCallback} medicines={this.state.medicines} pages={this.state.pages} currentPage={this.state.request.page} />
     )
+  }
+
+  private setPageCallback = (page: number) => {
+    if (page === this.state.request.page) {
+      return;
+    }
+    this.updateRequest({page});
+    setTimeout(async () => {
+      const result = await this.backendService.getAllMedicines(this.state.request);
+      this.setState({
+        medicines: result.medicines,
+        pages: result.pages
+      });
+    });
   }
 
   private renderLoaderOrData() {

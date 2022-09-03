@@ -1,0 +1,1 @@
+export type ValidURL = "/" | "/medicines/get" | "/medicines/add" | "/medicines/update";

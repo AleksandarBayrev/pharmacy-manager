@@ -1,6 +1,7 @@
 import React from 'react';
 import { IBackendService, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
+import { LoadingData } from './children/LoadingData';
 import { MedicinesWrapper } from './children/MedicinesWrapper';
 
 export type GetMedicineListPageProps = {
@@ -78,7 +79,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
 
   private renderLoaderOrData() {
     return (
-      this.state.loadingData ? <div className='App-data-loading'>Loading data, please wait...</div>
+      this.state.loadingData ? <LoadingData />
       :
       this.renderMedicines()
     )

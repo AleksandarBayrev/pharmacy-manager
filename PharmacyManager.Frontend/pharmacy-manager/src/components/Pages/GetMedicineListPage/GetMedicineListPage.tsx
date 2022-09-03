@@ -79,7 +79,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
 
   private renderLoaderOrData() {
     return (
-      this.state.loadingData ? <LoadingData />
+      this.state.loadingData ? <LoadingData rerenderDotsInMs={100} />
       :
       this.renderMedicines()
     )

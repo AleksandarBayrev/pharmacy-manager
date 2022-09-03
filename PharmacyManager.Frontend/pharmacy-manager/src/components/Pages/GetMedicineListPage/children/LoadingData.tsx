@@ -1,8 +1,11 @@
 import React from "react";
 
-type LoadingDataProps = {}
+type LoadingDataProps = {
+    rerenderDotsInMs: number;
+}
 type LoadingDataState = {
     numberOfDots: number;
+    rerenderDotsInMs: number;
 }
 
 export class LoadingData extends React.Component<LoadingDataProps, LoadingDataState> {
@@ -11,7 +14,8 @@ export class LoadingData extends React.Component<LoadingDataProps, LoadingDataSt
     constructor(props: LoadingDataProps) {
         super(props);
         this.state = {
-            numberOfDots: 1
+            numberOfDots: 1,
+            rerenderDotsInMs: props.rerenderDotsInMs
         };
     }
 
@@ -19,8 +23,8 @@ export class LoadingData extends React.Component<LoadingDataProps, LoadingDataSt
         this.interval = setInterval(() => {
             this.setState({
                 numberOfDots: this.state.numberOfDots + 1
-            })
-        }, 100);
+            });
+        }, this.state.rerenderDotsInMs);
     }
 
     componentWillUnmount(): void {

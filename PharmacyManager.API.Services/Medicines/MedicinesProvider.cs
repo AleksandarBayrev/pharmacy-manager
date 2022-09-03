@@ -3,8 +3,16 @@ using PharmacyManager.API.Models;
 
 namespace PharmacyManager.API.Services.Medicines
 {
-    public class MedicinesProvider : IMedicinesProvider<MedicineModel>
+    public class MedicinesProvider : IMedicinesProvider<MedicineRequest, MedicineModel>
     {
-        public IEnumerable<MedicineModel> Medicines => Enumerable.Empty<MedicineModel>();
+        public Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetFilteredMedicinesCount(MedicineRequest request)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

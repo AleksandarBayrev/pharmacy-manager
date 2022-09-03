@@ -1,7 +1,8 @@
 ﻿namespace PharmacyManager.API.Interfaces.Medicines
 {
-    public interface IMedicinesProvider<TMedicineModel>
+    public interface IMedicinesProvider<TMedicineRequestModel, TMedicineModel>
     {
-        public IEnumerable<TMedicineModel> Medicines { get; }
+        public Task<IEnumerable<TMedicineModel>> GetFilteredMedicines(TMedicineRequestModel request);
+        public Task<int> GetFilteredMedicinesCount(TMedicineRequestModel request);
     }
 }

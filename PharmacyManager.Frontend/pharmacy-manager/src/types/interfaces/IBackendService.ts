@@ -1,6 +1,7 @@
 import { MedicineRequest } from "../requests";
-import { MedicineResponse } from "../responses";
+import { MedicineResponse, PageCalculationsResponse } from "../responses";
 
 export interface IBackendService {
     getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse>;
+    getInitialPageCalculations(request: MedicineRequest): Promise<PageCalculationsResponse>;
 }

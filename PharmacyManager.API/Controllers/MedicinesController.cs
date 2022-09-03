@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyManager.API.MediatRFeatures;
+using PharmacyManager.API.Models;
 using PharmacyManager.API.Models.APIRequests;
 using PharmacyManager.API.Models.APIResponses;
 
@@ -28,6 +29,12 @@ namespace PharmacyManager.API.Controllers
                 ItemsPerPage = request.ItemsPerPage,
                 Page = request.Page
             });
+        }
+
+        [HttpPost("getInitialPageCalculations")]
+        public Task<PageCalculations> GetInitalPageCalculations([FromBody] GetPageCalculations.Query request)
+        {
+            return this.mediator.Send(request);
         }
     }
 }

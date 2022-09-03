@@ -14,6 +14,7 @@ export type GetMedicineListPageState = {
   pages: number;
   loadingData: boolean;
   isInitialRequestMade: boolean;
+  showPageCount: boolean;
 }
 
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
@@ -35,21 +36,32 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       medicines: [],
       pages: 1,
       loadingData: false,
-      isInitialRequestMade: false
+      isInitialRequestMade: false,
+      showPageCount: false
     };
+  }
+
+  async componentDidMount() {
+    const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
+    this.setState({
+      pages: pageCalculations.pages,
+      showPageCount: true
+    });
   }
 
   private async getMedicines(request: MedicineRequest) {
     this.setState({
       loadingData: true,
-      isInitialRequestMade: true
+      isInitialRequestMade: true,
+      showPageCount: false
     });
     const response = await this.backendService.getAllMedicines(request);
     setTimeout(() => {
       this.setState({
         medicines: response.medicines,
         pages: response.pages,
-        loadingData: false
+        loadingData: false,
+        showPageCount: true
       });
     }, this.loadingTimeout);
   }
@@ -83,6 +95,16 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       :
       this.renderMedicines()
     )
+  }
+
+  private renderPageCount() {
+    return this.state.showPageCount ? (
+      <div className='App-page-row-setting'>
+        <div className='row'>
+          <div className='column'><input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
+        </div>
+      </div>
+    ) : <></>
   }
 
   private clearSearchResults() {
@@ -130,11 +152,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
             <div className='column'><button onClick={() => this.clearSearchResults()} disabled={this.state.loadingData}>Clear results</button></div>
           </div>
         </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'><input readOnly={true} value={`Avaliable pages: ${this.state.pages}`} /></div>
-          </div>
-        </div>
+        {this.renderPageCount()}
         <div className='App-page-results'>
           {this.renderLoaderOrData()}
         </div>

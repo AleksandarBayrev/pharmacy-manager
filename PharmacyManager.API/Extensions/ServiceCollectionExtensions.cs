@@ -47,19 +47,30 @@ namespace PharmacyManager.API.Extensions
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Interfaces.Base.ILogger, Logger>();
+
+            #region Setup Page calculation service
+            services.AddSingleton<IPageCalculation<PageCalculations>, PageCalculation>();
+            #endregion
+
             #region Setup Medicines Provider
-            services.AddSingleton<IMedicinesProvider<MedicineModel>>((sp) =>
+            services.AddSingleton<IMedicinesProvider<MedicineRequest, MedicineModel>>((sp) =>
             {
                 var appConfig = sp.GetService<IApplicationConfiguration>();
+                var logger = sp.GetService<PharmacyManager.API.Interfaces.Base.ILogger>();
 
                 if (appConfig == null)
                 {
                     throw new NullReferenceException("Application configuration not available!");
                 }
+                
+                if (logger == null)
+                {
+                    throw new NullReferenceException("Application logger not available!");
+                }
 
                 if (appConfig.UseMocks)
                 {
-                    return new MedicinesProviderMockInstance();
+                    return new MedicinesProviderMockInstance(logger);
                 }
                 return new MedicinesProvider();
             });

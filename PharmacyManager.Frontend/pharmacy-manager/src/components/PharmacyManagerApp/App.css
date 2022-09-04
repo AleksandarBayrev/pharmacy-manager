@@ -42,6 +42,7 @@ a:hover {
 .selected {
   font-weight: bolder;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .App-page-container {

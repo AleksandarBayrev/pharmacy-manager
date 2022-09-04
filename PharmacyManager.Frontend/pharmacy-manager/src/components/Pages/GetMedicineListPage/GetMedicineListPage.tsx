@@ -42,6 +42,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
   }
 
   async componentDidMount() {
+    window.document.title = "Pharmacy Manager - Get Medicines";
     const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
     this.setState({
       pages: pageCalculations.pages,

@@ -7,6 +7,9 @@ export type AddMedicinePageProps = {
 }
 
 export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
+    componentDidMount(): void {
+        window.document.title = "Pharmacy Manager - Add Medicine";
+    }
     render(): React.ReactNode {
         return (
             <div className="App-page">

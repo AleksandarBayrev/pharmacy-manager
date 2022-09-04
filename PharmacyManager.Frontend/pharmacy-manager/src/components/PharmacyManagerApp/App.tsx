@@ -8,6 +8,7 @@ import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
 import { DependencyInjection } from '../../base';
 import { NotFoundPage } from '../Pages/NotFoundPage/NotFoundPage';
+import { HomePage } from '../Pages/HomePage/HomePage';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -18,7 +19,7 @@ export type PharmacyManagerAppState = {
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
   private renderHomePage() {
-    return <>Select one of the actions from the menu above</>;
+    return <HomePage />;
   }
 
   private renderGetMedicineListPage() {

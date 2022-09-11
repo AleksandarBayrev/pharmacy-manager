@@ -1,14 +1,10 @@
 import React from 'react';
 import './App.css';
-import { IBackendService } from '../../types';
-import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
+import { IPageRenderer } from '../../types';
 import { pages } from './constants';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
-import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
 import { DependencyInjection } from '../../base';
 import { NotFoundPage } from '../Pages/NotFoundPage/NotFoundPage';
-import { HomePage } from '../Pages/HomePage/HomePage';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -18,27 +14,8 @@ export type PharmacyManagerAppState = {
 }
 
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps, PharmacyManagerAppState> {
-  private renderHomePage() {
-    return <HomePage />;
-  }
-
-  private renderGetMedicineListPage() {
-    return <GetMedicineListPage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")} />;
-  }
-
-  private renderAddMedicinePage() {
-    return <AddMedicinePage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")}/>;
-  }
-
-  private renderUpdateMedicinePage() {
-    return <UpdateMedicinePage backendService={this.props.DependencyInjection.getService<IBackendService>("IBackendService")} />;
-  }
-
-  private renderNotFoundPage() {
-    return <NotFoundPage />
-  }
-  
   render() {
+    const pageRenderer = this.props.DependencyInjection.getService<IPageRenderer>("IPageRenderer");
     return (
       <div className="App">
       <BrowserRouter>
@@ -51,11 +28,11 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
           </div>
           <div className='App-page-container'>
             <Routes>
-              <Route path={`${pages.Home}`} element={this.renderHomePage()} />
-              <Route path={`${pages.GetMedicinesList}`} element={this.renderGetMedicineListPage()} />
-              <Route path={`${pages.AddMedicines}`} element={this.renderAddMedicinePage()} />
-              <Route path={`${pages.UpdateMedicines}`} element={this.renderUpdateMedicinePage()} />
-              <Route path={`*`} element={this.renderNotFoundPage()} />
+              <Route path={`${pages.Home}`} element={pageRenderer.get(pages.Home)} />
+              <Route path={`${pages.GetMedicinesList}`} element={pageRenderer.get(pages.GetMedicinesList)} />
+              <Route path={`${pages.AddMedicines}`} element={pageRenderer.get(pages.AddMedicines)} />
+              <Route path={`${pages.UpdateMedicines}`} element={pageRenderer.get(pages.UpdateMedicines)} />
+              <Route path={`*`} element={<NotFoundPage />} />
             </Routes>
           </div>
         </header>

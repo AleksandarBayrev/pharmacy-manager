@@ -20,7 +20,6 @@ namespace PharmacyManager.API.Features
             }
             public Task<string> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = Path.Combine(this.webHostEnvironment.ContentRootPath, this.applicationConfiguration.RelativeHtmlPath);
                 return Task.FromResult(
                     Path.Combine(
                         this.webHostEnvironment.ContentRootPath,

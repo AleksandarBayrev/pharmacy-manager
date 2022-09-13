@@ -7,6 +7,7 @@ using PharmacyManager.API.Models;
 using PharmacyManager.API.Services.Medicines;
 using PharmacyManager.API.Interfaces.Frontend;
 using PharmacyManager.API.Services.Frontend;
+using PharmacyManager.API.Features;
 
 namespace PharmacyManager.API.Extensions
 {
@@ -83,7 +84,7 @@ namespace PharmacyManager.API.Extensions
 
         private static void AddMediatR(IServiceCollection services)
         {
-            services.AddMediatR(typeof(GetConfigurationFeature));
+            services.AddMediatR(typeof(GetConfigurationFeature), typeof(GetWebhostAbsolutePathFeature));
         }
     }
 }

@@ -2,7 +2,7 @@
 using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
 using MediatR;
 using PharmacyManager.API.MediatRFeatures;
-using PharmacyManager.API.Interfaces.Base;
+using PharmacyManager.API.Features;
 
 namespace PharmacyManager.API.Controllers
 {
@@ -16,21 +16,15 @@ namespace PharmacyManager.API.Controllers
     {
         private readonly string contentType = "text/html";
         private readonly ILogger logger;
-        private readonly IWebHostEnvironment env;
         private readonly IMediator mediator;
-        private readonly IApplicationConfiguration applicationConfiguration;
         private readonly string loggerContext = nameof(AppController);
 
         public AppController(
             ILogger logger,
-            IWebHostEnvironment env,
-            IMediator mediator,
-            IApplicationConfiguration applicationConfiguration)
+            IMediator mediator)
         {
             this.logger = logger;
-            this.env = env;
             this.mediator = mediator;
-            this.applicationConfiguration = applicationConfiguration;
         }
 
         [HttpGet]
@@ -39,7 +33,7 @@ namespace PharmacyManager.API.Controllers
             await logger.Log(this.loggerContext, "Rendering App UI");
             return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.Query
             {
-                Path = this.BuildAbsolutePath()
+                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
             }), this.contentType);
         }
 
@@ -49,10 +43,8 @@ namespace PharmacyManager.API.Controllers
             await logger.Log(this.loggerContext, "Reloading App UI");
             return await mediator.Send(new GetFrontendHTMLReloadFeature.Query
             {
-                Path = this.BuildAbsolutePath()
+                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
             });
         }
-
-        private string BuildAbsolutePath() => Path.Combine(env.ContentRootPath, this.applicationConfiguration.RelativeHtmlPath);
     }
 }

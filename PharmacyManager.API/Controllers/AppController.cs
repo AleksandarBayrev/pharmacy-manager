@@ -3,6 +3,7 @@ using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
 using MediatR;
 using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Features;
+using PharmacyManager.API.Models;
 
 namespace PharmacyManager.API.Controllers
 {

@@ -1,11 +1,25 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { IBackendService, MedicineRequest, MedicineResponse, PageCalculationsResponse } from "../types";
+import { AddMedicineRequest, IBackendService, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse } from "../types";
 
 class BackendService implements IBackendService {
     private readonly baseUrl: string;
     
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
+    }
+    
+    public async addMedicine(addMedicineRequest: AddMedicineRequest): Promise<MedicineModel | undefined> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/medicines/addMedicine`, {
+                method: "POST",
+                headers: this.getHeaders(),
+                body: JSON.stringify(addMedicineRequest)
+            });
+            return await result.json() as MedicineModel;
+        } catch (err) {
+            console.error(err);
+            return;
+        }
     }
 
     public async getAllMedicines(request: MedicineRequest): Promise<MedicineResponse> {

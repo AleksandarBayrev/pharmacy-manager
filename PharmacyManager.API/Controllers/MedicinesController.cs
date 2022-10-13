@@ -18,6 +18,17 @@ namespace PharmacyManager.API.Controllers
             this.mediator = mediator;
         }
 
+        [HttpPost("addMedicine")]
+        public Task<MedicineModel> AddMedicine([FromBody] AddMedicineRequest request)
+        {
+            return mediator.Send(new AddMedicineFeature.Query
+            {
+                Name = request.Name,
+                Manufacturer = request.Manufacturer,
+                Description = request.Description
+            });
+        }
+
         [HttpPost("getAllMedicines")]
         public Task<MedicinesResponse> GetMedicines([FromBody] GetMedicinesRequest request)
         {

@@ -7,7 +7,7 @@ namespace PharmacyManager.API.Services.Medicines
     public class MedicinesProviderMockInstance : IMedicinesProvider<MedicineRequest, MedicineModel>
     {
         private readonly ILogger logger;
-        private IEnumerable<MedicineModel> _medicines;
+        private IList<MedicineModel> _medicines;
         private readonly string loggerContext = nameof(MedicinesProviderMockInstance);
 
         public MedicinesProviderMockInstance(ILogger logger)
@@ -63,8 +63,14 @@ namespace PharmacyManager.API.Services.Medicines
 
             for (var i = 0; i < 100000; i++)
             {
-                (this._medicines as IList<MedicineModel>).Add(new MedicineModel { Id = i + 100, Name = "Paracetamol " + i, Manufacturer = "Bayer " + i, Description = "Paracetamol", ExpirationDate = DateTime.Now, ManufacturingDate = new DateTime(2020, 1, 1), Price = 1.99, Quantity = new Random().Next(0, 500) }); 
+                this._medicines.Add(new MedicineModel { Id = i + 100, Name = "Paracetamol " + i, Manufacturer = "Bayer " + i, Description = "Paracetamol", ExpirationDate = DateTime.Now, ManufacturingDate = new DateTime(2020, 1, 1), Price = 1.99, Quantity = new Random().Next(0, 500) }); 
             }
+        }
+
+        public Task<MedicineModel> AddMedicine(MedicineModel medicine)
+        {
+            this._medicines.Add(medicine);
+            return Task.FromResult(medicine);
         }
 
         public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)

@@ -34,7 +34,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                     <div className="medicine-manufacturer"><input type="text" onChange={(e) => this.setMedicine({manufacturer: e.target.value})} placeholder="Medicine Manufacturer" value={this.state.request.manufacturer} /></div>
                     <div className="medicine-description"><input type="text" onChange={(e) => this.setMedicine({description: e.target.value})} placeholder="Medicine Description" value={this.state.request.description} /></div>
                     <div className="submit-medicine"><button onClick={this.addMedicine} disabled={this.isInputInvalid() || this.state.isAddingMedicine}>Add Medicine</button><button onClick={this.clearInput} disabled={this.state.isAddingMedicine}>Clear input</button></div>
-                    <div className="message">{this.renderSuccessMessage()}</div>
+                    <div className="message">{this.renderRequestStatusMessage()}</div>
                 </div>
             </div>
         )
@@ -46,7 +46,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
         });
     }
 
-    private renderSuccessMessage = () => {
+    private renderRequestStatusMessage = () => {
         return (this.state.isRequestSuccessful !== undefined ?
             this.state.isRequestSuccessful ?
                 `Successfully added medicine ${this.state.request.name}`

@@ -8,10 +8,6 @@ using PharmacyManager.API.Models;
 namespace PharmacyManager.API.Controllers
 {
     [Route("/")]
-    [Route("/medicines/get")]
-    [Route("/medicines/add")]
-    [Route("/medicines/update")]
-    [Route("/404")]
     [ApiController]
     public class AppController : ControllerBase
     {
@@ -29,6 +25,10 @@ namespace PharmacyManager.API.Controllers
         }
 
         [HttpGet]
+        [HttpGet("medicines/get")]
+        [HttpGet("medicines/add")]
+        [HttpGet("medicines/update")]
+        [HttpGet("404")]
         public async Task<IActionResult> GetHTML()
         {
             await logger.Log(this.loggerContext, "Rendering App UI");

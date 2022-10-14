@@ -9,14 +9,14 @@ import { HomePage } from '../Pages/HomePage/HomePage';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
-import { IBackendService, IPageRenderer } from '../../types';
+import { IBackendService, ILogManager, IPageRenderer } from '../../types';
+import { LogManager } from '../../services/LogManager';
 
 test('matches snapshot', () => {
   const services = (() => {
-    const loggers = {
-      pageRenderer: new Logger("PageRenderer")
-    };
-    const pageRenderer: IPageRenderer = new PageRenderer(loggers.pageRenderer);
+    const logManager: ILogManager = new LogManager();
+    logManager.addLogger("PageRenderer")
+    const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"));
     const backendService: IBackendService = {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
@@ -27,7 +27,9 @@ test('matches snapshot', () => {
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={backendService}/>);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {
-      'IPageRenderer': pageRenderer
+      'IPageRenderer': pageRenderer,
+      'IBackendService': backendService,
+      'ILogManager': logManager
     }
   })();
   const DI: DependencyInjection = {

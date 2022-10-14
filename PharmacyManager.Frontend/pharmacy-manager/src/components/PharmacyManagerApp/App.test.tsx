@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './App';
 import { DependencyInjection } from '../../base';
 import { PageRenderer } from '../../services/PageRenderer';
-import { Logger } from '../../services/Logger';
 import { pages } from './constants';
 import { HomePage } from '../Pages/HomePage/HomePage';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';

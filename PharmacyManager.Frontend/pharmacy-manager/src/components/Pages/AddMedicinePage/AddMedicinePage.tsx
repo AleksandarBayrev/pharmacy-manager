@@ -9,6 +9,7 @@ export type AddMedicinePageProps = {
 export type AddMedicinePageState = {
     request: AddMedicineRequest;
     isAddingMedicine: boolean;
+    isRequestSuccessful?: boolean;
 }
 
 export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMedicinePageState> {
@@ -17,7 +18,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
         super(props);
         this.backendService = props.backendService;
         this.state = {
-            request: this.getDefaultMedicine(),
+            request: this.getDefaultRequest(),
             isAddingMedicine: false
         };
     }
@@ -29,16 +30,38 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
             <div className="App-page">
                 <div className="App-page-header">Add Medicine</div>
                 <div className="form">
-                    <div className="medicine-name"><input type="text" onChange={(e) => this.setMedicine({name: e.target.value})} placeholder="Medicine Name" /></div>
-                    <div className="medicine-name"><input type="text" onChange={(e) => this.setMedicine({manufacturer: e.target.value})} placeholder="Medicine Manufacturer" /></div>
-                    <div className="medicine-name"><input type="text" onChange={(e) => this.setMedicine({description: e.target.value})} placeholder="Medicine Description" /></div>
-                    <div className="submit-medicine"><button onClick={(e) => this.addMedicine()}>Add Medicine</button></div>
+                    <div className="medicine-name"><input type="text" onChange={(e) => this.setMedicine({name: e.target.value})} placeholder="Medicine Name" value={this.state.request.name}/></div>
+                    <div className="medicine-manufacturer"><input type="text" onChange={(e) => this.setMedicine({manufacturer: e.target.value})} placeholder="Medicine Manufacturer" value={this.state.request.manufacturer} /></div>
+                    <div className="medicine-description"><input type="text" onChange={(e) => this.setMedicine({description: e.target.value})} placeholder="Medicine Description" value={this.state.request.description} /></div>
+                    <div className="submit-medicine"><button onClick={this.addMedicine} disabled={this.isInputInvalid() || this.state.isAddingMedicine}>Add Medicine</button><button onClick={this.clearInput} disabled={this.state.isAddingMedicine}>Clear input</button></div>
+                    <div className="message">{this.renderSuccessMessage()}</div>
                 </div>
             </div>
         )
     }
 
-    private addMedicine = async () => {
+    private clearInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        this.setState({
+            request: { ...this.getDefaultRequest() }
+        });
+    }
+
+    private renderSuccessMessage = () => {
+        return (this.state.isRequestSuccessful !== undefined ?
+            this.state.isRequestSuccessful ?
+                `Successfully added medicine ${this.state.request.name}`
+                :
+                `Failed adding medicine ${this.state.request.name}`
+            : ""
+        );
+    }
+
+    private isInputInvalid = (): boolean => {
+        const requestKeys = Object.keys(this.state.request);
+        return requestKeys.filter(x => (this.state.request as any)[x] !== undefined && (this.state.request as any)[x].length).length !== requestKeys.length;
+    };
+
+    private addMedicine = async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try {
             this.setState({
                 isAddingMedicine: true
@@ -47,11 +70,24 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                 ...this.state.request
             });
             this.setState({
-                isAddingMedicine: false
+                isAddingMedicine: false,
+                isRequestSuccessful: true
             });
+            this.resetMessage();
         } catch(_) {
-
+            this.setState({
+                isRequestSuccessful: false
+            });
+            this.resetMessage();
         }
+    }
+
+    private resetMessage = () => {
+        setTimeout(() => {
+            this.setState({
+                isRequestSuccessful: undefined
+            });
+        }, 2000);
     }
 
     private setMedicine = (request: Partial<AddMedicineRequest>) => {
@@ -64,7 +100,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
         });
     }
 
-    private getDefaultMedicine(): AddMedicineRequest {
+    private getDefaultRequest(): AddMedicineRequest {
         return {
             //id: 0,
             name: "",

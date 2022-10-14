@@ -95,16 +95,35 @@ namespace PharmacyManager.API.Services.Medicines
         private async Task<IEnumerable<MedicineModel>> ApplyFilters(MedicineRequest request)
         {
             var filteredMedicines = _medicines.AsEnumerable();
+            return await FilterByAvailableOnly(request,
+                await FilterByNotExpired(request,
+                    await FilterByManufacturer(request, filteredMedicines)
+                )
+            );
+        }
+
+        private async Task<IEnumerable<MedicineModel>> FilterByAvailableOnly(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
+        {
             if (request.AvailableOnly)
             {
                 await logger.Log(this.loggerContext, "Filtering by Available Only");
                 filteredMedicines = filteredMedicines.Where(x => x.Quantity > 0);
             }
+            return filteredMedicines;
+        }
+
+        private async Task<IEnumerable<MedicineModel>> FilterByNotExpired(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
+        {
             if (request.NotExpired)
             {
                 await logger.Log(this.loggerContext, "Filtering by Not Expired");
                 filteredMedicines = filteredMedicines.Where(x => x.ExpirationDate > DateTime.Now);
             }
+            return filteredMedicines;
+        }
+
+        private async Task<IEnumerable<MedicineModel>> FilterByManufacturer(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
+        {
             if (request.Manufacturer != null && request.Manufacturer.Length != 0)
             {
                 await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}");

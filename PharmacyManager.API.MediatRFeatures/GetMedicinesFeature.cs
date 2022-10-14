@@ -9,7 +9,7 @@ namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetMedicinesFeature
     {
-        public class Query : IRequest<MedicinesResponse>
+        public class GetMedicinesQuery : IRequest<MedicinesResponse>
         {
             public bool AvailableOnly { get; init; }
             public bool NotExpired { get; init; }
@@ -17,14 +17,14 @@ namespace PharmacyManager.API.MediatRFeatures
             public int Page { get; init; }
             public int ItemsPerPage { get; init; }
         }
-        public class QueryHandler : IRequestHandler<Query, MedicinesResponse>
+        public class GetMedicinesQueryHandler : IRequestHandler<GetMedicinesQuery, MedicinesResponse>
         {
             private readonly ILogger logger;
             private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
             private readonly IPageCalculation<PageCalculations> pageCalculation;
             private readonly string loggerContext = nameof(GetMedicinesFeature);
 
-            public QueryHandler(
+            public GetMedicinesQueryHandler(
                 ILogger logger,
                 IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
                 IPageCalculation<PageCalculations> pageCalculation)
@@ -33,7 +33,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 this.medicinesProvider = medicinesProvider;
                 this.pageCalculation = pageCalculation;
             }
-            public async Task<MedicinesResponse> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<MedicinesResponse> Handle(GetMedicinesQuery request, CancellationToken cancellationToken)
             {
                 await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}");
                 var filteredMedicines = await this.medicinesProvider.GetFilteredMedicines(new MedicineRequest
@@ -52,7 +52,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 };
             }
 
-            private async Task<decimal> CalculatePages(Query request, IEnumerable<MedicineModel> filteredMedicines)
+            private async Task<decimal> CalculatePages(GetMedicinesQuery request, IEnumerable<MedicineModel> filteredMedicines)
             {
                 var medicinesCount = filteredMedicines.Count();
                 var itemsPerPage = request.ItemsPerPage;
@@ -60,7 +60,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 return pageCalculations.Pages;
             }
 
-            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, Query request)
+            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request)
             {
                 await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}");
                 return medicines.Skip(request.ItemsPerPage * (request.Page - 1)).Take(request.ItemsPerPage);

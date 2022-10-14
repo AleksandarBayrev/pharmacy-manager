@@ -7,7 +7,7 @@ namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetPageCalculations
     {
-        public class Query : IRequest<PageCalculations>
+        public class GetPageCalculationsQuery : IRequest<PageCalculations>
         {
             public bool AvailableOnly { get; init; }
             public bool NotExpired { get; init; }
@@ -16,13 +16,13 @@ namespace PharmacyManager.API.MediatRFeatures
             public int ItemsPerPage { get; init; }
         }
 
-        public class QueryHandler : IRequestHandler<Query, PageCalculations>
+        public class GetPageCalculationsQueryHandler : IRequestHandler<GetPageCalculationsQuery, PageCalculations>
         {
             private readonly ILogger logger;
             private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
             private readonly IPageCalculation<PageCalculations> pageCalculation;
 
-            public QueryHandler(
+            public GetPageCalculationsQueryHandler(
                 ILogger logger,
                 IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
                 IPageCalculation<PageCalculations> pageCalculation)
@@ -31,7 +31,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 this.medicinesProvider = medicinesProvider;
                 this.pageCalculation = pageCalculation;
             }
-            public async Task<PageCalculations> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PageCalculations> Handle(GetPageCalculationsQuery request, CancellationToken cancellationToken)
             {
                 var medicinesCount = await this.medicinesProvider.GetFilteredMedicinesCount(new MedicineRequest
                 {

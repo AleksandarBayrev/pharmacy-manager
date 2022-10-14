@@ -32,7 +32,7 @@ namespace PharmacyManager.API.Controllers
         public async Task<IActionResult> GetHTML()
         {
             await logger.Log(this.loggerContext, "Rendering App UI");
-            return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.Query
+            return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.GetFrontendHTMLFeatureQuery
             {
                 Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
             }), this.contentType);
@@ -42,7 +42,7 @@ namespace PharmacyManager.API.Controllers
         public async Task<bool> ReloadHTML()
         {
             await logger.Log(this.loggerContext, "Reloading App UI");
-            return await mediator.Send(new GetFrontendHTMLReloadFeature.Query
+            return await mediator.Send(new GetFrontendHTMLReloadFeature.GetFrontendHTMLReloadFeatureQuery
             {
                 Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
             });

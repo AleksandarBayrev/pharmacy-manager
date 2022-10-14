@@ -6,25 +6,25 @@ namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetFrontendHTMLReloadFeature
     {
-        public class Query : IRequest<bool>
+        public class GetFrontendHTMLReloadFeatureQuery : IRequest<bool>
         {
             public string Path { get; init; }
         }
 
-        public class QueryHandler : IRequestHandler<Query, bool>
+        public class GetFrontendHTMLReloadFeatureQueryHandler : IRequestHandler<GetFrontendHTMLReloadFeatureQuery, bool>
         {
             private readonly ILogger logger;
             private readonly string loggerContext = nameof(GetFrontendHTMLReloadFeature);
             private readonly IFrontendReader reader;
 
-            public QueryHandler(
+            public GetFrontendHTMLReloadFeatureQueryHandler(
                 ILogger logger,
                 IFrontendReader reader)
             {
                 this.logger = logger;
                 this.reader = reader;
             }
-            public async Task<bool> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<bool> Handle(GetFrontendHTMLReloadFeatureQuery request, CancellationToken cancellationToken)
             {
                 await logger.Log(loggerContext, $"Reloading path {request.Path}");
                 return await reader.ReloadHTML(request.Path);

@@ -19,7 +19,7 @@ namespace PharmacyManager.API.Controllers
         [HttpGet("configuration")]
         public Task<IApplicationConfiguration> GetConfiguration()
         {
-            return this.mediator.Send(new GetConfigurationFeature.Query());
+            return this.mediator.Send(new GetConfigurationFeature.GetConfigurationFeatureQuery());
         }
     }
 }

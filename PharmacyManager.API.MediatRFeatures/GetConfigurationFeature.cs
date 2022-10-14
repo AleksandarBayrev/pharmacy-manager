@@ -5,14 +5,14 @@ namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetConfigurationFeature
     {
-        public class Query : IRequest<IApplicationConfiguration> { }
+        public class GetConfigurationFeatureQuery : IRequest<IApplicationConfiguration> { }
 
-        public class QueryHandler : IRequestHandler<Query, IApplicationConfiguration>
+        public class GetConfigurationFeatureQueryHandler : IRequestHandler<GetConfigurationFeatureQuery, IApplicationConfiguration>
         {
             private readonly ILogger logger;
             private readonly IApplicationConfiguration configuration;
 
-            public QueryHandler(
+            public GetConfigurationFeatureQueryHandler(
                 ILogger logger,
                 IApplicationConfiguration configuration)
             {
@@ -20,7 +20,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 this.configuration = configuration;
             }
 
-            public async Task<IApplicationConfiguration> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<IApplicationConfiguration> Handle(GetConfigurationFeatureQuery request, CancellationToken cancellationToken)
             {
                 await logger.Log(nameof(GetConfigurationFeature), $"Received request for fetching {nameof(IApplicationConfiguration)}");
                 return configuration;

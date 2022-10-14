@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Models;
-using PharmacyManager.API.Models.APIRequests;
 using PharmacyManager.API.Models.APIResponses;
 
 namespace PharmacyManager.API.Controllers
@@ -19,31 +18,19 @@ namespace PharmacyManager.API.Controllers
         }
 
         [HttpPost("addMedicine")]
-        public Task<MedicineModel> AddMedicine([FromBody] AddMedicineRequest request)
+        public Task<MedicineModel> AddMedicine([FromBody] AddMedicineFeature.AddMedicineFeatureQuery request)
         {
-            return mediator.Send(new AddMedicineFeature.Query
-            {
-                Name = request.Name,
-                Manufacturer = request.Manufacturer,
-                Description = request.Description
-            });
+            return mediator.Send(request);
         }
 
         [HttpPost("getAllMedicines")]
-        public Task<MedicinesResponse> GetMedicines([FromBody] GetMedicinesRequest request)
+        public Task<MedicinesResponse> GetMedicines([FromBody] GetMedicinesFeature.GetMedicinesQuery request)
         {
-            return this.mediator.Send(new GetMedicinesFeature.Query
-            {
-                AvailableOnly = request.AvailableOnly,
-                NotExpired = request.NotExpired,
-                Manufacturer = request.Manufacturer,
-                ItemsPerPage = request.ItemsPerPage,
-                Page = request.Page
-            });
+            return this.mediator.Send(request);
         }
 
         [HttpPost("getInitialPageCalculations")]
-        public Task<PageCalculations> GetInitalPageCalculations([FromBody] GetPageCalculations.Query request)
+        public Task<PageCalculations> GetInitalPageCalculations([FromBody] GetPageCalculations.GetPageCalculationsQuery request)
         {
             return this.mediator.Send(request);
         }

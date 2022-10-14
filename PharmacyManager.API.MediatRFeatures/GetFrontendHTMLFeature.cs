@@ -7,24 +7,24 @@ namespace PharmacyManager.API.MediatRFeatures
 {
     public class GetFrontendHTMLFeature
     {
-        public class Query : IRequest<byte[]>
+        public class GetFrontendHTMLFeatureQuery : IRequest<byte[]>
         {
             public string Path { get; init; }
         }
 
-        public class QueryHandler : IRequestHandler<Query, byte[]>
+        public class GetFrontendHTMLFeatureQueryHandler : IRequestHandler<GetFrontendHTMLFeatureQuery, byte[]>
         {
             private readonly ILogger logger;
             private readonly IFrontendReader reader;
             private readonly string loggerContext = nameof(GetFrontendHTMLFeature);
-            public QueryHandler(
+            public GetFrontendHTMLFeatureQueryHandler(
                 ILogger logger,
                 IFrontendReader reader)
             {
                 this.logger = logger;
                 this.reader = reader;
             }
-            public async Task<byte[]> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<byte[]> Handle(GetFrontendHTMLFeatureQuery request, CancellationToken cancellationToken)
             {
                 await logger.Log(loggerContext, "Reading HTML for UI");
                 return Encoding.UTF8.GetBytes(await reader.ReadHTML(request.Path));

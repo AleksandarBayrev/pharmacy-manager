@@ -139,8 +139,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       selectedOption={this.state.request.itemsPerPage} />;
   }
 
-  private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.updateRequest({ itemsPerPage: parseInt(e.target.value) });
+  private refetchPageCalculations = () => {
     setTimeout(async () => {
       const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
       this.setState({
@@ -149,17 +148,29 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     });
   }
 
+  private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.updateRequest({ itemsPerPage: parseInt(e.target.value) });
+    this.refetchPageCalculations();
+  }
+
+  private onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "availableOnly" | "notExpired") => {
+    const updatedProp: Partial<MedicineRequest> = {}
+    updatedProp[prop] = e.target.checked;
+    this.updateRequest(updatedProp);
+    this.refetchPageCalculations();
+  }
+
   render() {
     return (
       <div className='App-page'>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} onChange={(e) => this.updateRequest({ availableOnly: e.target.checked })} /></div>
+            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
             <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} onChange={(e) => this.updateRequest({ notExpired: e.target.checked })} /></div>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
             <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
         </div>
         <div className='App-page-row-setting'>

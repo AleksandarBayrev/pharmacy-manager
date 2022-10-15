@@ -135,8 +135,18 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     const options: number[] = [10, 15, 20, 50, 100, 500];
     return <ItemsPerPage 
       options={options}
-      onChangeHandler={(e) => this.updateRequest({ itemsPerPage: parseInt(e.target.value) })}
+      onChangeHandler={this.onSelectChange}
       selectedOption={this.state.request.itemsPerPage} />;
+  }
+
+  private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    this.updateRequest({ itemsPerPage: parseInt(e.target.value) });
+    setTimeout(async () => {
+      const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
+      this.setState({
+        pages: pageCalculations.pages
+      });
+    });
   }
 
   render() {

@@ -41,7 +41,7 @@ class BackendService implements IBackendService {
 
     public async getInitialPageCalculations(request: MedicineRequest): Promise<PageCalculationsResponse> {
         try {
-            const result = await fetch(`${this.baseUrl}/api/medicines/getAllMedicines`, {
+            const result = await fetch(`${this.baseUrl}/api/medicines/getInitialPageCalculations`, {
                 method: "POST",
                 headers: this.getHeaders(),
                 body: JSON.stringify(request)

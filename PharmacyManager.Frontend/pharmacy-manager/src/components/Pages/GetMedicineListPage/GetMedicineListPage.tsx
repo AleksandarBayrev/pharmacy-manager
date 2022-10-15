@@ -200,7 +200,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input readOnly={true} value={this.renderPageCountText()} /></div>
+            <div className='column'>{this.renderPageCountText()}</div>
           </div>
         </div>
         <div className='App-page-results'>

@@ -45,7 +45,7 @@ namespace PharmacyManager.API.MediatRFeatures
                     Description = request.Description,
                     ManufacturingDate = request.ManufacturingDate,
                     ExpirationDate = request.ExpirationDate,
-                    Price = this.priceParser.Parse(request.Price),
+                    Price = await this.priceParser.Parse(request.Price),
                     Quantity = request.Quantity
                 };
                 await this.medicinesProvider.AddMedicine(medicine);

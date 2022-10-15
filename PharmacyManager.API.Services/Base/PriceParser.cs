@@ -12,9 +12,9 @@ namespace PharmacyManager.API.Services.Base
             this.logger = logger;
         }
 
-        public decimal Parse(string priceAsString)
+        public async Task<decimal>Parse(string priceAsString)
         {
-            this.logger.Log(nameof(PriceParser), $"Parsing price as string {priceAsString} to decimal");
+            await this.logger.Log(nameof(PriceParser), $"Parsing price as string {priceAsString} to decimal");
             return Math.Round(decimal.Parse(priceAsString, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero);
         }
     }

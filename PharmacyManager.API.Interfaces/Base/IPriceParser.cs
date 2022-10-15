@@ -2,6 +2,6 @@
 {
     public interface IPriceParser
     {
-        decimal Parse(string priceAsString);
+        Task<decimal> Parse(string priceAsString);
     }
 }

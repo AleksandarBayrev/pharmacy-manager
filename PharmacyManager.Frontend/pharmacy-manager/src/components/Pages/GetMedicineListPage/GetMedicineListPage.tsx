@@ -87,7 +87,13 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     return (
       !this.state.isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
       :
-      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : <MedicinesWrapper setPage={this.setPageCallback} medicines={this.state.medicines} pages={this.state.pages} currentPage={this.state.request.page} />
+      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : 
+      <MedicinesWrapper
+        dateFormatter={this.props.dateFormatter}
+        setPage={this.setPageCallback}
+        medicines={this.state.medicines}
+        pages={this.state.pages}
+        currentPage={this.state.request.page} />
     )
   }
 

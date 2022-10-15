@@ -1,10 +1,11 @@
 import React from 'react';
-import { MedicineModel } from '../../../../types';
+import { IDateFormatter, MedicineModel } from '../../../../types';
 import { Separator } from './Separator';
 import "./Style.css";
 
 export type MedicineProps = {
-    medicine: MedicineModel
+    dateFormatter: IDateFormatter;
+    medicine: MedicineModel;
 };
 
 export class Medicine extends React.Component<MedicineProps> {
@@ -20,9 +21,9 @@ export class Medicine extends React.Component<MedicineProps> {
                     <Separator />
                     <div className='column'>{this.props.medicine.manufacturer}</div>
                     <Separator />
-                    <div className='column'>{new Date(this.props.medicine.manufacturingDate).toDateString()}</div>
+                    <div className='column'>{this.props.dateFormatter.getDateForTable(this.props.medicine.manufacturingDate)}</div>
                     <Separator />
-                    <div className='column'>{new Date(this.props.medicine.expirationDate).toDateString()}</div>
+                    <div className='column'>{this.props.dateFormatter.getDateForTable(this.props.medicine.expirationDate)}</div>
                     <Separator />
                     <div className='column'>{this.props.medicine.price}</div>
                     <Separator />

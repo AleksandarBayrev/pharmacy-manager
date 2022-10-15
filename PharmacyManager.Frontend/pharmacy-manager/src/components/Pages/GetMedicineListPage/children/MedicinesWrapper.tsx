@@ -1,11 +1,12 @@
 import React from "react";
-import { MedicineModel } from "../../../../types";
+import { IDateFormatter, MedicineModel } from "../../../../types";
 import { Medicine } from "./Medicine";
 import { Separator } from "./Separator";
 import "./Style.css";
 
 
 export type MedicinesWrapperProps = {
+    dateFormatter: IDateFormatter;
     setPage: (page: number) => void;
     medicines: MedicineModel[];
     pages: number;
@@ -34,7 +35,7 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                     <div className='row-header'>Quantity</div>
                 </div>
                 <div className="Medicines-list">
-                    {this.props.medicines.map(medicine => <Medicine medicine={medicine} />)}
+                    {this.props.medicines.map(medicine => <Medicine medicine={medicine} dateFormatter={this.props.dateFormatter} />)}
                 </div>
                 <div className="Pagination">
                     {this.renderPages(this.props.setPage, this.props.currentPage, this.props.pages)}

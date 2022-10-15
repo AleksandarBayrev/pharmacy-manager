@@ -1,6 +1,7 @@
 import React from 'react';
 import { IBackendService, IDateFormatter, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
+import { ItemsPerPage } from './children/ItemsPerPage';
 import { LoadingData } from './children/LoadingData';
 import { MedicinesWrapper } from './children/MedicinesWrapper';
 
@@ -130,6 +131,14 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     });
   }
 
+  private getItemsPerPageComponent() {
+    const options: number[] = [10, 15, 20, 50, 100, 500];
+    return <ItemsPerPage 
+      options={options}
+      onChangeHandler={(e) => this.updateRequest({ itemsPerPage: parseInt(e.target.value) })}
+      selectedOption={this.state.request.itemsPerPage} />;
+  }
+
   render() {
     return (
       <div className='App-page'>
@@ -152,7 +161,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Items Per Page</div>
-            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ itemsPerPage: parseInt(e.target.value) })} placeholder={'Items Per Page'} value={this.state.request.itemsPerPage} /></div>
+            <div className='column'>{this.getItemsPerPageComponent()}</div>
           </div>
         </div>
         <div className='App-page-row-setting'>

@@ -5,7 +5,7 @@ using PharmacyManager.API.MediatRFeatures;
 
 namespace PharmacyManager.API.Controllers
 {
-    [Route("api/settings")]
+    [Route("/api/settings")]
     [ApiController]
     public class SettingsController : ControllerBase
     {

@@ -22,10 +22,11 @@ test('matches snapshot', () => {
       getInitialPageCalculations: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
-      getDateForInput: jest.fn()
+      getDateForInput: jest.fn(),
+      getDateForTable: jest.fn()
     };
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} dateFormatter={dateFormatter} />);
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={backendService} dateFormatter={dateFormatter} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {

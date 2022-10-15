@@ -10,7 +10,15 @@ import { IBackendService, IDateFormatter, IPageRenderer } from "../types";
 export const setupPageRenderer = (DI: DependencyInjection) => {
     const pageRenderer = DI.getService<IPageRenderer>("IPageRenderer");
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={DI.getService<IBackendService>("IBackendService")} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={DI.getService<IBackendService>("IBackendService")} dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")} />);
-    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={DI.getService<IBackendService>("IBackendService")} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage
+        backendService={DI.getService<IBackendService>("IBackendService")}
+        dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")} />
+    );
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage
+        backendService={DI.getService<IBackendService>("IBackendService")}
+        dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")} />
+    );
+    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage
+        backendService={DI.getService<IBackendService>("IBackendService")} />
+    );
 }

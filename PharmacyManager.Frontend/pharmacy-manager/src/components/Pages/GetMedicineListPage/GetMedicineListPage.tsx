@@ -1,11 +1,12 @@
 import React from 'react';
-import { IBackendService, MedicineModel, MedicineRequest } from '../../../types';
+import { IBackendService, IDateFormatter, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
 import { LoadingData } from './children/LoadingData';
 import { MedicinesWrapper } from './children/MedicinesWrapper';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
+  dateFormatter: IDateFormatter;
 }
 
 export type GetMedicineListPageState = {

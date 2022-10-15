@@ -5,6 +5,10 @@ export class DateFormatter implements IDateFormatter {
         return `${date.getFullYear()}-${this.getMonth(date)}-${this.getDateOfMonth(date)}`;
     }
 
+    public getDateForTable = (date: Date): string => {
+        return `${this.getDateOfMonth(date)}.${this.getMonth(date)}.${date.getFullYear()}`;
+    }
+
     private getMonth(date: Date): string {
         const month = date.getMonth() + 1;
         return month < 10 ? `0${month}` : month.toString();

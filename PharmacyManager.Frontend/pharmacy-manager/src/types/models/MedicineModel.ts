@@ -1,5 +1,5 @@
 export type MedicineModel = {
-    id: number;
+    id: string;
     manufacturer: string;
     name: string;
     description: string;

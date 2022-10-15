@@ -43,6 +43,10 @@ namespace PharmacyManager.API.Extensions
                 );
             });
             #endregion
+
+            #region Instantiate ID Generator
+            services.AddSingleton<IIdGenerator, IdGenerator>();
+            #endregion
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -57,6 +61,7 @@ namespace PharmacyManager.API.Extensions
             services.AddSingleton<IMedicinesProvider<MedicineRequest, MedicineModel>>((sp) =>
             {
                 var appConfig = sp.GetService<IApplicationConfiguration>();
+                var idGenerator = sp.GetService<IIdGenerator>();
                 var logger = sp.GetService<PharmacyManager.API.Interfaces.Base.ILogger>();
 
                 if (appConfig == null)
@@ -69,9 +74,14 @@ namespace PharmacyManager.API.Extensions
                     throw new NullReferenceException("Application logger not available!");
                 }
 
+                if (idGenerator == null)
+                {
+                    throw new NullReferenceException("IdGenerator not available!");
+                }
+
                 if (appConfig.UseMocks)
                 {
-                    return new MedicinesProviderMockInstance(logger);
+                    return new MedicinesProviderMockInstance(logger, idGenerator);
                 }
                 return new MedicinesProvider();
             });

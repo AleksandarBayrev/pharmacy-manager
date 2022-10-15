@@ -50,6 +50,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       pages: pageCalculations.pages,
       showPageCount: true
     });
+    await this.getMedicines(this.state.request);
   }
 
   private async getMedicines(request: MedicineRequest) {
@@ -76,11 +77,17 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         ...request
       }
     });
+    setTimeout(() => {
+      this.getMedicines(this.state.request);
+    });
   }
 
   private resetRequestToDefaults() {
     this.setState({
       request: { ...this.defaultRequest }
+    });
+    setTimeout(() => {
+      this.getMedicines(this.state.request);
     });
   }
 
@@ -103,13 +110,6 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       return;
     }
     this.updateRequest({page});
-    setTimeout(async () => {
-      const result = await this.backendService.getAllMedicines(this.state.request);
-      this.setState({
-        medicines: result.medicines,
-        pages: result.pages
-      });
-    });
   }
 
   private renderLoaderOrData() {
@@ -122,13 +122,6 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
 
   private renderPageCountText() {
     return this.state.showPageCount ? `Avaliable pages: ${this.state.pages}` : 'Loading page count...';
-  }
-
-  private clearSearchResults() {
-    this.setState({
-      medicines: [],
-      isInitialRequestMade: false
-    });
   }
 
   private getItemsPerPageComponent() {
@@ -193,9 +186,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><button onClick={async () => await this.getMedicines(this.state.request)} disabled={this.state.loadingData}>Get medicines</button></div>
             <div className='column'><button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button></div>
-            <div className='column'><button onClick={() => this.clearSearchResults()} disabled={this.state.loadingData}>Clear results</button></div>
           </div>
         </div>
         <div className='App-page-row-setting'>

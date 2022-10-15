@@ -46,6 +46,7 @@ namespace PharmacyManager.API.Extensions
 
             #region Instantiate ID Generator
             services.AddSingleton<IIdGenerator, IdGenerator>();
+            services.AddSingleton<IPriceParser, PriceParser>();
             #endregion
         }
 

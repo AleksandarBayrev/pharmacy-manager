@@ -23,13 +23,16 @@ namespace PharmacyManager.API.MediatRFeatures
         {
             private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
             private readonly IIdGenerator idGenerator;
+            private readonly IPriceParser priceParser;
 
             public AddMedicineFeatureQueryHandler(
                 IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
-                IIdGenerator idGenerator)
+                IIdGenerator idGenerator,
+                IPriceParser priceParser)
             {
                 this.medicinesProvider = medicinesProvider;
                 this.idGenerator = idGenerator;
+                this.priceParser = priceParser;
             }
 
             public async Task<MedicineModel> Handle(AddMedicineFeatureQuery request, CancellationToken cancellationToken)
@@ -42,7 +45,7 @@ namespace PharmacyManager.API.MediatRFeatures
                     Description = request.Description,
                     ManufacturingDate = request.ManufacturingDate,
                     ExpirationDate = request.ExpirationDate,
-                    Price = Math.Round(decimal.Parse(request.Price, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero),
+                    Price = this.priceParser.Parse(request.Price),
                     Quantity = request.Quantity
                 };
                 await this.medicinesProvider.AddMedicine(medicine);

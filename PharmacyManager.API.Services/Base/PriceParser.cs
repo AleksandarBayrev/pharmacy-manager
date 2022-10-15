@@ -1,0 +1,21 @@
+﻿using PharmacyManager.API.Interfaces.Base;
+using System.Globalization;
+
+namespace PharmacyManager.API.Services.Base
+{
+    public class PriceParser : IPriceParser
+    {
+        private readonly ILogger logger;
+
+        public PriceParser(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+        public decimal Parse(string priceAsString)
+        {
+            this.logger.Log(nameof(PriceParser), $"Parsing price as string {priceAsString} to decimal");
+            return Math.Round(decimal.Parse(priceAsString, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero);
+        }
+    }
+}

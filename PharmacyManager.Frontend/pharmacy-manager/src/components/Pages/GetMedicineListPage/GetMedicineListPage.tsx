@@ -22,6 +22,7 @@ export type GetMedicineListPageState = {
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
   private readonly backendService: IBackendService;
   private readonly loadingTimeout: number = 1000;
+  private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
   private readonly defaultRequest: MedicineRequest = {
     availableOnly: false,
     notExpired: false,
@@ -77,9 +78,10 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         ...request
       }
     });
-    setTimeout(() => {
+    clearTimeout(this.loadDataTimeout);
+    this.loadDataTimeout = setTimeout(() => {
       this.getMedicines(this.state.request);
-    });
+    }, 500);
   }
 
   private resetRequestToDefaults() {

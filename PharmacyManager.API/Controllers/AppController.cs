@@ -34,7 +34,7 @@ namespace PharmacyManager.API.Controllers
             await logger.Log(this.loggerContext, "Rendering App UI");
             return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.GetFrontendHTMLFeatureQuery
             {
-                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
+                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.GetWebhostAbsolutePathFeatureQuery())
             }), this.contentType);
         }
 
@@ -44,7 +44,7 @@ namespace PharmacyManager.API.Controllers
             await logger.Log(this.loggerContext, "Reloading App UI");
             return await mediator.Send(new GetFrontendHTMLReloadFeature.GetFrontendHTMLReloadFeatureQuery
             {
-                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.Query())
+                Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.GetWebhostAbsolutePathFeatureQuery())
             });
         }
     }

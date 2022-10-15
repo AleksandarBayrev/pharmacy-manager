@@ -5,20 +5,20 @@ namespace PharmacyManager.API.Features
 {
     public class GetWebhostAbsolutePathFeature
     {
-        public class Query : IRequest<string> { }
-        public class QueryHandler : IRequestHandler<Query, string>
+        public class GetWebhostAbsolutePathFeatureQuery : IRequest<string> { }
+        public class GetWebhostAbsolutePathFeatureQueryHandler : IRequestHandler<GetWebhostAbsolutePathFeatureQuery, string>
         {
             private readonly IWebHostEnvironment webHostEnvironment;
             private readonly IApplicationConfiguration applicationConfiguration;
 
-            public QueryHandler(
+            public GetWebhostAbsolutePathFeatureQueryHandler(
                 IWebHostEnvironment webHostEnvironment,
                 IApplicationConfiguration applicationConfiguration)
             {
                 this.webHostEnvironment = webHostEnvironment;
                 this.applicationConfiguration = applicationConfiguration;
             }
-            public Task<string> Handle(Query request, CancellationToken cancellationToken)
+            public Task<string> Handle(GetWebhostAbsolutePathFeatureQuery request, CancellationToken cancellationToken)
             {
                 return Task.FromResult(
                     Path.Combine(

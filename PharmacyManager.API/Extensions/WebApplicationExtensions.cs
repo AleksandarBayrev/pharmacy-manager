@@ -27,19 +27,23 @@ namespace PharmacyManager.API.Extensions
                 RequestPath = "/static"
             });
             app.UseAuthorization();
-
-
+            app.AddFourOhFour();
             app.MapControllers();
+            return app;
+        }
 
-            #region Handle 404 redirection
+        #region Handle 404 redirection
+        private static WebApplication AddFourOhFour(this WebApplication app)
+        {
             app.Use(async (HttpContext httpContext, RequestDelegate next) => {
                 await next(httpContext);
-                if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound) {
+                if (httpContext.Response.StatusCode == StatusCodes.Status404NotFound)
+                {
                     httpContext.Response.Redirect("/404");
                 }
             });
-            #endregion
             return app;
         }
+        #endregion
     }
 }

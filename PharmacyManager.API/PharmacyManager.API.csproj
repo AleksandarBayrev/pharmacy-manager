@@ -17,7 +17,7 @@
     <ProjectReference Include="..\PharmacyManager.API.MediatRFeatures\PharmacyManager.API.MediatRFeatures.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Models\PharmacyManager.API.Models.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Services\PharmacyManager.API.Services.csproj" />
-	<Content Include="Frontend\**\*" />
+	<Content Include="Frontend\**\*" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

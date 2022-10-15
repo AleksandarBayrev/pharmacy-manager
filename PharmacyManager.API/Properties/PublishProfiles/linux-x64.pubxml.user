@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>D:\GIT\pharmacy-manager\PharmacyManager.API\bin\Release\net6.0\publish\</_PublishTargetUrl>
-    <History>True|2022-10-15T10:44:11.6362682Z;</History>
+    <History>True|2022-10-15T10:54:07.4009718Z;True|2022-10-15T13:53:08.6972267+03:00;True|2022-10-15T13:44:11.6362682+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

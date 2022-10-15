@@ -93,6 +93,30 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             </div>
                         </div>
                     </div>
+                    <div className="medicine-price">
+                        <div className="row">
+                            <div className="column">Price</div>
+                            <div className="column">
+                                <input
+                                    type="number"
+                                    onChange={(e) => this.setMedicine({ price: e.target.value.toString() })}
+                                    value={this.state.request.price}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="medicine-quantity">
+                        <div className="row">
+                            <div className="column">Quantity</div>
+                            <div className="column">
+                                <input
+                                    type="number"
+                                    onChange={(e) => this.setMedicine({ quantity: e.target.value.toString() })}
+                                    value={this.state.request.quantity}
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <div className="submit-medicine">
                         <div className="row">
                             <div className="column">
@@ -194,7 +218,9 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
             //expirationDate: new Date(0,0,0),
             description: "",
             manufacturingDate: new Date(),
-            expirationDate: new Date()
+            expirationDate: new Date(),
+            price: "",
+            quantity: ""
             //price: 0,
             //quantity: 0
         }

@@ -27,7 +27,7 @@ namespace PharmacyManager.API.Services.Medicines
                     Manufacturer = "Paracetamol",
                     ManufacturingDate = new DateTime(2020, 1, 1),
                     ExpirationDate = new DateTime(2022, 1, 1),
-                    Price = 2.5,
+                    Price = 2.5m,
                     Quantity = 100
                 },
                 new MedicineModel
@@ -38,7 +38,7 @@ namespace PharmacyManager.API.Services.Medicines
                     Manufacturer = "Bayer",
                     ManufacturingDate = new DateTime(2020, 1, 1),
                     ExpirationDate = new DateTime(2022, 1, 1),
-                    Price = 2.5,
+                    Price = 2.5m,
                     Quantity = 100
                 },
                 new MedicineModel
@@ -49,7 +49,7 @@ namespace PharmacyManager.API.Services.Medicines
                     Manufacturer = "Analgin",
                     ManufacturingDate = new DateTime(2020, 1, 1),
                     ExpirationDate = new DateTime(2100, 1, 1),
-                    Price = 2.99,
+                    Price = 2.99m,
                     Quantity = 50
                 },
                 new MedicineModel
@@ -60,14 +60,14 @@ namespace PharmacyManager.API.Services.Medicines
                     Manufacturer = "Head",
                     ManufacturingDate = new DateTime(2020, 1, 1),
                     ExpirationDate = new DateTime(2100, 1, 1),
-                    Price = 2.99,
+                    Price = 2.99m,
                     Quantity = 0
                 }
             };
 
             for (var i = 0; i < 100000; i++)
             {
-                this._medicines.Add(new MedicineModel { Id = this.idGenerator.GenerateId(), Name = "Paracetamol " + i, Manufacturer = "Bayer " + i, Description = "Paracetamol", ExpirationDate = DateTime.Now, ManufacturingDate = new DateTime(2020, 1, 1), Price = 1.99, Quantity = new Random().Next(0, 500) }); 
+                this._medicines.Add(new MedicineModel { Id = this.idGenerator.GenerateId(), Name = "Paracetamol " + i, Manufacturer = "Bayer " + i, Description = "Paracetamol", ExpirationDate = DateTime.Now, ManufacturingDate = new DateTime(2020, 1, 1), Price = 1.99m, Quantity = new Random().Next(0, 500) }); 
             }
         }
 

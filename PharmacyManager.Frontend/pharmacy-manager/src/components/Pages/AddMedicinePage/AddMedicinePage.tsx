@@ -175,9 +175,12 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
             this.setState({
                 isAddingMedicine: true
             });
-            await this.backendService.addMedicine({
+            var result = await this.backendService.addMedicine({
                 ...this.state.request
             });
+            if (!result) {
+                throw new Error("Medicine not added!");
+            }
             this.setState({
                 isAddingMedicine: false,
                 isRequestSuccessful: true
@@ -185,6 +188,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
             this.resetMessage();
         } catch (_) {
             this.setState({
+                isAddingMedicine: false,
                 isRequestSuccessful: false
             });
             this.resetMessage();

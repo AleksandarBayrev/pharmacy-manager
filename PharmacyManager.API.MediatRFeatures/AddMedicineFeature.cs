@@ -2,6 +2,7 @@
 using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
+using System.Globalization;
 
 namespace PharmacyManager.API.MediatRFeatures
 {
@@ -41,7 +42,7 @@ namespace PharmacyManager.API.MediatRFeatures
                     Description = request.Description,
                     ManufacturingDate = request.ManufacturingDate,
                     ExpirationDate = request.ExpirationDate,
-                    Price = decimal.Parse(request.Price),
+                    Price = Math.Round(decimal.Parse(request.Price, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero),
                     Quantity = request.Quantity
                 };
                 await this.medicinesProvider.AddMedicine(medicine);

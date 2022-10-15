@@ -21,9 +21,9 @@ export class Medicine extends React.Component<MedicineProps> {
                     <Separator />
                     <div className='column'>{this.props.medicine.manufacturer}</div>
                     <Separator />
-                    <div className='column'>{this.props.dateFormatter.getDateForTable(this.props.medicine.manufacturingDate)}</div>
+                    <div className='column'>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.manufacturingDate))}</div>
                     <Separator />
-                    <div className='column'>{this.props.dateFormatter.getDateForTable(this.props.medicine.expirationDate)}</div>
+                    <div className='column'>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.expirationDate))}</div>
                     <Separator />
                     <div className='column'>{this.props.medicine.price}</div>
                     <Separator />

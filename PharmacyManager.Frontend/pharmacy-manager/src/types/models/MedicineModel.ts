@@ -3,8 +3,8 @@ export type MedicineModel = {
     manufacturer: string;
     name: string;
     description: string;
-    manufacturingDate: Date;
-    expirationDate: Date;
+    manufacturingDate: string;
+    expirationDate: string;
     price: number;
     quantity: number;
 }

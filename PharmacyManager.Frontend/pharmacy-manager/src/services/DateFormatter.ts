@@ -1,6 +1,7 @@
+import { enhanceClass } from "../base/enhanceClass";
 import { IDateFormatter } from "../types";
 
-export class DateFormatter implements IDateFormatter {
+class DateFormatter implements IDateFormatter {
     public getDateForInput = (date: Date): string => {
         return `${date.getFullYear()}-${this.getMonth(date)}-${this.getDateOfMonth(date)}`;
     }
@@ -19,3 +20,7 @@ export class DateFormatter implements IDateFormatter {
         return dateOfMonth < 10 ? `0${dateOfMonth}` : `${dateOfMonth}`;
     }
 }
+
+enhanceClass(DateFormatter, "DateFormatter");
+
+export { DateFormatter }

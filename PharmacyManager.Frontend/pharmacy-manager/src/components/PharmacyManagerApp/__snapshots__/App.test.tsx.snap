@@ -42,7 +42,15 @@ Object {
           <div
             class="App-page-container"
           >
-            Select one of the actions from the menu above
+            <div
+              class="App-page"
+            >
+              <div
+                class="App-page-header"
+              >
+                Select one of the actions from the menu above
+              </div>
+            </div>
           </div>
         </header>
       </div>
@@ -86,7 +94,15 @@ Object {
         <div
           class="App-page-container"
         >
-          Select one of the actions from the menu above
+          <div
+            class="App-page"
+          >
+            <div
+              class="App-page-header"
+            >
+              Select one of the actions from the menu above
+            </div>
+          </div>
         </div>
       </header>
     </div>

@@ -12,6 +12,10 @@ export class DependencyInjection {
         this.serviceDescriptors = new Map();
     }
 
+    public hasService(baseType: string): boolean {
+        return this.serviceDescriptors.has(baseType) && this.services.has(baseType);
+    }
+
     public static getInstance(logger: DILogger): DependencyInjection {
         if (DependencyInjection.instance === null) {
             DependencyInjection.instance = new DependencyInjection(logger);

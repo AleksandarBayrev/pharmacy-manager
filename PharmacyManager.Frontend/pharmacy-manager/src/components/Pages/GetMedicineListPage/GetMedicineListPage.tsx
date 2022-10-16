@@ -1,9 +1,6 @@
 import React from 'react';
 import { IBackendService, IDateFormatter, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
-import { ItemsPerPage } from './children/ItemsPerPage';
-import { LoadingData } from './children/LoadingData';
-import { MedicinesWrapper } from './children/MedicinesWrapper';
 import { getItemsPerPageComponent, renderLoaderOrData } from './RenderHelpers';
 
 export type GetMedicineListPageProps = {

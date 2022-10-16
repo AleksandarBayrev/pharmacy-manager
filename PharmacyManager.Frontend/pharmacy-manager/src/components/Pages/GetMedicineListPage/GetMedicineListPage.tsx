@@ -1,9 +1,7 @@
 import React from 'react';
 import { IBackendService, IDateFormatter, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
-import { ItemsPerPage } from './children/ItemsPerPage';
-import { LoadingData } from './children/LoadingData';
-import { MedicinesWrapper } from './children/MedicinesWrapper';
+import { getItemsPerPageComponent, renderLoaderOrData, renderPageCountText } from './RenderHelpers';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
@@ -22,6 +20,8 @@ export type GetMedicineListPageState = {
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
   private readonly backendService: IBackendService;
   private readonly loadingTimeout: number = 1000;
+  private updateInterval: NodeJS.Timeout | undefined = undefined;
+  private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
   private readonly defaultRequest: MedicineRequest = {
     availableOnly: false,
     notExpired: false,
@@ -50,15 +50,25 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       pages: pageCalculations.pages,
       showPageCount: true
     });
+    await this.getMedicines(this.state.request, true);
+    this.updateCurrentRequest();
   }
 
-  private async getMedicines(request: MedicineRequest) {
-    this.setState({
-      loadingData: true,
-      isInitialRequestMade: true,
-      showPageCount: false
-    });
+  componentWillUnmount(): void {
+    clearTimeout(this.loadDataTimeout);
+    clearInterval(this.updateInterval);
+  }
+
+  private async getMedicines(request: MedicineRequest, useLoadingTimeout: boolean) {
+    if (useLoadingTimeout) {
+      this.setState({
+        loadingData: true,
+        isInitialRequestMade: true,
+        showPageCount: false
+      });
+    }
     const response = await this.backendService.getAllMedicines(request);
+    const timeout = useLoadingTimeout ? this.loadingTimeout : 0;
     setTimeout(() => {
       this.setState({
         medicines: response.medicines,
@@ -66,15 +76,25 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         loadingData: false,
         showPageCount: true
       });
-    }, this.loadingTimeout);
+    }, timeout);
   }
 
-  private updateRequest(request: Partial<MedicineRequest>) {
+  private async updateRequestAndFetch(request: Partial<MedicineRequest>, shouldWait: boolean) {
     this.setState({
       request: {
         ...this.state.request,
         ...request
       }
+    });
+    if (shouldWait) {
+      clearTimeout(this.loadDataTimeout);
+      this.loadDataTimeout = setTimeout(() => {
+        this.getMedicines(this.state.request, true);
+      }, 500);
+      return;
+    }
+    setTimeout(() => {
+      this.getMedicines(this.state.request, true);
     });
   }
 
@@ -82,82 +102,72 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     this.setState({
       request: { ...this.defaultRequest }
     });
-  }
-
-  private renderMedicines() {
-    return (
-      !this.state.isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
-      :
-      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : 
-      <MedicinesWrapper
-        dateFormatter={this.props.dateFormatter}
-        setPage={this.setPageCallback}
-        medicines={this.state.medicines}
-        pages={this.state.pages}
-        currentPage={this.state.request.page} />
-    )
+    setTimeout(() => {
+      this.getMedicines(this.state.request, true)
+        .then(() => {
+          this.resetUpdateInterval();
+        });
+    });
   }
 
   private setPageCallback = (page: number) => {
     if (page === this.state.request.page) {
       return;
     }
-    this.updateRequest({page});
-    setTimeout(async () => {
-      const result = await this.backendService.getAllMedicines(this.state.request);
-      this.setState({
-        medicines: result.medicines,
-        pages: result.pages
+    this.updateRequestAndFetch({ page }, false)
+      .then(() => {
+        this.resetUpdateInterval();
       });
-    });
-  }
-
-  private renderLoaderOrData() {
-    return (
-      this.state.loadingData ? <LoadingData rerenderDotsInMs={100} />
-      :
-      this.renderMedicines()
-    )
-  }
-
-  private renderPageCountText() {
-    return this.state.showPageCount ? `Avaliable pages: ${this.state.pages}` : 'Loading page count...';
-  }
-
-  private clearSearchResults() {
-    this.setState({
-      medicines: [],
-      isInitialRequestMade: false
-    });
-  }
-
-  private getItemsPerPageComponent() {
-    const options: number[] = [10, 15, 20, 50, 100, 500];
-    return <ItemsPerPage 
-      options={options}
-      onChangeHandler={this.onSelectChange}
-      selectedOption={this.state.request.itemsPerPage} />;
-  }
-
-  private refetchPageCalculations = () => {
-    setTimeout(async () => {
-      const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
-      this.setState({
-        pages: pageCalculations.pages
-      });
-    });
   }
 
   private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.updateRequest({ itemsPerPage: parseInt(e.target.value) });
-    this.refetchPageCalculations();
+    this.updateRequestAndFetch({ itemsPerPage: parseInt(e.target.value) }, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
   }
 
   private onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "availableOnly" | "notExpired") => {
-    const updatedProp: Partial<MedicineRequest> = {}
+    const updatedProp: Partial<MedicineRequest> = {};
     updatedProp[prop] = e.target.checked;
-    this.updateRequest(updatedProp);
-    this.refetchPageCalculations();
+    this.updateRequestAndFetch(updatedProp, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private onTextChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "manufacturer") => {
+    const updatedProp: Partial<MedicineRequest> = {};
+    updatedProp[prop] = e.target.value;
+    this.updateRequestAndFetch(updatedProp, true)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private onPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedProp: Partial<MedicineRequest> = {};
+    updatedProp["page"] = parseInt(e.target.value);
+    this.updateRequestAndFetch(updatedProp, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private updateCurrentRequest = () => {
+    if (!this.updateInterval) {
+      this.updateInterval = setInterval(() => {
+        this.getMedicines(this.state.request, false);
+      }, 1000);
+    }
+  }
+
+  private resetUpdateInterval = () => {
+    setTimeout(() => {
+      clearInterval(this.updateInterval);
+      this.updateInterval = undefined;
+      this.updateCurrentRequest();
+    });
   }
 
   render() {
@@ -165,46 +175,44 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       <div className='App-page'>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
+            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
             <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
             <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Page</div>
-            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ page: parseInt(e.target.value) })} placeholder={'Page'} value={this.state.request.page} /></div>
+            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} /></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Items Per Page</div>
-            <div className='column'>{this.getItemsPerPageComponent()}</div>
+            <div className='column'>{getItemsPerPageComponent(this.onSelectChange, this.state.request.itemsPerPage, this.state.loadingData)}</div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Manufacturer</div>
-            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ manufacturer: e.target.value })} placeholder={'Manufacturer'} value={this.state.request.manufacturer} /></div>
+            <div className='column'><input type="text" onChange={(e) => this.onTextChange(e, "manufacturer")} placeholder={'Manufacturer'} value={this.state.request.manufacturer} disabled={this.state.loadingData} /></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><button onClick={async () => await this.getMedicines(this.state.request)} disabled={this.state.loadingData}>Get medicines</button></div>
-            <div className='column'><button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button></div>
-            <div className='column'><button onClick={() => this.clearSearchResults()} disabled={this.state.loadingData}>Clear results</button></div>
+            <div className='column'><button onClick={this.resetRequestToDefaults} disabled={this.state.loadingData}>Reset to default request</button></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'>{this.renderPageCountText()}</div>
+            <div className='column'>{renderPageCountText(this.state.showPageCount, this.state.pages)}</div>
           </div>
         </div>
         <div className='App-page-results'>
-          {this.renderLoaderOrData()}
+          {renderLoaderOrData(this.state.loadingData, this.state.isInitialRequestMade, this.state.medicines, this.props.dateFormatter, this.setPageCallback, this.state.pages, this.state.request.page)}
         </div>
       </div>
     )

@@ -1,4 +1,5 @@
 import { DependencyInjection } from "./DependencyInjection";
+import { enhanceClass } from "./enhanceClass";
 
 describe("DependencyInjection", () => {
     it("getInstance returns instance", () => {
@@ -9,12 +10,14 @@ describe("DependencyInjection", () => {
     it("registerService registers an instance", () => {
         interface IMyLogger {};
         class MyLogger implements IMyLogger {};
+        enhanceClass(MyLogger, "MyLogger");
         DependencyInjection.getInstance(console.log).registerService<IMyLogger>("IMyLogger", "singleton", MyLogger, []);
         expect(DependencyInjection.getInstance(console.log).hasService("IMyLogger"));
     });
     it("registerService with singleton returns the same instance", () => {
         interface IMyNewLogger {};
         class MyLogger implements IMyNewLogger {};
+        enhanceClass(MyLogger, "MyLogger");
         DependencyInjection.getInstance(console.log).registerService<IMyNewLogger>("IMyNewLogger", "singleton", MyLogger, []);
         const instanceOne = DependencyInjection.getInstance(console.log).getService<IMyNewLogger>("IMyNewLogger");
         const instanceTwo = DependencyInjection.getInstance(console.log).getService<IMyNewLogger>("IMyNewLogger");
@@ -28,6 +31,7 @@ describe("DependencyInjection", () => {
                 this.name = name;
             }
         };
+        enhanceClass(MyLogger, "MyLogger");
         DependencyInjection.getInstance(console.log).registerService<IMyNewNewLogger>("IMyNewNewLogger", "transient", MyLogger, ["asd"]);
         const instanceOne = DependencyInjection.getInstance(console.log).getService<IMyNewNewLogger>("IMyNewNewLogger");
         const instanceTwo = DependencyInjection.getInstance(console.log).getService<IMyNewNewLogger>("IMyNewNewLogger");

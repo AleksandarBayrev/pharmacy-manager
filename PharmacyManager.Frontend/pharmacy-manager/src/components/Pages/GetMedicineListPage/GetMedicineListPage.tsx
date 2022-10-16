@@ -176,17 +176,20 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
-            <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
+            <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label>
+          </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
-            <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
+            <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label>
+          </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Page</div>
-            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} /></div>
+            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} />
+            </div>
           </div>
         </div>
         <div className='App-page-row-setting'>

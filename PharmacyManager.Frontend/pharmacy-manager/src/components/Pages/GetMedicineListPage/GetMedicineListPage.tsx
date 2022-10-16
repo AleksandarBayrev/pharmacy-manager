@@ -4,6 +4,7 @@ import "../../Shared/Styles.css";
 import { ItemsPerPage } from './children/ItemsPerPage';
 import { LoadingData } from './children/LoadingData';
 import { MedicinesWrapper } from './children/MedicinesWrapper';
+import { getItemsPerPageComponent, renderLoaderOrData } from './RenderHelpers';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
@@ -112,20 +113,6 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     });
   }
 
-  private renderMedicines() {
-    return (
-      !this.state.isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
-      :
-      !this.state.medicines.length ? <div className='no-results'>No results for given query</div> : 
-      <MedicinesWrapper
-        dateFormatter={this.props.dateFormatter}
-        setPage={this.setPageCallback}
-        medicines={this.state.medicines}
-        pages={this.state.pages}
-        currentPage={this.state.request.page} />
-    )
-  }
-
   private setPageCallback = (page: number) => {
     if (page === this.state.request.page) {
       return;
@@ -136,26 +123,10 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       });
   }
 
-  private renderLoaderOrData() {
-    return (
-      this.state.loadingData ? <LoadingData rerenderDotsInMs={100} />
-      :
-      this.renderMedicines()
-    )
-  }
-
   private renderPageCountText() {
     return this.state.showPageCount ? `Avaliable pages: ${this.state.pages}` : 'Loading page count...';
   }
 
-  private getItemsPerPageComponent() {
-    const options: number[] = [10, 15, 20, 50, 100, 500];
-    return <ItemsPerPage 
-      options={options}
-      onChangeHandler={this.onSelectChange}
-      selectedOption={this.state.request.itemsPerPage}
-      shouldDisable={this.state.loadingData} />;
-  }
 
   private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.updateRequestAndFetch({ itemsPerPage: parseInt(e.target.value) }, false)
@@ -229,7 +200,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Items Per Page</div>
-            <div className='column'>{this.getItemsPerPageComponent()}</div>
+            <div className='column'>{getItemsPerPageComponent(this.onSelectChange, this.state.request.itemsPerPage, this.state.loadingData)}</div>
           </div>
         </div>
         <div className='App-page-row-setting'>
@@ -249,7 +220,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
           </div>
         </div>
         <div className='App-page-results'>
-          {this.renderLoaderOrData()}
+          {renderLoaderOrData(this.state.loadingData, this.state.isInitialRequestMade, this.state.medicines, this.props.dateFormatter, this.setPageCallback, this.state.pages, this.state.request.page)}
         </div>
       </div>
     )

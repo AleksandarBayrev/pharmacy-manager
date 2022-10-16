@@ -24,7 +24,9 @@ describe("DependencyInjection", () => {
         expect(instanceOne).toBe(instanceTwo);
     });
     it("registerService with transient does not return the same instance", () => {
-        interface IMyNewNewLogger {};
+        interface IMyNewNewLogger {
+            name: string;
+        };
         class MyLogger implements IMyNewNewLogger {
             name: string;
             constructor(name: string) {

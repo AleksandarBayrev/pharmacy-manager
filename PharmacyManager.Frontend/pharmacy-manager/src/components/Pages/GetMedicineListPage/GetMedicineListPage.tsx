@@ -59,6 +59,57 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     clearInterval(this.updateInterval);
   }
 
+  render() {
+    return (
+      <div className='App-page'>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
+            <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
+            <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Page</div>
+            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} />
+            </div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Items Per Page</div>
+            <div className='column'>{getItemsPerPageComponent(this.onSelectChange, this.state.request.itemsPerPage, this.state.loadingData)}</div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>Manufacturer</div>
+            <div className='column'><input type="text" onChange={(e) => this.onTextChange(e, "manufacturer")} placeholder={'Manufacturer'} value={this.state.request.manufacturer} disabled={this.state.loadingData} /></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'><button onClick={this.resetRequestToDefaults} disabled={this.state.loadingData}>Reset to default request</button></div>
+          </div>
+        </div>
+        <div className='App-page-row-setting'>
+          <div className='row'>
+            <div className='column'>{renderPageCountText(this.state.showPageCount, this.state.pages)}</div>
+          </div>
+        </div>
+        <div className='App-page-results'>
+          {renderLoaderOrData(this.state.loadingData, this.state.isInitialRequestMade, this.state.medicines, this.props.dateFormatter, this.setPageCallback, this.state.pages, this.state.request.page)}
+        </div>
+      </div>
+    )
+  }
+
   private async getMedicines(request: MedicineRequest, useLoadingTimeout: boolean) {
     if (useLoadingTimeout) {
       this.setState({
@@ -168,56 +219,5 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       this.updateInterval = undefined;
       this.updateCurrentRequest();
     });
-  }
-
-  render() {
-    return (
-      <div className='App-page'>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
-            <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
-            <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'>Page</div>
-            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} />
-            </div>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'>Items Per Page</div>
-            <div className='column'>{getItemsPerPageComponent(this.onSelectChange, this.state.request.itemsPerPage, this.state.loadingData)}</div>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'>Manufacturer</div>
-            <div className='column'><input type="text" onChange={(e) => this.onTextChange(e, "manufacturer")} placeholder={'Manufacturer'} value={this.state.request.manufacturer} disabled={this.state.loadingData} /></div>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'><button onClick={this.resetRequestToDefaults} disabled={this.state.loadingData}>Reset to default request</button></div>
-          </div>
-        </div>
-        <div className='App-page-row-setting'>
-          <div className='row'>
-            <div className='column'>{renderPageCountText(this.state.showPageCount, this.state.pages)}</div>
-          </div>
-        </div>
-        <div className='App-page-results'>
-          {renderLoaderOrData(this.state.loadingData, this.state.isInitialRequestMade, this.state.medicines, this.props.dateFormatter, this.setPageCallback, this.state.pages, this.state.request.page)}
-        </div>
-      </div>
-    )
   }
 }

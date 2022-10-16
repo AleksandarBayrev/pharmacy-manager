@@ -22,6 +22,7 @@ export type GetMedicineListPageState = {
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps, GetMedicineListPageState> {
   private readonly backendService: IBackendService;
   private readonly loadingTimeout: number = 1000;
+  private updateInterval: NodeJS.Timeout | undefined = undefined;
   private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
   private readonly defaultRequest: MedicineRequest = {
     availableOnly: false,
@@ -51,16 +52,25 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       pages: pageCalculations.pages,
       showPageCount: true
     });
-    await this.getMedicines(this.state.request);
+    await this.getMedicines(this.state.request, true);
+    this.updateCurrentRequest();
   }
 
-  private async getMedicines(request: MedicineRequest) {
-    this.setState({
-      loadingData: true,
-      isInitialRequestMade: true,
-      showPageCount: false
-    });
+  componentWillUnmount(): void {
+    clearTimeout(this.loadDataTimeout);
+    clearInterval(this.updateInterval);
+  }
+
+  private async getMedicines(request: MedicineRequest, useLoadingTimeout: boolean) {
+    if (useLoadingTimeout) {
+      this.setState({
+        loadingData: true,
+        isInitialRequestMade: true,
+        showPageCount: false
+      });
+    }
     const response = await this.backendService.getAllMedicines(request);
+    const timeout = useLoadingTimeout ? this.loadingTimeout : 0;
     setTimeout(() => {
       this.setState({
         medicines: response.medicines,
@@ -68,20 +78,26 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         loadingData: false,
         showPageCount: true
       });
-    }, this.loadingTimeout);
+    }, timeout);
   }
 
-  private updateRequest(request: Partial<MedicineRequest>) {
+  private async updateRequestAndFetch(request: Partial<MedicineRequest>, shouldWait: boolean) {
     this.setState({
       request: {
         ...this.state.request,
         ...request
       }
     });
-    clearTimeout(this.loadDataTimeout);
-    this.loadDataTimeout = setTimeout(() => {
-      this.getMedicines(this.state.request);
-    }, 500);
+    if (shouldWait) {
+      clearTimeout(this.loadDataTimeout);
+      this.loadDataTimeout = setTimeout(() => {
+        this.getMedicines(this.state.request, true);
+      }, 500);
+      return;
+    }
+    setTimeout(() => {
+      this.getMedicines(this.state.request, true);
+    });
   }
 
   private resetRequestToDefaults() {
@@ -89,7 +105,10 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       request: { ...this.defaultRequest }
     });
     setTimeout(() => {
-      this.getMedicines(this.state.request);
+      this.getMedicines(this.state.request, true)
+        .then(() => {
+          this.resetUpdateInterval();
+        });
     });
   }
 
@@ -111,7 +130,10 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     if (page === this.state.request.page) {
       return;
     }
-    this.updateRequest({page});
+    this.updateRequestAndFetch({ page }, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
   }
 
   private renderLoaderOrData() {
@@ -131,28 +153,58 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     return <ItemsPerPage 
       options={options}
       onChangeHandler={this.onSelectChange}
-      selectedOption={this.state.request.itemsPerPage} />;
-  }
-
-  private refetchPageCalculations = () => {
-    setTimeout(async () => {
-      const pageCalculations = await this.backendService.getInitialPageCalculations(this.state.request);
-      this.setState({
-        pages: pageCalculations.pages
-      });
-    });
+      selectedOption={this.state.request.itemsPerPage}
+      shouldDisable={this.state.loadingData} />;
   }
 
   private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.updateRequest({ itemsPerPage: parseInt(e.target.value) });
-    this.refetchPageCalculations();
+    this.updateRequestAndFetch({ itemsPerPage: parseInt(e.target.value) }, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
   }
 
   private onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "availableOnly" | "notExpired") => {
-    const updatedProp: Partial<MedicineRequest> = {}
+    const updatedProp: Partial<MedicineRequest> = {};
     updatedProp[prop] = e.target.checked;
-    this.updateRequest(updatedProp);
-    this.refetchPageCalculations();
+    this.updateRequestAndFetch(updatedProp, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private onTextChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "manufacturer") => {
+    const updatedProp: Partial<MedicineRequest> = {};
+    updatedProp[prop] = e.target.value;
+    this.updateRequestAndFetch(updatedProp, true)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private onPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedProp: Partial<MedicineRequest> = {};
+    updatedProp["page"] = parseInt(e.target.value);
+    this.updateRequestAndFetch(updatedProp, false)
+      .then(() => {
+        this.resetUpdateInterval();
+      });
+  }
+
+  private updateCurrentRequest = () => {
+    if (!this.updateInterval) {
+      this.updateInterval = setInterval(() => {
+        this.getMedicines(this.state.request, false);
+      }, 1000);
+    }
+  }
+
+  private resetUpdateInterval = () => {
+    setTimeout(() => {
+      clearInterval(this.updateInterval);
+      this.updateInterval = undefined;
+      this.updateCurrentRequest();
+    });
   }
 
   render() {
@@ -160,18 +212,18 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       <div className='App-page'>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
+            <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.state.request.availableOnly} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
             <label className='column' htmlFor='only-available-medicines'>Show only available medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
+            <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.state.request.notExpired} disabled={this.state.loadingData} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
             <label className='column' htmlFor='only-not-expired-medicines'>Show only not expired medicines</label></div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Page</div>
-            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ page: parseInt(e.target.value) })} placeholder={'Page'} value={this.state.request.page} /></div>
+            <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.state.request.page} disabled={this.state.loadingData} /></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
@@ -183,12 +235,12 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         <div className='App-page-row-setting'>
           <div className='row'>
             <div className='column'>Manufacturer</div>
-            <div className='column'><input type="text" onChange={(e) => this.updateRequest({ manufacturer: e.target.value })} placeholder={'Manufacturer'} value={this.state.request.manufacturer} /></div>
+            <div className='column'><input type="text" onChange={(e) => this.onTextChange(e, "manufacturer")} placeholder={'Manufacturer'} value={this.state.request.manufacturer} disabled={this.state.loadingData} /></div>
           </div>
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'><button onClick={() => this.resetRequestToDefaults()} disabled={this.state.loadingData}>Reset to default request</button></div>
+            <div className='column'><button onClick={this.resetRequestToDefaults} disabled={this.state.loadingData}>Reset to default request</button></div>
           </div>
         </div>
         <div className='App-page-row-setting'>

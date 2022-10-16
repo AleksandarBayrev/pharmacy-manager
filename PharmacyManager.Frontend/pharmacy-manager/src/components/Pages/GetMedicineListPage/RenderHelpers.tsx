@@ -52,10 +52,14 @@ export function getItemsPerPageComponent(
     itemsPerPage: number,
     loadingData: boolean
 ) {
-  const options: number[] = [10, 15, 20, 50, 100, 500];
-  return <ItemsPerPage 
-    options={options}
-    onChangeHandler={onSelectChange}
-    selectedOption={itemsPerPage}
-    shouldDisable={loadingData} />;
+    const options: number[] = [10, 15, 20, 50, 100, 500];
+    return <ItemsPerPage
+        options={options}
+        onChangeHandler={onSelectChange}
+        selectedOption={itemsPerPage}
+        shouldDisable={loadingData} />;
+}
+
+export function renderPageCountText(showPageCount: boolean, pages: number) {
+    return showPageCount ? `Avaliable pages: ${pages}` : 'Loading page count...';
 }

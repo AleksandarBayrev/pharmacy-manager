@@ -1,7 +1,7 @@
 import React from 'react';
 import { IBackendService, IDateFormatter, MedicineModel, MedicineRequest } from '../../../types';
 import "../../Shared/Styles.css";
-import { getItemsPerPageComponent, renderLoaderOrData } from './RenderHelpers';
+import { getItemsPerPageComponent, renderLoaderOrData, renderPageCountText } from './RenderHelpers';
 
 export type GetMedicineListPageProps = {
   backendService: IBackendService;
@@ -120,11 +120,6 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
       });
   }
 
-  private renderPageCountText() {
-    return this.state.showPageCount ? `Avaliable pages: ${this.state.pages}` : 'Loading page count...';
-  }
-
-
   private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.updateRequestAndFetch({ itemsPerPage: parseInt(e.target.value) }, false)
       .then(() => {
@@ -213,7 +208,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
         </div>
         <div className='App-page-row-setting'>
           <div className='row'>
-            <div className='column'>{this.renderPageCountText()}</div>
+            <div className='column'>{renderPageCountText(this.state.showPageCount, this.state.pages)}</div>
           </div>
         </div>
         <div className='App-page-results'>

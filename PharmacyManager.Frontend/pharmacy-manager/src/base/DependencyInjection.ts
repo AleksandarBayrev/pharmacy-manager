@@ -12,15 +12,22 @@ export class DependencyInjection {
         this.serviceDescriptors = new Map();
     }
 
-    public hasService(baseType: string): boolean {
-        return this.serviceDescriptors.has(baseType) && this.services.has(baseType);
-    }
-
-    public static getInstance(logger: DILogger): DependencyInjection {
+    public static getInstance(): DependencyInjection {
         if (DependencyInjection.instance === null) {
-            DependencyInjection.instance = new DependencyInjection(logger);
+            throw new Error("DependencyInjection container is not set up!");
         }
         return DependencyInjection.instance;
+    }
+
+    public static setupInstance(logger: DILogger) {
+        if (DependencyInjection.instance !== null) {
+            throw new Error("DependencyInjection container is already set up!");
+        }
+        DependencyInjection.instance = new DependencyInjection(logger);
+    }
+
+    public hasService(baseType: string): boolean {
+        return this.serviceDescriptors.has(baseType) && this.services.has(baseType);
     }
 
     public registerService<T>(baseType: string,

@@ -7,8 +7,9 @@ import { LogManager } from "./services/LogManager";
 import { PageRenderer } from "./services/PageRenderer";
 import { IBackendService, IDateFormatter, ILogManager, IPageRenderer } from "./types";
 
-const DependencyInjectionInstance = DependencyInjection.getInstance(console.log);
+DependencyInjection.setupInstance(console.log);
 app(() => {
+  const DependencyInjectionInstance = DependencyInjection.getInstance();
   DependencyInjectionInstance.registerService<ILogManager>("ILogManager", "singleton", LogManager, []);
   const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
   setupLoggers(logManager);
@@ -16,4 +17,4 @@ app(() => {
   DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
   DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);
   setupPageRenderer(DependencyInjectionInstance);
-}).run(DependencyInjectionInstance);
+}).run(DependencyInjection.getInstance());

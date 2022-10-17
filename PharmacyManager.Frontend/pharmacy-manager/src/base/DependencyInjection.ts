@@ -20,6 +20,7 @@ export class DependencyInjection {
     }
 
     public static setupInstance(logger: DILogger) {
+        logger("Setting up DependencyInjection...");
         if (DependencyInjection.instance !== null) {
             throw new Error("DependencyInjection container is already set up!");
         }

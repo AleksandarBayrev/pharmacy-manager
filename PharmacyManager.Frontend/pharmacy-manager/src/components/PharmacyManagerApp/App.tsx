@@ -29,7 +29,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
             </div>
             <div className='App-page-container'>
               <div className='App-date-time'>
-                <DateTime />
+                <DateTime phrase='Current time: '/>
               </div>
               <div className='App-page'>
                 <Routes>

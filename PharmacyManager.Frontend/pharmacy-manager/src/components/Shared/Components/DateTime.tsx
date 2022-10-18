@@ -1,6 +1,8 @@
 import React from "react";
 
-type DateTimeProps = {}
+type DateTimeProps = {
+    phrase?: string;
+}
 
 type DateTimeState = {
     date: Date;
@@ -51,7 +53,7 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
     render() {
         return (
             <div className="App-date-time-container">
-                {this.formatDate()} {this.formatTime()}
+                {this.props.phrase ? `${this.props.phrase}${this.formatDate()} ${this.formatTime()}` : `${this.formatDate()} ${this.formatTime()}`}
             </div>
         )
     }

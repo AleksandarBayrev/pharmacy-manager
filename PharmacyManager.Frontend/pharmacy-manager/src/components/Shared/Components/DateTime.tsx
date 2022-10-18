@@ -1,6 +1,9 @@
 import React from "react";
+import { IDateFormatter, ITimeFormatter } from "../../../types";
 
 type DateTimeProps = {
+    timeFormatter: ITimeFormatter;
+    dateFormatter: IDateFormatter;
     phrase?: string;
 }
 
@@ -29,31 +32,13 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
         clearInterval(this.updateInterval);
     }
 
-    private formatDate() {
-        const day = this.state.date.getDate();
-        const month = this.state.date.getMonth() + 1;
-        const year = this.state.date.getFullYear();
-
-        const dayFormatted = day < 10 ? `0${day}` : day;
-        const monthFormatted = month < 10 ? `0${month}` : month;
-        return `${dayFormatted}.${monthFormatted}.${year}`;
-    }
-
-    private formatTime() {
-        const hours = this.state.date.getHours();
-        const minutes = this.state.date.getMinutes();
-        const seconds = this.state.date.getSeconds();
-
-        const hoursFormatted = hours < 10 ? `0${hours}` : hours;
-        const minutesFormatted = minutes < 10 ? `0${minutes}` : minutes;
-        const secondsFormatted = seconds < 10 ? `0${seconds}` : seconds;
-        return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`;
-    }
 
     render() {
+        const date = this.props.dateFormatter.getDateForDateTimeComponent(this.state.date);
+        const time = this.props.timeFormatter.getTimeForDateTimeComponent(this.state.date);
         return (
             <div className="App-date-time-container">
-                {this.props.phrase ? `${this.props.phrase}${this.formatDate()} ${this.formatTime()}` : `${this.formatDate()} ${this.formatTime()}`}
+                {this.props.phrase ? `${this.props.phrase}${date} ${time}` : `${date} ${time}`}
             </div>
         )
     }

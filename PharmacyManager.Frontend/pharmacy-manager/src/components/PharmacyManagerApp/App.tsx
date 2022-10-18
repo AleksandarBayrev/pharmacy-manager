@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { IPageRenderer } from '../../types';
+import { IDateFormatter, IPageRenderer, ITimeFormatter } from '../../types';
 import { pages } from './constants';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { DependencyInjection } from '../../base';
@@ -29,7 +29,10 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps,
             </div>
             <div className='App-page-container'>
               <div className='App-date-time'>
-                <DateTime phrase='Current time: '/>
+                <DateTime
+                  dateFormatter={this.props.DependencyInjection.getService<IDateFormatter>("IDateFormatter")}
+                  timeFormatter={this.props.DependencyInjection.getService<ITimeFormatter>("ITimeFormatter")}
+                  phrase='Current time: '/>
               </div>
               <div className='App-page'>
                 <Routes>

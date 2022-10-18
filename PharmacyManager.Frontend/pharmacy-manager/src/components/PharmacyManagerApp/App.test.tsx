@@ -8,7 +8,7 @@ import { HomePage } from '../Pages/HomePage/HomePage';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
-import { IBackendService, IDateFormatter, ILogManager, IPageRenderer } from '../../types';
+import { IBackendService, IDateFormatter, ILogManager, IPageRenderer, ITimeFormatter } from '../../types';
 import { LogManager } from '../../services/LogManager';
 
 test('matches snapshot', () => {
@@ -23,7 +23,11 @@ test('matches snapshot', () => {
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn(),
-      getDateForTable: jest.fn()
+      getDateForTable: jest.fn(),
+      getDateForDateTimeComponent: jest.fn()
+    };
+    const timeFormatter: ITimeFormatter = {
+      getTimeForDateTimeComponent: jest.fn()
     };
     pageRenderer.add(pages.Home, <HomePage />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} dateFormatter={dateFormatter} />);
@@ -32,7 +36,9 @@ test('matches snapshot', () => {
     return {
       'IPageRenderer': pageRenderer,
       'IBackendService': backendService,
-      'ILogManager': logManager
+      'ILogManager': logManager,
+      'IDateFormatter': dateFormatter,
+      'ITimeFormatter': timeFormatter
     }
   })();
   const DI: DependencyInjection = {

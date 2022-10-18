@@ -3,3 +3,4 @@ export * from "./IPageRenderer";
 export * from "./ILogger";
 export * from "./ILogManager";
 export * from "./IDateFormatter";
+export * from "./ITimeFormatter";

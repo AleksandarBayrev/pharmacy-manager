@@ -10,6 +10,16 @@ class DateFormatter implements IDateFormatter {
         return `${this.getDateOfMonth(date)}.${this.getMonth(date)}.${date.getFullYear()}`;
     }
 
+    public getDateForDateTimeComponent(date: Date): string {
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+    
+            const dayFormatted = day < 10 ? `0${day}` : day;
+            const monthFormatted = month < 10 ? `0${month}` : month;
+            return `${dayFormatted}.${monthFormatted}.${year}`;
+    }
+
     private getMonth(date: Date): string {
         const month = date.getMonth() + 1;
         return month < 10 ? `0${month}` : month.toString();

@@ -21,9 +21,9 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
     }
 
     componentDidMount(): void {
-        this.updateInterval = setInterval(() => {
+        this.updateInterval = setInterval(async () => {
             this.setState({
-                date: new Date()
+                date: await this.getDateAsync()
             });
         }, 50);
     }
@@ -32,6 +32,9 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
         clearInterval(this.updateInterval);
     }
 
+    private getDateAsync(): Promise<Date> {
+        return Promise.resolve(new Date());
+    }
 
     render() {
         const date = this.props.dateFormatter.getDateForDateTimeComponent(this.state.date);

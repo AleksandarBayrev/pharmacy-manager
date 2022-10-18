@@ -43,12 +43,25 @@ Object {
             class="App-page-container"
           >
             <div
+              class="App-date-time"
+            >
+              <div
+                class="App-date-time-container"
+              >
+                Current time: undefined undefined
+              </div>
+            </div>
+            <div
               class="App-page"
             >
               <div
-                class="App-page-header"
+                class="App-page"
               >
-                Select one of the actions from the menu above
+                <div
+                  class="App-page-header"
+                >
+                  Select one of the actions from the menu above
+                </div>
               </div>
             </div>
           </div>
@@ -95,12 +108,25 @@ Object {
           class="App-page-container"
         >
           <div
+            class="App-date-time"
+          >
+            <div
+              class="App-date-time-container"
+            >
+              Current time: undefined undefined
+            </div>
+          </div>
+          <div
             class="App-page"
           >
             <div
-              class="App-page-header"
+              class="App-page"
             >
-              Select one of the actions from the menu above
+              <div
+                class="App-page-header"
+              >
+                Select one of the actions from the menu above
+              </div>
             </div>
           </div>
         </div>

@@ -11,13 +11,7 @@ class DateFormatter implements IDateFormatter {
     }
 
     public getDateForDateTimeComponent(date: Date): string {
-            const day = date.getDate();
-            const month = date.getMonth() + 1;
-            const year = date.getFullYear();
-    
-            const dayFormatted = day < 10 ? `0${day}` : day;
-            const monthFormatted = month < 10 ? `0${month}` : month;
-            return `${dayFormatted}.${monthFormatted}.${year}`;
+            return `${this.getDateOfMonth(date)}.${this.getMonth(date)}.${date.getFullYear()}`;
     }
 
     private getMonth(date: Date): string {

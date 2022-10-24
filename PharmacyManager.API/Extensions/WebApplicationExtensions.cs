@@ -15,9 +15,28 @@ namespace PharmacyManager.API.Extensions
         }
         public static WebApplication ConfigureApplication(this WebApplication app)
         {
+            app.ConfigureMiddlewares();
+            var configuration = app.Services.GetService<IApplicationConfiguration>();
+            if (configuration == null)
+            {
+                throw new NullReferenceException("Application not configured!");
+            }
+            app.ConfigureSwaggerAndStaticFiles(configuration);
+            app.UseAuthorization();
+            app.MapControllers();
+            return app;
+        }
+
+        private static WebApplication ConfigureMiddlewares(this WebApplication app)
+        {
             app.UseMiddleware<RequestLoggerMiddleware>();
             app.UseMiddleware<FourOhFourMiddleware>();
-            if (app.Environment.IsDevelopment() && app.Services.GetService<IApplicationConfiguration>().EnableSwagger)
+            return app;
+        }
+
+        private static WebApplication ConfigureSwaggerAndStaticFiles(this WebApplication app, IApplicationConfiguration configuration)
+        {
+            if (app.Environment.IsDevelopment() && configuration.EnableSwagger)
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -27,8 +46,6 @@ namespace PharmacyManager.API.Extensions
                 FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "wwwroot")),
                 RequestPath = "/static"
             });
-            app.UseAuthorization();
-            app.MapControllers();
             return app;
         }
     }

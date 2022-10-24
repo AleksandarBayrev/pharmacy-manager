@@ -2,6 +2,6 @@
 {
     public interface ILogger
     {
-        public Task Log(string context, string message);
+        public Task Log(string context, string message, CancellationToken? cancellationToken = null);
     }
 }

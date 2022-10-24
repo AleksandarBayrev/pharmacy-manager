@@ -4,10 +4,14 @@ namespace PharmacyManager.API.Services.Base
 {
     public class Logger : ILogger
     {
-        public Task Log(string context, string message)
+        public Task Log(string context, string message, CancellationToken? cancellationToken = null)
         {
             return Task.Run(() =>
             {
+                if (cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested)
+                {
+                    return;
+                }
                 Console.WriteLine(BuildLog(context, message));
             });
         }

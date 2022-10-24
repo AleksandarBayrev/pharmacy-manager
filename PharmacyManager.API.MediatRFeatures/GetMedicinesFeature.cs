@@ -35,7 +35,7 @@ namespace PharmacyManager.API.MediatRFeatures
             }
             public async Task<MedicinesResponse> Handle(GetMedicinesQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}");
+                await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}", cancellationToken);
                 var filteredMedicines = await this.medicinesProvider.GetFilteredMedicines(new MedicineRequest
                 {
                     AvailableOnly = request.AvailableOnly,
@@ -47,12 +47,12 @@ namespace PharmacyManager.API.MediatRFeatures
 
                 return new MedicinesResponse
                 {
-                    Medicines = await GetPageItems(filteredMedicines, request),
-                    Pages = await CalculatePages(request, filteredMedicines)
+                    Medicines = await GetPageItems(filteredMedicines, request, cancellationToken),
+                    Pages = await CalculatePages(request, filteredMedicines, cancellationToken)
                 };
             }
 
-            private async Task<decimal> CalculatePages(GetMedicinesQuery request, IEnumerable<MedicineModel> filteredMedicines)
+            private async Task<decimal> CalculatePages(GetMedicinesQuery request, IEnumerable<MedicineModel> filteredMedicines, CancellationToken cancellationToken)
             {
                 var medicinesCount = filteredMedicines.Count();
                 var itemsPerPage = request.ItemsPerPage;
@@ -60,9 +60,9 @@ namespace PharmacyManager.API.MediatRFeatures
                 return pageCalculations.Pages;
             }
 
-            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request)
+            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}");
+                await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}", cancellationToken);
                 return medicines.Skip(request.ItemsPerPage * (request.Page - 1)).Take(request.ItemsPerPage);
             }
         }

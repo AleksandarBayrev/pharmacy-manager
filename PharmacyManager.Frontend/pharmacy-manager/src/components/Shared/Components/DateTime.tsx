@@ -1,17 +1,16 @@
 import React from "react";
-import { IDateFormatter, ITimeFormatter } from "../../../types";
+import { observer } from "mobx-react";
+import { IDateFormatter, IGetDateTimeStore, ITimeFormatter } from "../../../types";
 
 type DateTimeProps = {
+    store: IGetDateTimeStore;
     timeFormatter: ITimeFormatter;
     dateFormatter: IDateFormatter;
     phrase?: string;
 }
 
-type DateTimeState = {
-    date: Date;
-}
-
-export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
+@observer
+export class DateTime extends React.Component<DateTimeProps> {
     private updateInterval: NodeJS.Timer | undefined;
     constructor(props: DateTimeProps) {
         super(props);
@@ -22,9 +21,7 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
 
     componentDidMount(): void {
         this.updateInterval = setInterval(async () => {
-            this.setState({
-                date: await this.getDateAsync()
-            });
+            this.props.store.setDate(await this.getDateAsync());
         }, 50);
     }
 
@@ -37,8 +34,8 @@ export class DateTime extends React.Component<DateTimeProps, DateTimeState> {
     }
 
     render() {
-        const date = this.props.dateFormatter.getDateForDateTimeComponent(this.state.date);
-        const time = this.props.timeFormatter.getTimeForDateTimeComponent(this.state.date);
+        const date = this.props.dateFormatter.getDateForDateTimeComponent(this.props.store.date.get());
+        const time = this.props.timeFormatter.getTimeForDateTimeComponent(this.props.store.date.get());
         return (
             <div className="App-date-time-container">
                 {this.props.phrase ? `${this.props.phrase}${date} ${time}` : `${date} ${time}`}

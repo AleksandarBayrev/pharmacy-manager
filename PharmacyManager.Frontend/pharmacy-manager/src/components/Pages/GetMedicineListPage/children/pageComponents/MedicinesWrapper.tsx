@@ -1,5 +1,6 @@
 import React from "react";
-import { IDateFormatter, MedicineModel } from "../../../../types";
+import { action } from "mobx";
+import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from "../../../../../types";
 import { Medicine } from "./Medicine";
 import { Separator } from "./Separator";
 import "./Style.css";
@@ -7,7 +8,7 @@ import "./Style.css";
 
 export type MedicinesWrapperProps = {
     dateFormatter: IDateFormatter;
-    setPage: (page: number) => void;
+    store: IGetMedicineListPageStore;
     medicines: MedicineModel[];
     pages: number;
     currentPage: number;
@@ -38,17 +39,25 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                     {this.props.medicines.map(medicine => <Medicine medicine={medicine} dateFormatter={this.props.dateFormatter} />)}
                 </div>
                 <div className="Pagination">
-                    {this.renderPages(this.props.setPage, this.props.currentPage, this.props.pages)}
+                    {this.renderPages(this.props.currentPage, this.props.pages)}
                 </div>
             </div>
         )
     }
 
-    private renderPages(setPage: (page: number) => void, currentPage: number, maxPageCount: number) {
+    @action.bound
+    private setPage(page: number) {
+        this.props.store.updateRequestProperties({
+            page
+        });
+        this.props.store.updateCurrentRequest();
+    }
+
+    private renderPages(currentPage: number, maxPageCount: number) {
         const options: JSX.Element[] = [];
         if (maxPageCount < 20) {
             for (let i = 1; i <= maxPageCount; i++) {
-                const option = <a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>;
+                const option = <a className={this.getClasses(currentPage, i)} onClick={() => this.setPage(i)}>{i}</a>;
                 options.push(option);
             }
             return options;
@@ -56,14 +65,14 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
 
         if (currentPage < 3) {
             for (let i = 1; i <= 3; i++) {
-                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => this.setPage(i)}>{i}</a>);
             }
             options.push(<>...</>);
         }
 
         if (currentPage < 3 && maxPageCount <= 3) {
             for (let i = 1; i <= maxPageCount; i++) {
-                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => this.setPage(i)}>{i}</a>);
             }
         }
 
@@ -72,7 +81,7 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                 options.push(<>...</>);
             }
             for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => this.setPage(i)}>{i}</a>);
             }
             options.push(<>...</>);
         }
@@ -80,7 +89,7 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
         if (currentPage >= maxPageCount - 2 && currentPage <= maxPageCount) {
             options.push(<>...</>);
             for (let i = currentPage - 2; i <= maxPageCount; i++) {
-                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => setPage(i)}>{i}</a>);
+                options.push(<a className={this.getClasses(currentPage, i)} onClick={() => this.setPage(i)}>{i}</a>);
             }
         }
         

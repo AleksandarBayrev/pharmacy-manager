@@ -8,8 +8,9 @@ import { HomePage } from '../Pages/HomePage/HomePage';
 import { GetMedicineListPage } from '../Pages/GetMedicineListPage/GetMedicineListPage';
 import { AddMedicinePage } from '../Pages/AddMedicinePage/AddMedicinePage';
 import { UpdateMedicinePage } from '../Pages/UpdateMedicinePage/UpdateMedicinePage';
-import { IBackendService, IDateFormatter, ILogManager, IPageRenderer, ITimeFormatter } from '../../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from '../../types';
 import { LogManager } from '../../services/LogManager';
+import { observable } from 'mobx';
 
 test('matches snapshot', () => {
   const services = (() => {
@@ -29,16 +30,69 @@ test('matches snapshot', () => {
     const timeFormatter: ITimeFormatter = {
       getTimeForDateTimeComponent: jest.fn()
     };
+    const getMedicineListPageStore: IGetMedicineListPageStore = {
+      medicines: observable([]),
+      showPageCount: observable.box(true),
+      loadingData: observable.box(true),
+      request: {
+        availableOnly: false,
+        notExpired: false,
+        page: 1,
+        itemsPerPage: 10,
+        manufacturer: ""
+      },
+      pages: observable.box(10),
+      isInitialRequestMade: observable.box(false),
+      defaultRequest: {
+        availableOnly: false,
+        notExpired: false,
+        page: 1,
+        itemsPerPage: 10,
+        manufacturer: ""
+      },
+      load: jest.fn(),
+      unload: jest.fn(),
+      updateCurrentRequest: jest.fn(),
+      resetUpdateInterval: jest.fn(),
+      stopUpdateInterval: jest.fn(),
+      getMedicines: jest.fn(),
+      updateRequestProperties: jest.fn(),
+      refetch: jest.fn(),
+      resetRequestToDefaults: jest.fn()
+    };
+    const getDateTimeStore: IGetDateTimeStore = {
+      date: observable.box(new Date()),
+      setDate: jest.fn()
+    };
+    const addMedicinePageStore: IAddMedicinePageStore = {
+      isAddingMedicine: observable.box(false),
+      isRequestSuccessful: observable.box(undefined),
+      request: observable({
+        name: "",
+        manufacturer: "",
+        description: "",
+        manufacturingDate: new Date(),
+        expirationDate: new Date(),
+        price: "0",
+        quantity: "0"
+      }),
+      addMedicine: jest.fn(),
+      resetMessage: jest.fn(),
+      resetRequestToDefault: jest.fn(),
+      updateRequest: jest.fn()
+    }
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} dateFormatter={dateFormatter} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={backendService} dateFormatter={dateFormatter} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={backendService} dateFormatter={dateFormatter} store={addMedicinePageStore} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {
       'IPageRenderer': pageRenderer,
       'IBackendService': backendService,
       'ILogManager': logManager,
       'IDateFormatter': dateFormatter,
-      'ITimeFormatter': timeFormatter
+      'ITimeFormatter': timeFormatter,
+      'IGetMedicineListPageStore': getMedicineListPageStore,
+      'IGetDateTimeStore': getDateTimeStore
     }
   })();
   const DI: DependencyInjection = {

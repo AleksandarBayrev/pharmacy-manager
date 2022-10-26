@@ -1,29 +1,22 @@
+import { observer } from "mobx-react";
 import React from "react";
-import { IBackendService, AddMedicineRequest, IDateFormatter } from "../../../types";
+import { IBackendService, IDateFormatter, IAddMedicinePageStore } from "../../../types";
 import "../../Shared/Styles.css";
 
 export type AddMedicinePageProps = {
     backendService: IBackendService;
     dateFormatter: IDateFormatter;
+    store: IAddMedicinePageStore;
 }
 
-export type AddMedicinePageState = {
-    request: AddMedicineRequest;
-    isAddingMedicine: boolean;
-    isRequestSuccessful?: boolean;
-}
-
-export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMedicinePageState> {
+@observer
+export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
     private backendService: IBackendService;
     private dateFormatter: IDateFormatter;
     constructor(props: AddMedicinePageProps) {
         super(props);
         this.backendService = props.backendService;
         this.dateFormatter = props.dateFormatter;
-        this.state = {
-            request: this.getDefaultRequest(),
-            isAddingMedicine: false
-        };
     }
     componentDidMount(): void {
         window.document.title = "Pharmacy Manager - Add Medicine";
@@ -39,8 +32,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="text"
-                                    onChange={(e) => this.setMedicine({ name: e.target.value })}
-                                    value={this.state.request.name}
+                                    onChange={(e) => this.props.store.updateRequest({ name: e.target.value })}
+                                    value={this.props.store.request.name}
                                 />
                             </div>
                         </div>
@@ -51,8 +44,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="text"
-                                    onChange={(e) => this.setMedicine({ manufacturer: e.target.value })}
-                                    value={this.state.request.manufacturer}
+                                    onChange={(e) => this.props.store.updateRequest({ manufacturer: e.target.value })}
+                                    value={this.props.store.request.manufacturer}
                                 />
                             </div>
                         </div>
@@ -63,8 +56,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="text"
-                                    onChange={(e) => this.setMedicine({ description: e.target.value })}
-                                    value={this.state.request.description}
+                                    onChange={(e) => this.props.store.updateRequest({ description: e.target.value })}
+                                    value={this.props.store.request.description}
                                 />
                             </div>
                         </div>
@@ -75,8 +68,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="date"
-                                    onChange={(e) => this.setMedicine({ manufacturingDate: new Date(e.target.value) })}
-                                    value={this.dateFormatter.getDateForInput(this.state.request.manufacturingDate)}
+                                    onChange={(e) => this.props.store.updateRequest({ manufacturingDate: new Date(e.target.value) })}
+                                    value={this.dateFormatter.getDateForInput(this.props.store.request.manufacturingDate)}
                                 />
                             </div>
                         </div>
@@ -87,8 +80,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="date"
-                                    onChange={(e) => this.setMedicine({ expirationDate: new Date(e.target.value) })}
-                                    value={this.dateFormatter.getDateForInput(this.state.request.expirationDate)}
+                                    onChange={(e) => this.props.store.updateRequest({ expirationDate: new Date(e.target.value) })}
+                                    value={this.dateFormatter.getDateForInput(this.props.store.request.expirationDate)}
                                 />
                             </div>
                         </div>
@@ -99,8 +92,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="number"
-                                    onChange={(e) => this.setMedicine({ price: e.target.value.toString() })}
-                                    value={this.state.request.price}
+                                    onChange={(e) => this.props.store.updateRequest({ price: e.target.value.toString() })}
+                                    value={this.props.store.request.price}
                                 />
                             </div>
                         </div>
@@ -111,8 +104,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                             <div className="column">
                                 <input
                                     type="number"
-                                    onChange={(e) => this.setMedicine({ quantity: e.target.value.toString() })}
-                                    value={this.state.request.quantity}
+                                    onChange={(e) => this.props.store.updateRequest({ quantity: e.target.value.toString() })}
+                                    value={this.props.store.request.quantity}
                                 />
                             </div>
                         </div>
@@ -121,8 +114,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                         <div className="row">
                             <div className="column">
                                 <button
-                                    onClick={this.addMedicine}
-                                    disabled={this.isInputInvalid() || this.state.isAddingMedicine}
+                                    onClick={this.props.store.addMedicine}
+                                    disabled={this.isInputInvalid() || this.props.store.isAddingMedicine.get()}
                                 >
                                     Add Medicine
                                 </button>
@@ -133,7 +126,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
                                 <button
                                     className="column"
                                     onClick={this.clearInput}
-                                    disabled={this.state.isAddingMedicine}
+                                    disabled={this.props.store.isAddingMedicine.get()}
                                 >
                                     Clear input
                                 </button>
@@ -147,86 +140,24 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps, AddMe
     }
 
     private clearInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        this.setState({
-            request: { ...this.getDefaultRequest() }
-        });
+        this.props.store.resetRequestToDefault();
     }
 
     private renderRequestStatusMessage = () => {
-        return (this.state.isRequestSuccessful !== undefined ?
-            this.state.isRequestSuccessful ?
-                `Successfully added medicine ${this.state.request.name}`
+        return (this.props.store.isRequestSuccessful.get() !== undefined ?
+            this.props.store.isRequestSuccessful.get() ?
+                `Successfully added medicine ${this.props.store.request.name}`
                 :
-                `Failed adding medicine ${this.state.request.name}`
+                `Failed adding medicine ${this.props.store.request.name}`
             : ""
         );
     }
 
     private isInputInvalid = (): boolean => {
-        const requestKeys = Object.keys(this.state.request);
+        const requestKeys = Object.keys(this.props.store.request);
         return requestKeys.filter(x => {
-            const prop = (this.state.request as any)[x];
+            const prop = (this.props.store.request as any)[x];
             return typeof prop !== "undefined" && (typeof prop === "string" ? prop.length : prop !== undefined || prop !== null)
         }).length !== requestKeys.length;
     };
-
-    private addMedicine = async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        try {
-            this.setState({
-                isAddingMedicine: true
-            });
-            var result = await this.backendService.addMedicine({
-                ...this.state.request
-            });
-            if (!result) {
-                throw new Error("Medicine not added!");
-            }
-            this.setState({
-                isAddingMedicine: false,
-                isRequestSuccessful: true
-            });
-            this.resetMessage();
-        } catch (_) {
-            this.setState({
-                isAddingMedicine: false,
-                isRequestSuccessful: false
-            });
-            this.resetMessage();
-        }
-    }
-
-    private resetMessage = () => {
-        setTimeout(() => {
-            this.setState({
-                isRequestSuccessful: undefined
-            });
-        }, 2000);
-    }
-
-    private setMedicine = (request: Partial<AddMedicineRequest>) => {
-        console.log(request);
-        this.setState({
-            request: {
-                ...this.state.request,
-                ...request
-            }
-        });
-    }
-
-    private getDefaultRequest(): AddMedicineRequest {
-        return {
-            //id: 0,
-            name: "",
-            manufacturer: "",
-            //manufacturingDate: new Date(0,0,0),
-            //expirationDate: new Date(0,0,0),
-            description: "",
-            manufacturingDate: new Date(),
-            expirationDate: new Date(),
-            price: "",
-            quantity: ""
-            //price: 0,
-            //quantity: 0
-        }
-    }
 }

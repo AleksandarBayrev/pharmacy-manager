@@ -124,7 +124,6 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                         <div className="row">
                             <div className="column">
                                 <button
-                                    className="column"
                                     onClick={this.clearInput}
                                     disabled={this.props.store.isAddingMedicine.get()}
                                 >

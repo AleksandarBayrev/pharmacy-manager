@@ -50,7 +50,13 @@ export class AddMedicinePageStore implements IAddMedicinePageStore {
 
     @action
     resetRequestToDefault = () => {
-        this.request = { ...this.defaultRequest };
+        this.request.description = this.defaultRequest.description;
+        this.request.expirationDate = this.defaultRequest.expirationDate;
+        this.request.manufacturer = this.defaultRequest.manufacturer;
+        this.request.manufacturingDate = this.defaultRequest.manufacturingDate;
+        this.request.name = this.defaultRequest.name;
+        this.request.price = this.defaultRequest.price;
+        this.request.quantity = this.defaultRequest.quantity;
     }
 
     @action

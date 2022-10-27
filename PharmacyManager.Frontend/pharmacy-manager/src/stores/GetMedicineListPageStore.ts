@@ -132,7 +132,11 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
 
     @action
     public resetRequestToDefaults = () => {
-        this.request = { ...this.defaultRequest };
+        this.request.availableOnly = this.defaultRequest.availableOnly;
+        this.request.itemsPerPage = this.defaultRequest.itemsPerPage;
+        this.request.manufacturer = this.defaultRequest.manufacturer;
+        this.request.notExpired = this.defaultRequest.notExpired;
+        this.request.page = this.defaultRequest.page;
         this.getMedicines(this.request, true)
             .then(() => {
                 this.resetUpdateInterval();

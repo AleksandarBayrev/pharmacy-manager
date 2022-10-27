@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { PharmacyManagerApp } from './components';
+import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from './base';
 
 let root: ReactDOM.Root

@@ -1,6 +1,6 @@
 import React from "react";
-import { IBackendService } from "../../../types";
-import "../../Shared/Styles.css";
+import { IBackendService } from "../../types";
+import "../../shared/Styles.css";
 
 export type UpdateMedicinePageProps = {
     backendService: IBackendService;

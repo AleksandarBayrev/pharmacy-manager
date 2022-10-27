@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { IDateFormatter, IGetDateTimeStore, ITimeFormatter } from "../../../types";
+import { IDateFormatter, IGetDateTimeStore, ITimeFormatter } from "../../types";
 
 type DateTimeProps = {
     store: IGetDateTimeStore;

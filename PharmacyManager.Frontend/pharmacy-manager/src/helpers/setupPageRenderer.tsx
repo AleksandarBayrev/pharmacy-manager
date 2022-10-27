@@ -1,10 +1,7 @@
 import React from "react";
 import { DependencyInjection } from "../base";
-import { AddMedicinePage } from "../components/Pages/AddMedicinePage/AddMedicinePage";
-import { GetMedicineListPage } from "../components/Pages/GetMedicineListPage/GetMedicineListPage";
-import { HomePage } from "../components/Pages/HomePage/HomePage";
-import { UpdateMedicinePage } from "../components/Pages/UpdateMedicinePage/UpdateMedicinePage";
-import { pages } from "../components/PharmacyManagerApp/constants";
+import { pages } from "../constants";
+import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from "../pages";
 import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetMedicineListPageStore, IPageRenderer } from "../types";
 
 export const setupPageRenderer = (DI: DependencyInjection) => {

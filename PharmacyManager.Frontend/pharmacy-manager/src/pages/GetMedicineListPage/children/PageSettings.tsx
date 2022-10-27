@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { IGetMedicineListPageStore, MedicineRequest } from "../../../../types";
+import { IGetMedicineListPageStore, MedicineRequest } from "../../../types";
 import { ItemsPerPage } from "./pageComponents/ItemsPerPage";
 export type PageSettingsProps = {
     store: IGetMedicineListPageStore;

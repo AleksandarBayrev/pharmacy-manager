@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from "../../../../types";
+import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from "../../../types";
 import { LoadingData } from "./pageComponents/LoadingData";
 import { MedicinesWrapper } from "./pageComponents/MedicinesWrapper";
 

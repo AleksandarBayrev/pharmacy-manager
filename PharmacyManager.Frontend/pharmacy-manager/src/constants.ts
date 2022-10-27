@@ -1,4 +1,4 @@
-import { Pages } from "../../types";
+import { Pages } from "./types";
 
 export const pages: Pages= {
     Home: "/",

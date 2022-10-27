@@ -1,6 +1,6 @@
 import React from "react";
 import { action } from "mobx";
-import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from "../../../../../types";
+import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from "../../../../types";
 import { Medicine } from "./Medicine";
 import { Separator } from "./Separator";
 import "./Style.css";

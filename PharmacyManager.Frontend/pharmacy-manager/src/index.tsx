@@ -1,14 +1,8 @@
 import { app } from "./app";
 import { DependencyInjection } from "./base";
 import { setupLoggers, setupPageRenderer } from "./helpers";
-import { BackendService } from "./services/BackendService";
-import { DateFormatter } from "./services/DateFormatter";
-import { LogManager } from "./services/LogManager";
-import { PageRenderer } from "./services/PageRenderer";
-import { TimeFormatter } from "./services/TimeFormatter";
-import { AddMedicinePageStore } from "./store/AddMedicinePageStore";
-import { GetDateTimeStore } from "./store/GetDateTimeStore";
-import { GetMedicineListPageStore } from "./store/GetMedicineListPageStore";
+import { LogManager, BackendService, PageRenderer, DateFormatter, TimeFormatter } from "./services";
+import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
 import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
 
 DependencyInjection.setupInstance(console.log);

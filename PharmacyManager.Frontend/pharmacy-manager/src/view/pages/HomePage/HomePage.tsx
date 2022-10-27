@@ -1,5 +1,5 @@
 import React from "react";
-import "../../shared/Styles.css";
+import "../../../shared/Styles.css";
 
 export class HomePage extends React.Component {
     componentDidMount(): void {

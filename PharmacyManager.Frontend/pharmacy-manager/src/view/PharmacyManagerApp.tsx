@@ -1,11 +1,11 @@
 import React from 'react';
 import './PharmacyManagerApp.css';
-import { pages } from './constants';
+import { pages } from '../constants';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import { DependencyInjection } from './base';
+import { DependencyInjection } from '../base';
 import { NotFoundPage } from './pages';
-import { DateTime } from './shared';
-import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter } from './types';
+import { DateTime } from '../shared';
+import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter } from '../types';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;

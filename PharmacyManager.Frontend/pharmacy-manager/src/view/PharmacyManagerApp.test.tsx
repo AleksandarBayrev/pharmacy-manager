@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
-import { DependencyInjection } from './base';
-import { pages } from './constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from './types';
+import { DependencyInjection } from '../base';
+import { pages } from '../constants';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
-import { LogManager, PageRenderer } from './services';
+import { LogManager, PageRenderer } from '../services';
 
 test('matches snapshot', () => {
   const services = (() => {

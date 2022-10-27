@@ -1,6 +1,6 @@
 import React from 'react';
-import { IBackendService, IDateFormatter, IGetMedicineListPageStore } from '../../types';
-import "../../shared/Styles.css";
+import { IBackendService, IDateFormatter, IGetMedicineListPageStore } from '../../../types';
+import "../../../shared/Styles.css";
 import { PageSettings } from './children/PageSettings';
 import { PageResults } from './children/PageResults';
 

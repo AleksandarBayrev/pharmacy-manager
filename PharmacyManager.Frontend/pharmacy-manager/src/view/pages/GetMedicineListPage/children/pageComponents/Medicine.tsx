@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDateFormatter, MedicineModel } from '../../../../types';
+import { IDateFormatter, MedicineModel } from '../../../../../types';
 import { Separator } from './Separator';
 import "./Style.css";
 

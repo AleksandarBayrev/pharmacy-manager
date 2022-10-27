@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { IBackendService, IDateFormatter, IAddMedicinePageStore } from "../../types";
-import "../../shared/Styles.css";
+import { IBackendService, IDateFormatter, IAddMedicinePageStore } from "../../../types";
+import "../../../shared/Styles.css";
 
 export type AddMedicinePageProps = {
     backendService: IBackendService;

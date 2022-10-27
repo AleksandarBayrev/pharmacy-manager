@@ -86,27 +86,27 @@ export class PageSettings extends React.Component<PageSettingsProps> {
     private onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       const updatedProp: Partial<MedicineRequest> = {};
       updatedProp["itemsPerPage"] = parseInt(e.target.value);
-      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.stopUpdateInterval();
+      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.refetch(false);
     }
   
     private onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, prop: "availableOnly" | "notExpired") => {
       const updatedProp: Partial<MedicineRequest> = {};
       updatedProp[prop] = e.target.checked;
-      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.stopUpdateInterval();
+      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.refetch(false);
     }
   
     private onTextChange = async (e: React.ChangeEvent<HTMLInputElement>, prop: "manufacturer") => {
       const updatedProp: Partial<MedicineRequest> = {};
       updatedProp[prop] = e.target.value;
-      this.props.store.updateRequestProperties(updatedProp);
       if (this.textChangeTimeout) {
         clearTimeout(this.textChangeTimeout);
         this.props.store.stopUpdateInterval();
       }
+      this.props.store.updateRequestProperties(updatedProp);
       this.textChangeTimeout = setTimeout(() => {
         this.props.store.refetch(true);
       }, 1000);
@@ -115,8 +115,8 @@ export class PageSettings extends React.Component<PageSettingsProps> {
     private onPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const updatedProp: Partial<MedicineRequest> = {};
       updatedProp["page"] = parseInt(e.target.value);
-      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.stopUpdateInterval();
+      this.props.store.updateRequestProperties(updatedProp);
       this.props.store.refetch(false);
     }
 }

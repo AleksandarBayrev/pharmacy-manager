@@ -22,6 +22,18 @@ export class AddMedicinePageStore implements IAddMedicinePageStore {
     }
 
     @action
+    load = async () => {
+
+    }
+
+    @action
+    unload = async () => {
+        this.resetRequestToDefault();
+        this.isAddingMedicine.set(false);
+        this.isRequestSuccessful.set(undefined);
+    }
+
+    @action
     addMedicine = async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try {
             this.isAddingMedicine.set(true);

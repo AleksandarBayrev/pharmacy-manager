@@ -72,14 +72,16 @@ test('matches snapshot', () => {
         price: "0",
         quantity: "0"
       }),
+      load: jest.fn(),
+      unload: jest.fn(),
       addMedicine: jest.fn(),
       resetMessage: jest.fn(),
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
     }
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage backendService={backendService} dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage backendService={backendService} dateFormatter={dateFormatter} store={addMedicinePageStore} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {
       'IPageRenderer': pageRenderer,

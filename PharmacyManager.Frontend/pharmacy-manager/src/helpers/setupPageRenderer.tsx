@@ -8,12 +8,10 @@ export const setupPageRenderer = (DI: DependencyInjection) => {
     const pageRenderer = DI.getService<IPageRenderer>("IPageRenderer");
     pageRenderer.add(pages.Home, <HomePage />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage
-        backendService={DI.getService<IBackendService>("IBackendService")}
         dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")}
         store={DI.getService<IGetMedicineListPageStore>("IGetMedicineListPageStore")} />
     );
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage
-        backendService={DI.getService<IBackendService>("IBackendService")}
         dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")}
         store={DI.getService<IAddMedicinePageStore>("IAddMedicinePageStore")} />
     );

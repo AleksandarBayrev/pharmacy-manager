@@ -6,6 +6,8 @@ export interface IAddMedicinePageStore {
     request: AddMedicineRequest;
     isAddingMedicine: IObservableValue<boolean>;
     isRequestSuccessful: IObservableValue<boolean | undefined>;
+    load(): Promise<void>;
+    unload(): Promise<void>;
     addMedicine(_: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void>;
     resetMessage(): void;
     resetRequestToDefault(): void;

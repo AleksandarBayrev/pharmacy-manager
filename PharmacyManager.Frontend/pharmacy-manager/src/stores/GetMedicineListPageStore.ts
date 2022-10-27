@@ -53,7 +53,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         clearInterval(this.updateInterval);
         this.medicines.replace([]);
         this.pages.set(1);
-        this.request = { ...this.defaultRequest };
+        this.resetRequestToDefaults();
         this.loadingData.set(false);
         this.isInitialRequestMade.set(false);
         this.showPageCount.set(false); 

@@ -1,25 +1,25 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { IBackendService, IDateFormatter, IAddMedicinePageStore } from "../../../types";
+import { IDateFormatter, IAddMedicinePageStore } from "../../../types";
 import "../../../shared/Styles.css";
 
 export type AddMedicinePageProps = {
-    backendService: IBackendService;
     dateFormatter: IDateFormatter;
     store: IAddMedicinePageStore;
 }
 
 @observer
 export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
-    private backendService: IBackendService;
     private dateFormatter: IDateFormatter;
     constructor(props: AddMedicinePageProps) {
         super(props);
-        this.backendService = props.backendService;
         this.dateFormatter = props.dateFormatter;
     }
     componentDidMount(): void {
         window.document.title = "Pharmacy Manager - Add Medicine";
+    }
+    async componentWillUnmount() {
+        await this.props.store.unload();
     }
     render(): React.ReactNode {
         return (

@@ -5,7 +5,6 @@ import { PageSettings } from './children/PageSettings';
 import { PageResults } from './children/PageResults';
 
 export type GetMedicineListPageProps = {
-  backendService: IBackendService;
   dateFormatter: IDateFormatter;
   store: IGetMedicineListPageStore;
 }

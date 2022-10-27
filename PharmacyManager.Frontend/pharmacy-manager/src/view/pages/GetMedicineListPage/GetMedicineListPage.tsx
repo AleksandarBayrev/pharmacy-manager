@@ -1,5 +1,5 @@
 import React from 'react';
-import { IBackendService, IDateFormatter, IGetMedicineListPageStore } from '../../../types';
+import { IDateFormatter, IGetMedicineListPageStore } from '../../../types';
 import "../../../shared/Styles.css";
 import { PageSettings } from './children/PageSettings';
 import { PageResults } from './children/PageResults';
@@ -17,6 +17,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
   render() {
     return (
       <div className='App-page'>
+        <div className="App-page-header">Get Medicine List</div>
         <PageSettings store={this.props.store} />
         <PageResults store={this.props.store} dateFormatter={this.props.dateFormatter} />
       </div>

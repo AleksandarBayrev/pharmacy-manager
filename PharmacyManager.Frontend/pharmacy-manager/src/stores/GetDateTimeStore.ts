@@ -1,7 +1,8 @@
 import { IGetDateTimeStore } from "../types";
 import { observable, IObservableValue, action } from "mobx";
+import { enhanceClass } from "../base/enhanceClass";
 
-export class GetDateTimeStore implements IGetDateTimeStore {
+class GetDateTimeStore implements IGetDateTimeStore {
     public date: IObservableValue<Date>;
 
     constructor() {
@@ -13,3 +14,7 @@ export class GetDateTimeStore implements IGetDateTimeStore {
         this.date.set(date);
     }
 }
+
+enhanceClass(GetDateTimeStore, "GetDateTimeStore");
+
+export { GetDateTimeStore }

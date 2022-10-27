@@ -1,7 +1,8 @@
 import { IObservableValue, computed, observable, action } from "mobx";
+import { enhanceClass } from "../base/enhanceClass";
 import { AddMedicineRequest, IAddMedicinePageStore, IBackendService } from "../types";
 
-export class AddMedicinePageStore implements IAddMedicinePageStore {
+class AddMedicinePageStore implements IAddMedicinePageStore {
     @observable
     public request: AddMedicineRequest;
     
@@ -94,3 +95,7 @@ export class AddMedicinePageStore implements IAddMedicinePageStore {
         }
     }
 }
+
+enhanceClass(AddMedicinePageStore, "AddMedicinePageStore");
+
+export { AddMedicinePageStore }

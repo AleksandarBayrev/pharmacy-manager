@@ -15,7 +15,6 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
   }
 
   render() {
-    console.log(this.props.store.request.manufacturer);
     return (
       <div className='App-page'>
         <PageSettings store={this.props.store} />

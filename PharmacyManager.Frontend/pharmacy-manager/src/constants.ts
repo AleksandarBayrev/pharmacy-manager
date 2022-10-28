@@ -1,5 +1,6 @@
 import { Pages } from "./types";
 
+export const AppLoadedEvent = new Event(window.appLoadedEventName);
 export const pages: Pages= {
     Home: "/",
     GetMedicinesList: "/medicines/get",

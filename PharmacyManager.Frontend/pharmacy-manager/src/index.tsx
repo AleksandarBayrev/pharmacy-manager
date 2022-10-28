@@ -1,5 +1,6 @@
 import { app } from "./app";
 import { DependencyInjection } from "./base";
+import { AppLoadedEvent } from "./constants";
 import { setupLoggers, setupPageRenderer } from "./helpers";
 import { LogManager, BackendService, PageRenderer, DateFormatter, TimeFormatter } from "./services";
 import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
@@ -22,4 +23,5 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     setupPageRenderer(DependencyInjectionInstance);
   });
   appInstance.run(DependencyInjection.getInstance());
+  window.dispatchEvent(AppLoadedEvent);
 })();

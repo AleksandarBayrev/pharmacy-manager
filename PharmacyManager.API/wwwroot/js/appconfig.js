@@ -6,3 +6,8 @@ window.pharmacyManagerConfiguration = (function () {
         loaderDivId: "loader"
     });
 })();
+window.loadBaseDependencies = async function () {
+    await new Promise(function (res, rej) {
+        setTimeout(() => res({}), 5000);
+    });
+};

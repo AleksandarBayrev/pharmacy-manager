@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './Shared/Base.css';
+import './shared/Base.css';
 import { Loader, PharmacyManagerApp } from './views';
 import { DependencyInjection } from './base';
 import { ILogManager } from './types';

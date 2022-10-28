@@ -6,8 +6,8 @@ import { DependencyInjection } from './base';
 
 let root: ReactDOM.Root
 
-export const app = (setup: () => void) => {
-    setup();
+export const app = async (setup: () => Promise<void>) => {
+    await setup();
     return {
         run: (DependencyInjection: DependencyInjection) => {
             window.RenderPharmacyManager = (rootDiv: string) => {

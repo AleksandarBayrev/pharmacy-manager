@@ -9,11 +9,9 @@ export type PageSettingsProps = {
 @observer
 export class PageSettings extends React.Component<PageSettingsProps> {
     private textChangeTimeout: NodeJS.Timeout | undefined = undefined;
-
     componentWillUnmount() {
-        this.props.store.stopUpdateInterval();
+        clearTimeout(this.textChangeTimeout);
     }
-
     render() {
         return (
             <div id="App-page-settings">

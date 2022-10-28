@@ -11,13 +11,6 @@ export type PageResultsProps = {
 
 @observer
 export class PageResults extends React.Component<PageResultsProps> {
-    async componentDidMount() {
-        await this.props.store.load();
-    }
-
-    async componentWillUnmount() {
-        await this.props.store.unload();
-    }
     render() {
         return (
             <div className='App-page-results'>

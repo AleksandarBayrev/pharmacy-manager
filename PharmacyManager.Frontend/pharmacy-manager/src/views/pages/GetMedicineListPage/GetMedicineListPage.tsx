@@ -12,6 +12,11 @@ export type GetMedicineListPageProps = {
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps> {
   async componentDidMount() {
     window.document.title = "Pharmacy Manager - Get Medicines";
+    await this.props.store.load();
+  }
+
+  async componentWillUnmount() {
+    await this.props.store.unload();
   }
 
   render() {

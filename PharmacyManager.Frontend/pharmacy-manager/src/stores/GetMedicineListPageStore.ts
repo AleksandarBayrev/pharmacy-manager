@@ -51,7 +51,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @action
     unload = async () => {
         clearTimeout(this.loadDataTimeout);
-        clearInterval(this.updateInterval);
+        this.stopUpdateInterval();
         this.medicines.replace([]);
         this.pages.set(1);
         this.resetRequestToDefaults();

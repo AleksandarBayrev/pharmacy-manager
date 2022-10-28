@@ -1,5 +1,5 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { AddMedicineRequest, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse } from "../types";
+import { AddMedicineRequest, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse, TranslationsResponse } from "../types";
 
 class BackendService implements IBackendService {
     private readonly baseUrl: string;
@@ -59,7 +59,22 @@ class BackendService implements IBackendService {
                 itemsPerPage: request.itemsPerPage
             }
         }
+    }
 
+    public async getTranslations(): Promise<TranslationsResponse> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/settings/translations`, {
+                method: "GET",
+                headers: this.getHeaders()
+            });
+            return await result.json() as TranslationsResponse;
+        } catch (err) {
+            this.logger.Error(err as Error);
+            return {
+                bg: {},
+                en: {}
+            }
+        }
     }
 
     private getHeaders(): HeadersInit {

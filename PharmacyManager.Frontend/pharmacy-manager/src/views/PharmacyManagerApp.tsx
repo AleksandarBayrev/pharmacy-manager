@@ -5,7 +5,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { DependencyInjection } from '../base';
 import { NotFoundPage } from './pages';
 import { DateTime } from '../shared';
-import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter } from '../types';
+import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, Language } from '../types';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -14,12 +14,13 @@ export type PharmacyManagerAppProps = {
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps> {
   render() {
     const pageRenderer = this.props.DependencyInjection.getService<IPageRenderer>("IPageRenderer");
+    const translationsManager = this.props.DependencyInjection.getService<ITranslationManager>("ITranslationManager");
     return (
       <div className="App">
         <BrowserRouter>
           <header className="App-header">
             <div className='App-menu'>
-              <Link to={`${pages.Home}`} className='App-menu-item'>Home</Link>
+              <Link to={`${pages.Home}`} className='App-menu-item'>{translationsManager.getTranslation(Language.English, "MENU_HOME")}</Link>
               <Link to={`${pages.GetMedicinesList}`} className='App-menu-item'>Get Medicine List</Link>
               <Link to={`${pages.AddMedicines}`} className='App-menu-item'>Add Medicine</Link>
               <Link to={`${pages.UpdateMedicines}`} className='App-menu-item'>Update Medicine</Link>

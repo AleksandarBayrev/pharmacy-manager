@@ -3,8 +3,9 @@ import { DependencyInjection } from "./base";
 import { AppLoadedEvent } from "./constants";
 import { setupLoggers, setupPageRenderer } from "./helpers";
 import { LogManager, BackendService, PageRenderer, DateFormatter, TimeFormatter } from "./services";
+import { TranslationManager } from "./services/TranslationManager";
 import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager } from "./types";
 
 (async () => {
   DependencyInjection.setupInstance(console.log);
@@ -14,6 +15,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     DependencyInjectionInstance.registerService<ILogManager>("ILogManager", "singleton", LogManager, []);
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     setupLoggers(logManager);
+    DependencyInjectionInstance.registerService<ITranslationManager>("ITranslationManager", "singleton", TranslationManager, [DependencyInjection.getInstance().getService<IBackendService>("IBackendService")]);
     DependencyInjectionInstance.registerService<IBackendService>("IBackendService", "singleton", BackendService, [window.pharmacyManagerConfiguration.baseApiUrl, logManager.getLogger("App")]);
     DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
     DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);

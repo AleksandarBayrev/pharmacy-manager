@@ -12,7 +12,7 @@ export class ItemsPerPage extends React.Component<ItemsPerPageProps> {
         return (
             <>
                 <select onChange={this.props.onChangeHandler} disabled={this.props.shouldDisable}>
-                    {this.props.options.map(x => <option value={x} selected={this.props.selectedOption == x}>{x}</option>)}
+                    {this.props.options.map(x => <option value={x} selected={this.props.selectedOption === x}>{x}</option>)}
                 </select>
             </>
         )

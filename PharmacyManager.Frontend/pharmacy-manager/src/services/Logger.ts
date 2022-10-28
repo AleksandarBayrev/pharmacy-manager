@@ -7,8 +7,11 @@ class Logger implements ILogger {
         this.context = context;
     }
 
-    Log = (message: string, level: LogLevel) => {
-        this.getLoggingFunction(level)(`[${this.context}] (${new Date().toISOString()}) => ${message}`);
+    Info = (message: string) => {
+        this.getLoggingFunction('info')(`[${this.context}] (${new Date().toISOString()}) => ${message}`);
+    }
+    Error = (error: Error) => {
+        this.getLoggingFunction('error')(`[${this.context}] (${new Date().toISOString()}) => Error: ${error.name}, Message: ${error.message}, Stack: ${error.stack}`);
     }
 
     private getLoggingFunction(level: LogLevel) {

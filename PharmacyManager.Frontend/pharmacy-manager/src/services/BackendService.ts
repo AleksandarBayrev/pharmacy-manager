@@ -1,11 +1,15 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { AddMedicineRequest, IBackendService, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse } from "../types";
+import { AddMedicineRequest, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse } from "../types";
 
 class BackendService implements IBackendService {
     private readonly baseUrl: string;
+    private readonly logger: ILogger;
     
-    constructor(baseUrl: string) {
+    constructor(
+        baseUrl: string,
+        logger: ILogger) {
         this.baseUrl = baseUrl;
+        this.logger = logger;
     }
     
     public async addMedicine(addMedicineRequest: AddMedicineRequest): Promise<MedicineModel | undefined> {
@@ -17,7 +21,7 @@ class BackendService implements IBackendService {
             });
             return await result.json() as MedicineModel;
         } catch (err) {
-            console.error(err);
+            this.logger.Error(err as Error);
             return;
         }
     }
@@ -31,7 +35,7 @@ class BackendService implements IBackendService {
             });
             return await result.json() as MedicineResponse;
         } catch (err) {
-            console.error(err);
+            this.logger.Error(err as Error);
             return {
                 medicines: [],
                 pages: 1
@@ -48,7 +52,7 @@ class BackendService implements IBackendService {
             });
             return await result.json() as PageCalculationsResponse;
         } catch (err) {
-            console.error(err);
+            this.logger.Error(err as Error);
             return {
                 pages: 1,
                 page: request.page,

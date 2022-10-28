@@ -12,16 +12,17 @@ class PageRenderer implements IPageRenderer {
     }
 
     add(path: string, instance: JSX.Element): void {
-        this.logger.Log(`Registering page for path = ${path}`, 'info');
+        this.logger.Info(`Registering page for path = ${path}`);
         this.pages.set(path, instance);
     }
     get(path: string): JSX.Element {
         const page = this.pages.get(path);
         if (!page) {
-            this.logger.Log(`Page path ${path} not registered in PageRenderer`, 'error');
-            throw new Error(`Page path ${path} not registered in PageRenderer`);
+            const error = new Error(`Page path ${path} not registered in PageRenderer`);
+            this.logger.Error(error);
+            throw error;
         }
-        this.logger.Log(`Registering page for path = ${path}`, 'info');
+        this.logger.Info(`Registering page for path = ${path}`);
         return page;
     }
 }

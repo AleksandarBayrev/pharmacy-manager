@@ -1,11 +1,20 @@
 import React from "react";
+import { ILogger } from "../types";
 import "./Loader.css";
-export class Loader extends React.Component {
+
+type LoaderProps = {
+    logger: ILogger;
+}
+
+export class Loader extends React.Component<LoaderProps> {
+    constructor(props: LoaderProps) {
+        super(props);
+    }
     componentDidMount(): void {
-        console.log("Rendering loader...");
+        this.props.logger.Info("Rendering loader...");
     }
     componentWillUnmount(): void {
-        console.log("Removing loader...");
+        this.props.logger.Info("Removing loader...");
     }
     render() {
         return <div className="Loader">Loading application...</div>

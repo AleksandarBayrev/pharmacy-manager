@@ -1,5 +1,6 @@
 export type LogLevel = 'info' | 'error';
 
 export interface ILogger {
-    Log: (message: string, level: LogLevel) => void;
+    Info: (message: string) => void;
+    Error: (error: Error) => void;
 }

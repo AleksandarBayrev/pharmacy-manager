@@ -20,7 +20,7 @@ namespace PharmacyManager.API.Controllers
         [HttpPost("addMedicine")]
         public Task<MedicineModel> AddMedicine([FromBody] AddMedicineFeature.AddMedicineFeatureQuery request)
         {
-            return mediator.Send(request);
+            return this.mediator.Send(request);
         }
 
         [HttpPost("getAllMedicines")]

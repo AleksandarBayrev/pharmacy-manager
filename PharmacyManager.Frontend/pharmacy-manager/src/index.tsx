@@ -9,6 +9,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
 (async () => {
   DependencyInjection.setupInstance(console.log);
   const appInstance = await app(async () => {
+    await new Promise((res, rej) => setTimeout(() => {res({})}, 5000));
     const DependencyInjectionInstance = DependencyInjection.getInstance();
     DependencyInjectionInstance.registerService<ILogManager>("ILogManager", "singleton", LogManager, []);
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");

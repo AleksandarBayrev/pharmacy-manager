@@ -28,6 +28,7 @@ namespace PharmacyManager.API.MediatRFeatures
             {
                 var keys = new List<string>();
                 keys.Add("LOADING_TEXT");
+                keys.Add("MENU_HOME");
                 return keys;
             }
 
@@ -35,6 +36,7 @@ namespace PharmacyManager.API.MediatRFeatures
             {
                 var dictionary = new ConcurrentDictionary<string, string>();
                 dictionary.TryAdd("LOADING_TEXT", "Зареждам, моля изчакайте...");
+                dictionary.TryAdd("MENU_HOME", "Начало");
                 return dictionary;
             }
 
@@ -42,12 +44,22 @@ namespace PharmacyManager.API.MediatRFeatures
             {
                 var dictionary = new ConcurrentDictionary<string, string>();
                 dictionary.TryAdd("LOADING_TEXT", "Loading application, please wait...");
+                dictionary.TryAdd("MENU_HOME", "Home");
                 return dictionary;
+            }
+
+            private bool ValidateTranslations()
+            {
+                return keys.All(x => this.en.ContainsKey(x) && this.bg.ContainsKey(x));
             }
 
             public async Task<TranslationsResponse> Handle(GetTranslationsFeatureQuery request, CancellationToken cancellationToken)
             {
                 await this.logger.Log(loggerContext, "Getting translations");
+                if (!ValidateTranslations())
+                {
+                    throw new NullReferenceException("Not all keys are present in the dictionaries");
+                }
                 return new TranslationsResponse
                 {
                     BG = bg,

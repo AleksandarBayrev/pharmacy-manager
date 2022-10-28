@@ -16,7 +16,8 @@ test('matches snapshot', () => {
     const backendService: IBackendService = {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
-      getInitialPageCalculations: jest.fn()
+      getInitialPageCalculations: jest.fn(),
+      getTranslations: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn(),

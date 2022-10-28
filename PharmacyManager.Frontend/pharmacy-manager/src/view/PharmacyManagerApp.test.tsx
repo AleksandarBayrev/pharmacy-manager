@@ -57,6 +57,8 @@ test('matches snapshot', () => {
       resetRequestToDefaults: jest.fn()
     };
     const getDateTimeStore: IGetDateTimeStore = {
+      load: jest.fn(),
+      unload: jest.fn(),
       date: observable.box(new Date()),
       setDate: jest.fn()
     };

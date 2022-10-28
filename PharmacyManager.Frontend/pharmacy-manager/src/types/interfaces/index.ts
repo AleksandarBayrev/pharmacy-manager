@@ -7,3 +7,4 @@ export * from "./ITimeFormatter";
 export * from "./IGetMedicineListPageStore";
 export * from "./IGetDateTimeStore";
 export * from "./IAddMedicinePageStore";
+export * from "./IBaseStore";

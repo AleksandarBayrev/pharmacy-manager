@@ -1,8 +1,9 @@
 import { IObservableValue, IObservableArray } from "mobx";
 import { MedicineModel } from "../models";
 import { MedicineRequest } from "../requests";
+import { IBaseStore } from "./IBaseStore";
 
-export interface IGetMedicineListPageStore {
+export interface IGetMedicineListPageStore extends IBaseStore {
     request: MedicineRequest;
     medicines: IObservableArray<MedicineModel>; 
     pages: IObservableValue<number>;
@@ -11,8 +12,6 @@ export interface IGetMedicineListPageStore {
     showPageCount: IObservableValue<boolean>;
     readonly defaultRequest: MedicineRequest;
 
-    load(): Promise<void>;
-    unload(): Promise<void>;
     updateRequestProperties(request: Partial<MedicineRequest>): void;
     updateCurrentRequest(): void;
     resetUpdateInterval(): void;

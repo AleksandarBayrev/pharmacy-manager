@@ -8,6 +8,8 @@ class GetDateTimeStore implements IGetDateTimeStore {
     constructor() {
         this.date = observable.box(new Date());
     }
+    async load(): Promise<void> {}
+    async unload(): Promise<void> {}
 
     @action.bound
     public setDate(date: Date) {

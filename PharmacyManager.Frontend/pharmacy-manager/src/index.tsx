@@ -15,10 +15,10 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     DependencyInjectionInstance.registerService<ILogManager>("ILogManager", "singleton", LogManager, []);
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     setupLoggers(logManager);
+    DependencyInjectionInstance.registerService<IBackendService>("IBackendService", "singleton", BackendService, [window.pharmacyManagerConfiguration.baseApiUrl, logManager.getLogger("App")]);
     DependencyInjectionInstance.registerService<ITranslationManager>("ITranslationManager", "singleton", TranslationManager, [DependencyInjection.getInstance().getService<IBackendService>("IBackendService")]);
     const translationManager = DependencyInjectionInstance.getService<ITranslationManager>("ITranslationManager");
     await translationManager.loadTranslations();
-    DependencyInjectionInstance.registerService<IBackendService>("IBackendService", "singleton", BackendService, [window.pharmacyManagerConfiguration.baseApiUrl, logManager.getLogger("App")]);
     DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
     DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);
     DependencyInjectionInstance.registerService<ITimeFormatter>("ITimeFormatter", "singleton", TimeFormatter, []);

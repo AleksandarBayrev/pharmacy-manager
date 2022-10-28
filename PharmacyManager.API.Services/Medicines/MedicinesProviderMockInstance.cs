@@ -8,15 +8,18 @@ namespace PharmacyManager.API.Services.Medicines
     {
         private readonly ILogger logger;
         private readonly IIdGenerator idGenerator;
+        private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
         private IList<MedicineModel> _medicines;
         private readonly string loggerContext = nameof(MedicinesProviderMockInstance);
 
         public MedicinesProviderMockInstance(
             ILogger logger,
-            IIdGenerator idGenerator)
+            IIdGenerator idGenerator,
+            IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)
         {
             this.logger = logger;
             this.idGenerator = idGenerator;
+            this.medicinesFilter = medicinesFilter;
             this._medicines = new List<MedicineModel>
             {
                 new MedicineModel
@@ -80,8 +83,9 @@ namespace PharmacyManager.API.Services.Medicines
         public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
         {
             return await OrderDescending(
-                await ApplyFilters(
-                    request
+                await this.medicinesFilter.ApplyFilters(
+                    request,
+                    this._medicines
                 ));
         }
 
@@ -96,49 +100,9 @@ namespace PharmacyManager.API.Services.Medicines
             return medicines.OrderByDescending(x => x.ExpirationDate);
         }
 
-        private async Task<IEnumerable<MedicineModel>> ApplyFilters(MedicineRequest request)
-        {
-            var filteredMedicines = _medicines.AsEnumerable();
-            return await FilterByAvailableOnly(request,
-                await FilterByNotExpired(request,
-                    await FilterByManufacturer(request, filteredMedicines)
-                )
-            );
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByAvailableOnly(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.AvailableOnly)
-            {
-                await logger.Log(this.loggerContext, "Filtering by Available Only");
-                filteredMedicines = filteredMedicines.Where(x => x.Quantity > 0);
-            }
-            return filteredMedicines;
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByNotExpired(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.NotExpired)
-            {
-                await logger.Log(this.loggerContext, "Filtering by Not Expired");
-                filteredMedicines = filteredMedicines.Where(x => x.ExpirationDate > DateTime.Now);
-            }
-            return filteredMedicines;
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByManufacturer(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.Manufacturer != null && request.Manufacturer.Length != 0)
-            {
-                await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}");
-                filteredMedicines = filteredMedicines.Where(x => x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower()));
-            }
-            return filteredMedicines;
-        }
-
         private async Task<int> GetCount(MedicineRequest request)
         {
-            var result = await OrderDescending(await ApplyFilters(request));
+            var result = await OrderDescending(await this.medicinesFilter.ApplyFilters(request, this._medicines));
             return result.Count();
         }
     }

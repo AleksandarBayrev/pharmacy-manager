@@ -48,6 +48,10 @@ namespace PharmacyManager.API.Extensions
             services.AddSingleton<IIdGenerator, IdGenerator>();
             services.AddSingleton<IPriceParser, PriceParser>();
             #endregion
+
+            #region Instantiate Medicines filter
+            services.AddSingleton<IMedicinesFilter<MedicineRequest, MedicineModel>, MedicinesFilter>();
+            #endregion
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -64,6 +68,7 @@ namespace PharmacyManager.API.Extensions
                 var appConfig = sp.GetService<IApplicationConfiguration>();
                 var idGenerator = sp.GetService<IIdGenerator>();
                 var logger = sp.GetService<PharmacyManager.API.Interfaces.Base.ILogger>();
+                var medicinesFilter = sp.GetService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
 
                 if (appConfig == null)
                 {
@@ -79,10 +84,15 @@ namespace PharmacyManager.API.Extensions
                 {
                     throw new NullReferenceException("IdGenerator not available!");
                 }
+                
+                if (medicinesFilter == null)
+                {
+                    throw new NullReferenceException("MedicinesFilter not available!");
+                }
 
                 if (appConfig.UseMocks)
                 {
-                    return new MedicinesProviderMockInstance(logger, idGenerator);
+                    return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter);
                 }
                 return new MedicinesProvider();
             });

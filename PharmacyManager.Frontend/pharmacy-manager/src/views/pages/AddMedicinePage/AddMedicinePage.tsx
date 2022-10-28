@@ -15,8 +15,9 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
         super(props);
         this.dateFormatter = props.dateFormatter;
     }
-    componentDidMount(): void {
+    async componentDidMount() {
         window.document.title = "Pharmacy Manager - Add Medicine";
+        await this.props.store.load();
     }
     async componentWillUnmount() {
         await this.props.store.unload();

@@ -40,6 +40,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
 
     @action
     load = async () => {
+        this.loadingData.set(true);
         const pageCalculations = await this.backendService.getInitialPageCalculations(this.request);
         this.pages.set(pageCalculations.pages);
         this.showPageCount.set(true);

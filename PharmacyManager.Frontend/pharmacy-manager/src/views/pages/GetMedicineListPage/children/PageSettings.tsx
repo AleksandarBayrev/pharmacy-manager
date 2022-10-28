@@ -48,7 +48,7 @@ export class PageSettings extends React.Component<PageSettingsProps> {
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'><button onClick={this.props.store.resetRequestToDefaults} disabled={this.props.store.loadingData.get()}>Reset to default request</button></div>
+                        <div className='column'><button onClick={this.onResetRequest} disabled={this.props.store.loadingData.get()}>Reset to default request</button></div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
@@ -120,5 +120,9 @@ export class PageSettings extends React.Component<PageSettingsProps> {
       this.props.store.stopUpdateInterval();
       this.props.store.updateRequestProperties(updatedProp);
       this.props.store.refetch(false);
+    }
+
+    private onResetRequest = (e: React.MouseEvent<HTMLButtonElement>) => {
+        this.props.store.resetRequestToDefaults(true);
     }
 }

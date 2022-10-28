@@ -51,10 +51,10 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @action
     unload = async () => {
         clearTimeout(this.loadDataTimeout);
+        this.resetRequestToDefaults(false);
         this.stopUpdateInterval();
         this.medicines.replace([]);
         this.pages.set(1);
-        this.resetRequestToDefaults();
         this.loadingData.set(false);
         this.isInitialRequestMade.set(false);
         this.showPageCount.set(false); 
@@ -132,16 +132,18 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     }
 
     @action
-    public resetRequestToDefaults = () => {
+    public resetRequestToDefaults = (reloadData: boolean) => {
         this.request.availableOnly = this.defaultRequest.availableOnly;
         this.request.itemsPerPage = this.defaultRequest.itemsPerPage;
         this.request.manufacturer = this.defaultRequest.manufacturer;
         this.request.notExpired = this.defaultRequest.notExpired;
         this.request.page = this.defaultRequest.page;
-        this.getMedicines(this.request, true)
-            .then(() => {
-                this.resetUpdateInterval();
-            });
+        if (reloadData) {
+            this.getMedicines(this.request, true)
+                .then(() => {
+                    this.resetUpdateInterval();
+                });
+        }
     }
 }
 

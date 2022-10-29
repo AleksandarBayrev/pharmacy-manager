@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
 import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter, Language } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
@@ -88,9 +88,13 @@ test('matches snapshot', () => {
       selectLanguage: jest.fn(),
       language: observable.box(Language.English)
     };
+    const translationManager: ITranslationManager = {
+      loadTranslations: jest.fn(),
+      getTranslation: jest.fn()
+    }
     pageRenderer.add(pages.Home, <HomePage />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} languageSelectorStore={languageSelectorStore} translationManager={translationManager} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {
       'IPageRenderer': pageRenderer,
@@ -99,7 +103,9 @@ test('matches snapshot', () => {
       'IDateFormatter': dateFormatter,
       'ITimeFormatter': timeFormatter,
       'IGetMedicineListPageStore': getMedicineListPageStore,
-      'IGetDateTimeStore': getDateTimeStore
+      'IGetDateTimeStore': getDateTimeStore,
+      'ILanguageSelectorStore': languageSelectorStore,
+      'ITranslationManager': translationManager
     }
   })();
   const DI: DependencyInjection = {

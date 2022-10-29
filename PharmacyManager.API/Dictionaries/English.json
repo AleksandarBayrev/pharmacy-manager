@@ -1,4 +1,19 @@
 ﻿{
   "LOADING_TEXT": "Loading, please wait...",
-  "MENU_HOME": "Home"
+  "MENU_HOME": "Home",
+  "MENU_GET_MEDICINE_LIST": "List of Medicines",
+  "MENU_ADD_MEDICINE": "Add Medicine",
+  "MENU_UPDATE_MEDICINE": "Update Medicine",
+  "HEADER_ADD_MEDICINE": "Add Medicine",
+  "FORM_MEDICINE_NAME": "Medicine Name",
+  "FORM_MEDICINE_MANUFACTURER": "Medicine Manufacturer",
+  "FORM_MEDICINE_DESCRIPTION": "Medicine Description",
+  "FORM_MEDICINE_MANUFACTURING_DATE": "Medicine Manufacturing Date",
+  "FORM_MEDICINE_EXPIRATION_DATE": "Medicine Expiration Date",
+  "FORM_MEDICINE_PRICE": "Medicine Price",
+  "FORM_MEDICINE_QUANTITY": "Medicine Quantity",
+  "FORM_MEDICINE_ADD": "Add Medicine",
+  "FORM_MEDICINE_CLEAR": "Clear Form",
+  "FORM_MEDICINE_ADD_SUCCESS": "Medicine was added successfully",
+  "FORM_MEDICINE_ADD_FAILURE": "Medicine could not be added"
 }

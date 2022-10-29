@@ -24,9 +24,9 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
           <header className="App-header">
             <div className='App-menu'>
               <Link to={`${pages.Home}`} className='App-menu-item'>{translationsManager.getTranslation(languageSelectorStore.language.get(), "MENU_HOME")}</Link>
-              <Link to={`${pages.GetMedicinesList}`} className='App-menu-item'>Get Medicine List</Link>
-              <Link to={`${pages.AddMedicines}`} className='App-menu-item'>Add Medicine</Link>
-              <Link to={`${pages.UpdateMedicines}`} className='App-menu-item'>Update Medicine</Link>
+              <Link to={`${pages.GetMedicinesList}`} className='App-menu-item'>{translationsManager.getTranslation(languageSelectorStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
+              <Link to={`${pages.AddMedicines}`} className='App-menu-item'>{translationsManager.getTranslation(languageSelectorStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
+              <Link to={`${pages.UpdateMedicines}`} className='App-menu-item'>{translationsManager.getTranslation(languageSelectorStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
             </div>
           </header>
           <div className='App-page-container'>

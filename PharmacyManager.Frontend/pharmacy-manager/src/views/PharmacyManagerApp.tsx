@@ -35,7 +35,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
                 store={this.props.DependencyInjection.getService<IGetDateTimeStore>("IGetDateTimeStore")}
                 dateFormatter={this.props.DependencyInjection.getService<IDateFormatter>("IDateFormatter")}
                 timeFormatter={this.props.DependencyInjection.getService<ITimeFormatter>("ITimeFormatter")}
-                phrase='Current time: ' />
+                phrase={translationsManager.getTranslation(languageSelectorStore.language.get(), "CURRENT_TIME")} />
             </div>
             <div className='App-language-selector-container'>
               <LanguageSelector

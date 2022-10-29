@@ -17,5 +17,6 @@
   "FORM_MEDICINE_ADD_SUCCESS": "Medicine was added successfully",
   "FORM_MEDICINE_ADD_FAILURE": "Medicine could not be added",
   "LANG_BULGARIAN": "Bulgarian",
-  "LANG_ENGLISH": "English"
+  "LANG_ENGLISH": "English",
+  "CURRENT_TIME": "Current time"
 }

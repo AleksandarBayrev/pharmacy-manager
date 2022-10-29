@@ -1,9 +1,10 @@
 import React from "react";
-import { ILogger } from "../types";
+import { ILogger, ITranslationManager, Language } from "../types";
 import "./Loader.css";
 
 type LoaderProps = {
     logger: ILogger;
+    translationManager: ITranslationManager;
 }
 
 export class Loader extends React.Component<LoaderProps> {
@@ -17,6 +18,6 @@ export class Loader extends React.Component<LoaderProps> {
         this.props.logger.Info("Removing loader...");
     }
     render() {
-        return <div className="Loader">Loading application...</div>
+        return <div className="Loader">{this.props.translationManager.getTranslation(Language.English, "LOADING_TEXT")}</div>
     }
 }

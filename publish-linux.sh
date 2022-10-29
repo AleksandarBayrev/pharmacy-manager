@@ -1,5 +1,6 @@
 #!/bin/bash
-rm -rfv ./PharmacyManger.API/bin
+rm -rfv ./**/bin
+rm -rfv ./**/obj
 cd ./PharmacyManager.Frontend/pharmacy-manager
 npm run copy-to-server
 cd ../../

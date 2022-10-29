@@ -2,6 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { IDateFormatter, IAddMedicinePageStore, ILanguageSelectorStore, ITranslationManager } from "../../../types";
 import "../../../shared/Styles.css";
+import { Lambda, observe } from "mobx";
 
 export type AddMedicinePageProps = {
     dateFormatter: IDateFormatter;
@@ -13,15 +14,21 @@ export type AddMedicinePageProps = {
 @observer
 export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
     private dateFormatter: IDateFormatter;
+    private pageTitleObserver!: Lambda;
     constructor(props: AddMedicinePageProps) {
         super(props);
         this.dateFormatter = props.dateFormatter;
     }
     async componentDidMount() {
-        window.document.title = `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.languageSelectorStore.language.get(), "HEADER_ADD_MEDICINE")}`;
+        const pageTitle = `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.languageSelectorStore.language.get(), "HEADER_ADD_MEDICINE")}`;
+        this.pageTitleObserver = observe(this.props.languageSelectorStore.language, () => {
+            window.document.title = pageTitle;
+        });
+        window.document.title = pageTitle;
         await this.props.store.load();
     }
     async componentWillUnmount() {
+        this.pageTitleObserver();
         await this.props.store.unload();
     }
     render(): React.ReactNode {

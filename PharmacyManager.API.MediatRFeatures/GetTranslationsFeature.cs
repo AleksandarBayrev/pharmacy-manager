@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Models.APIResponses;
-using System.Collections.Concurrent;
 
 namespace PharmacyManager.API.MediatRFeatures
 {
@@ -11,46 +10,24 @@ namespace PharmacyManager.API.MediatRFeatures
 
         public class GeGetTranslationsFeatureQueryHandler : IRequestHandler<GetTranslationsFeatureQuery, TranslationsResponse>
         {
+            private readonly IApplicationConfiguration applicationConfiguration;
             private readonly ILogger logger;
+            private readonly ITranslationManager translationManager;
             private readonly string loggerContext = nameof(GeGetTranslationsFeatureQueryHandler);
-            private readonly IDictionary<string, string> bg;
-            private readonly IDictionary<string, string> en;
-            private static readonly IList<string> keys = BuildKeys();
 
-            public GeGetTranslationsFeatureQueryHandler(ILogger logger)
+            public GeGetTranslationsFeatureQueryHandler(
+                IApplicationConfiguration applicationConfiguration,
+                ILogger logger,
+                ITranslationManager translationManager)
             {
+                this.applicationConfiguration = applicationConfiguration;
                 this.logger = logger;
-                this.bg = GetBulgarianTranslations();
-                this.en = GetEnglishTranslations();
-            }
-
-            private static IList<string> BuildKeys()
-            {
-                var keys = new List<string>();
-                keys.Add("LOADING_TEXT");
-                keys.Add("MENU_HOME");
-                return keys;
-            }
-
-            private IDictionary<string, string> GetBulgarianTranslations()
-            {
-                var dictionary = new ConcurrentDictionary<string, string>();
-                dictionary.TryAdd("LOADING_TEXT", "Зареждам, моля изчакайте...");
-                dictionary.TryAdd("MENU_HOME", "Начало");
-                return dictionary;
-            }
-
-            private IDictionary<string, string> GetEnglishTranslations()
-            {
-                var dictionary = new ConcurrentDictionary<string, string>();
-                dictionary.TryAdd("LOADING_TEXT", "Loading application, please wait...");
-                dictionary.TryAdd("MENU_HOME", "Home");
-                return dictionary;
+                this.translationManager = translationManager;
             }
 
             private bool ValidateTranslations()
             {
-                return keys.All(x => this.en.ContainsKey(x) && this.bg.ContainsKey(x));
+                return this.applicationConfiguration.DictionaryValidationKeys.All(x => this.translationManager.EN.ContainsKey(x) && this.translationManager.BG.ContainsKey(x));
             }
 
             public async Task<TranslationsResponse> Handle(GetTranslationsFeatureQuery request, CancellationToken cancellationToken)
@@ -62,8 +39,8 @@ namespace PharmacyManager.API.MediatRFeatures
                 }
                 return new TranslationsResponse
                 {
-                    BG = bg,
-                    EN = en
+                    BG = this.translationManager.BG,
+                    EN = this.translationManager.EN
                 };
             }
         }

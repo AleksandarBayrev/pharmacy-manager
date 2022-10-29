@@ -4,7 +4,7 @@ import { AppLoadedEvent } from "./constants";
 import { setupBaseDependencies, setupPageRenderer, showLogo } from "./helpers";
 import { PageRenderer, DateFormatter, TimeFormatter } from "./services";
 import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
 
 (async () => {
   DependencyInjection.setupInstance(console.log);
@@ -20,6 +20,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     DependencyInjectionInstance.registerService<ITimeFormatter>("ITimeFormatter", "singleton", TimeFormatter, []);
     DependencyInjectionInstance.registerService<IGetMedicineListPageStore>("IGetMedicineListPageStore", "singleton", GetMedicineListPageStore, [backendService]);
     DependencyInjectionInstance.registerService<IGetDateTimeStore>("IGetDateTimeStore", "singleton", GetDateTimeStore, []);
+    DependencyInjectionInstance.registerService<ILanguageSelectorStore>("ILanguageSelectorStore", "singleton", LanguageSelectorStore, []);
     DependencyInjectionInstance.registerService<IAddMedicinePageStore>("IAddMedicinePageStore", "singleton", AddMedicinePageStore, [backendService]);
     setupPageRenderer(DependencyInjectionInstance);
   });

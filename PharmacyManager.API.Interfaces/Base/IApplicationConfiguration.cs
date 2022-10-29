@@ -5,5 +5,7 @@
         public bool EnableSwagger { get; }
         public bool UseMocks { get; }
         public string RelativeHtmlPath { get; }
+        public IEnumerable<string> Dictionaries { get; }
+        public IEnumerable<string> DictionaryValidationKeys { get; }
     }
 }

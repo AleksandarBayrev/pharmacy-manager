@@ -4,8 +4,8 @@ import { pages } from '../constants';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { DependencyInjection } from '../base';
 import { NotFoundPage } from './pages';
-import { DateTime } from '../shared';
-import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, Language } from '../types';
+import { DateTime, LanguageSelector } from '../shared';
+import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, Language, ILanguageSelectorStore } from '../types';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -33,6 +33,11 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
                 dateFormatter={this.props.DependencyInjection.getService<IDateFormatter>("IDateFormatter")}
                 timeFormatter={this.props.DependencyInjection.getService<ITimeFormatter>("ITimeFormatter")}
                 phrase='Current time: ' />
+            </div>
+            <div className='App-language-selector-container'>
+              <LanguageSelector
+                store={this.props.DependencyInjection.getService<ILanguageSelectorStore>("ILanguageSelectorStore")}
+                translationManager={this.props.DependencyInjection.getService<ITranslationManager>("ITranslationManager")} />
             </div>
             <div className='App-page'>
               <Routes>

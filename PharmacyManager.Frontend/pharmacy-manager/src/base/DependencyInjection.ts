@@ -38,12 +38,12 @@ export class DependencyInjection {
         if (this.serviceDescriptors.has(baseType) || this.services.has(baseType)) {
             throw new Error(`Base type ${baseType} already registered in DI`);
         }
-        this.logger(`Registering ${baseType} for ${classDefinition.name} class`);
         this.serviceDescriptors.set(baseType, {
             serviceLifespan,
             classDefinition,
             constructorParameters
         });
+        this.logger(`Registering ${baseType} for ${this.serviceDescriptors.get(baseType)?.classDefinition.className} class`);
         this.services.set(baseType,
             new classDefinition(...constructorParameters));
     }

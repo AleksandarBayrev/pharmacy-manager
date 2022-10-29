@@ -3,7 +3,7 @@ import { DependencyInjection } from "./base";
 import { AppLoadedEvent } from "./constants";
 import { setupBaseDependencies, setupPageRenderer, showLogo } from "./helpers";
 import { PageRenderer, DateFormatter, TimeFormatter } from "./services";
-import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
+import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore, LanguageSelectorStore } from "./stores";
 import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
 
 (async () => {

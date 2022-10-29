@@ -24,7 +24,7 @@ class LanguageSelectorStore implements ILanguageSelectorStore {
 
     private loadLanguageFromStorage() {
         try {
-            return localStorage.getItem(this.storageKey) as Language;
+            return localStorage.getItem(this.storageKey) as Language ?? Language.English;
         } catch {
             return Language.English;
         }

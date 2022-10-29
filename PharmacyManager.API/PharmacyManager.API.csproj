@@ -17,8 +17,11 @@
     <ProjectReference Include="..\PharmacyManager.API.MediatRFeatures\PharmacyManager.API.MediatRFeatures.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Models\PharmacyManager.API.Models.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Services\PharmacyManager.API.Services.csproj" />
-	<Folder Include=".\Frontend" CopyToPublishDirectory="Always" />
-	<Folder Include=".\Dictionaries" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".\Frontend\**\*" CopyToPublishDirectory="Always" />
+	  <Content Include=".\Dictionaries\**\*" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

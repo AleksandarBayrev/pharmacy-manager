@@ -44,7 +44,7 @@ namespace PharmacyManager.API.MediatRFeatures
             {
                 var dictionary = new ConcurrentDictionary<string, string>();
                 dictionary.TryAdd("LOADING_TEXT", "Loading application, please wait...");
-                //dictionary.TryAdd("MENU_HOME", "Home");
+                dictionary.TryAdd("MENU_HOME", "Home");
                 return dictionary;
             }
 

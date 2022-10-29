@@ -93,7 +93,7 @@ test('matches snapshot', () => {
       getTranslation: jest.fn()
     }
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} languageSelectorStore={languageSelectorStore} translationManager={translationManager} />);
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} languageSelectorStore={languageSelectorStore} translationManager={translationManager} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {

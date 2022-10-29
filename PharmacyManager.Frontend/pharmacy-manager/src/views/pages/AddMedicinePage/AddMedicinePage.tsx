@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { IDateFormatter, IAddMedicinePageStore, ILanguageSelectorStore, ITranslationManager } from "../../../types";
 import "../../../shared/Styles.css";
-import { Lambda, observe } from "mobx";
+import { computed, Lambda, observe } from "mobx";
 
 export type AddMedicinePageProps = {
     dateFormatter: IDateFormatter;
@@ -19,15 +19,14 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
         super(props);
         this.dateFormatter = props.dateFormatter;
     }
-    async componentDidMount() {
-        const pageTitle = `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.languageSelectorStore.language.get(), "HEADER_ADD_MEDICINE")}`;
+    componentDidMount = async () => {
         this.pageTitleObserver = observe(this.props.languageSelectorStore.language, () => {
-            window.document.title = pageTitle;
+            window.document.title = this.pageTitle;
         });
-        window.document.title = pageTitle;
+        window.document.title = this.pageTitle;
         await this.props.store.load();
     }
-    async componentWillUnmount() {
+    componentWillUnmount = async() => {
         this.pageTitleObserver();
         await this.props.store.unload();
     }
@@ -146,6 +145,11 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                 </div>
             </div>
         )
+    }
+
+    @computed
+    private get pageTitle() {
+        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.languageSelectorStore.language.get(), "HEADER_ADD_MEDICINE")}`
     }
 
     private clearInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

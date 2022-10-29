@@ -5,6 +5,7 @@
   "MENU_ADD_MEDICINE": "Add Medicine",
   "MENU_UPDATE_MEDICINE": "Update Medicine",
   "HEADER_ADD_MEDICINE": "Add Medicine",
+  "HEADER_GET_MEDICINE_LIST": "List of Medicines",
   "FORM_MEDICINE_NAME": "Medicine Name",
   "FORM_MEDICINE_MANUFACTURER": "Medicine Manufacturer",
   "FORM_MEDICINE_DESCRIPTION": "Medicine Description",
@@ -18,5 +19,14 @@
   "FORM_MEDICINE_ADD_FAILURE": "Medicine could not be added",
   "LANG_BULGARIAN": "Bulgarian",
   "LANG_ENGLISH": "English",
-  "CURRENT_TIME": "Current time: "
+  "CURRENT_TIME": "Current time: ",
+  "FORM_GET_MEDICINE_SHOW_AVAILABLE": "Show only available Medicines",
+  "FORM_GET_MEDICINE_SHOW_NOT_EXPIRED": "Show only not expired Medicines",
+  "FORM_GET_MEDICINE_PAGE": "Page",
+  "FORM_GET_MEDICINE_ITEMS_PER_PAGE": "Medicines per Page",
+  "FORM_GET_MEDICINE_MANUFACTURER": "Manufacturer",
+  "FORM_GET_MEDICINE_RESET_REQUEST": "Clear form",
+  "FORM_GET_MEDICINE_AVAILABLE_PAGES": "Available pages: ",
+  "FORM_GET_MEDICINE_LOADING_PAGE_COUNT": "Loading page count...",
+  "FORM_GET_MEDICINE_LOADING_DATA": "Loading data, please wait"
 }

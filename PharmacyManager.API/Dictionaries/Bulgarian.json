@@ -5,6 +5,7 @@
   "MENU_ADD_MEDICINE": "Добави лекарство",
   "MENU_UPDATE_MEDICINE": "Промени данни за лекарство",
   "HEADER_ADD_MEDICINE": "Добави лекарство",
+  "HEADER_GET_MEDICINE_LIST": "Списък с лекарства",
   "FORM_MEDICINE_NAME": "Име на лекарство",
   "FORM_MEDICINE_MANUFACTURER": "Производител",
   "FORM_MEDICINE_DESCRIPTION": "Описание",
@@ -18,5 +19,14 @@
   "FORM_MEDICINE_ADD_FAILURE": "Лекарството не можа да бъде добавено",
   "LANG_BULGARIAN": "Български",
   "LANG_ENGLISH": "Английски",
-  "CURRENT_TIME": "Дата и час: "
+  "CURRENT_TIME": "Дата и час: ",
+  "FORM_GET_MEDICINE_SHOW_AVAILABLE": "Покажи само наличните лекарства",
+  "FORM_GET_MEDICINE_SHOW_NOT_EXPIRED": "Покажи само с валиден срок на годност",
+  "FORM_GET_MEDICINE_PAGE": "Страница",
+  "FORM_GET_MEDICINE_ITEMS_PER_PAGE": "Лекарства на страница",
+  "FORM_GET_MEDICINE_MANUFACTURER": "Производител",
+  "FORM_GET_MEDICINE_RESET_REQUEST": "Изчисти формата",
+  "FORM_GET_MEDICINE_AVAILABLE_PAGES": "Брой страници: ",
+  "FORM_GET_MEDICINE_LOADING_PAGE_COUNT": "Зареждам броя на страниците...",
+  "FORM_GET_MEDICINE_LOADING_DATA": "Зареждам данни, моля изчакайте"
 }

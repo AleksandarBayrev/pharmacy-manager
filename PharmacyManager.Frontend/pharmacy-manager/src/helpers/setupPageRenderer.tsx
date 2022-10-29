@@ -9,7 +9,9 @@ export const setupPageRenderer = (DI: DependencyInjection) => {
     pageRenderer.add(pages.Home, <HomePage />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage
         dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")}
-        store={DI.getService<IGetMedicineListPageStore>("IGetMedicineListPageStore")} />
+        store={DI.getService<IGetMedicineListPageStore>("IGetMedicineListPageStore")}
+        languageSelectorStore={DI.getService<ILanguageSelectorStore>("ILanguageSelectorStore")}
+        translationManager={DI.getService<ITranslationManager>("ITranslationManager")} />
     );
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage
         dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")}

@@ -23,10 +23,10 @@ const renderLoader = (DI: DependencyInjection) => {
     );
 }
 
-export const app = async (DependencyInjection: DependencyInjection, setup: () => Promise<void>) => {
+export const app = async (DependencyInjection: DependencyInjection, setup: (DependencyInjection: DependencyInjection) => Promise<void>) => {
     createRoot();
     renderLoader(DependencyInjection);
-    await setup();
+    await setup(DependencyInjection);
     return {
         run: () => {
             window.RenderPharmacyManager = async (rootDiv: string, postSetup: (DI: DependencyInjection) => Promise<void>) => {

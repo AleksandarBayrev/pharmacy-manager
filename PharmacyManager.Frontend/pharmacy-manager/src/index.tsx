@@ -11,7 +11,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
   const DependencyInjectionInstance = DependencyInjection.getInstance();
   await setupBaseDependencies(DependencyInjectionInstance);
   const appInstance = await app(DependencyInjectionInstance,
-  async () => {
+  async (DependencyInjectionInstance) => {
     await showLogo();
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     const backendService = DependencyInjectionInstance.getService<IBackendService>("IBackendService");

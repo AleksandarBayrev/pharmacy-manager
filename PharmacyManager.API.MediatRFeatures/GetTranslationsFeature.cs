@@ -58,7 +58,7 @@ namespace PharmacyManager.API.MediatRFeatures
                 await this.logger.Log(loggerContext, "Getting translations");
                 if (!ValidateTranslations())
                 {
-                    throw new NullReferenceException("Not all keys are present in the dictionaries");
+                    throw new KeyNotFoundException("Not all keys are present in the dictionaries");
                 }
                 return new TranslationsResponse
                 {

@@ -15,12 +15,13 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
   render() {
     const pageRenderer = this.props.DependencyInjection.getService<IPageRenderer>("IPageRenderer");
     const translationsManager = this.props.DependencyInjection.getService<ITranslationManager>("ITranslationManager");
+    const languageSelectorStore = this.props.DependencyInjection.getService<ILanguageSelectorStore>("ILanguageSelectorStore");
     return (
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
             <div className='App-menu'>
-              <Link to={`${pages.Home}`} className='App-menu-item'>{translationsManager.getTranslation(Language.English, "MENU_HOME")}</Link>
+              <Link to={`${pages.Home}`} className='App-menu-item'>{translationsManager.getTranslation(languageSelectorStore.language.get(), "MENU_HOME")}</Link>
               <Link to={`${pages.GetMedicinesList}`} className='App-menu-item'>Get Medicine List</Link>
               <Link to={`${pages.AddMedicines}`} className='App-menu-item'>Add Medicine</Link>
               <Link to={`${pages.UpdateMedicines}`} className='App-menu-item'>Update Medicine</Link>

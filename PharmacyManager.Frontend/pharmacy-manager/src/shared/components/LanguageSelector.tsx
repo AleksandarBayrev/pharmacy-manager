@@ -19,8 +19,8 @@ export class LanguageSelector extends React.Component<LanguageSelectorProps> {
         return (
             <div className="App-language-selector">
                 <select onChange={this.onLanguageChange}>
-                    <option value={Language.Bulgarian}>Bulgarian</option>
-                    <option value={Language.English}>English</option>
+                    <option value={Language.Bulgarian} selected={this.props.store.language.get() === Language.Bulgarian}>Bulgarian</option>
+                    <option value={Language.English} selected={this.props.store.language.get() === Language.English}>English</option>
                 </select>
             </div>
         )

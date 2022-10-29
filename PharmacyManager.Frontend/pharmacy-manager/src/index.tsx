@@ -16,13 +16,14 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     setupLoggers(logManager);
     DependencyInjectionInstance.registerService<IBackendService>("IBackendService", "singleton", BackendService, [window.pharmacyManagerConfiguration.baseApiUrl, logManager.getLogger("App")]);
-    DependencyInjectionInstance.registerService<ITranslationManager>("ITranslationManager", "singleton", TranslationManager, [DependencyInjection.getInstance().getService<IBackendService>("IBackendService")]);
+    const backendService = DependencyInjectionInstance.getService<IBackendService>("IBackendService");
+    DependencyInjectionInstance.registerService<ITranslationManager>("ITranslationManager", "singleton", TranslationManager, [backendService]);
     DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
     DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);
     DependencyInjectionInstance.registerService<ITimeFormatter>("ITimeFormatter", "singleton", TimeFormatter, []);
-    DependencyInjectionInstance.registerService<IGetMedicineListPageStore>("IGetMedicineListPageStore", "singleton", GetMedicineListPageStore, [DependencyInjection.getInstance().getService<IBackendService>("IBackendService")]);
+    DependencyInjectionInstance.registerService<IGetMedicineListPageStore>("IGetMedicineListPageStore", "singleton", GetMedicineListPageStore, [backendService]);
     DependencyInjectionInstance.registerService<IGetDateTimeStore>("IGetDateTimeStore", "singleton", GetDateTimeStore, []);
-    DependencyInjectionInstance.registerService<IAddMedicinePageStore>("IAddMedicinePageStore", "singleton", AddMedicinePageStore, [DependencyInjection.getInstance().getService<IBackendService>("IBackendService")]);
+    DependencyInjectionInstance.registerService<IAddMedicinePageStore>("IAddMedicinePageStore", "singleton", AddMedicinePageStore, [backendService]);
     const translationManager = DependencyInjectionInstance.getService<ITranslationManager>("ITranslationManager");
     await translationManager.loadTranslations();
     setupPageRenderer(DependencyInjectionInstance);

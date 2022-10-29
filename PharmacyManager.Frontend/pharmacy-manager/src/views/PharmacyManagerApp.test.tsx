@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
 import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter, Language } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
@@ -81,7 +81,13 @@ test('matches snapshot', () => {
       resetMessage: jest.fn(),
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
-    }
+    };
+    const languageSelectorStore: ILanguageSelectorStore = {
+      load: jest.fn(),
+      unload: jest.fn(),
+      selectLanguage: jest.fn(),
+      language: observable.box(Language.English)
+    };
     pageRenderer.add(pages.Home, <HomePage />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} />);

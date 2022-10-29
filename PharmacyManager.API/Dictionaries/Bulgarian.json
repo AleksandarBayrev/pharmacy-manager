@@ -15,5 +15,7 @@
   "FORM_MEDICINE_ADD": "Добави лекарство",
   "FORM_MEDICINE_CLEAR": "Изчисти форма",
   "FORM_MEDICINE_ADD_SUCCESS": "Лекарството беше добавено успешно",
-  "FORM_MEDICINE_ADD_FAILURE": "Лекарството не можа да бъде добавено"
+  "FORM_MEDICINE_ADD_FAILURE": "Лекарството не можа да бъде добавено",
+  "LANG_BULGARIAN": "Български",
+  "LANG_ENGLISH": "Английски"
 }

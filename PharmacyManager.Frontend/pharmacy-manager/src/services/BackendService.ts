@@ -69,6 +69,7 @@ class BackendService implements IBackendService {
             });
             return await result.json() as TranslationsResponse;
         } catch (err) {
+            this.logger.Warn("Translations not loaded, check backend!");
             this.logger.Error(err as Error);
             return {
                 bg: {},

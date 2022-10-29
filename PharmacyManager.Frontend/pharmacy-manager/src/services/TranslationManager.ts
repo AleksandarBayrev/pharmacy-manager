@@ -1,27 +1,23 @@
-import { IBackendService, ILogger, ITranslationManager, Language, TranslationsResponse } from "../types";
+import { enhanceClass } from "../base/enhanceClass";
+import { IBackendService, ITranslationManager, Language, TranslationsResponse } from "../types";
 
-export class TranslationManager implements ITranslationManager {
+class TranslationManager implements ITranslationManager {
     private translations!: TranslationsResponse;
-    private readonly logger: ILogger;
     private readonly backendService: IBackendService;
 
-    constructor(
-        logger: ILogger,
-        backendService: IBackendService) {
-        this.logger = logger;
+    constructor(backendService: IBackendService) {
         this.backendService = backendService;
     }
     
     async loadTranslations() {
-        try {
-            this.translations = await this.backendService.getTranslations();
-        } catch (err) {
-            this.logger.Error(err as Error);
-            this.logger.Info("Translations not loaded, check backend!");
-        }
+        this.translations = await this.backendService.getTranslations();
     }
 
     getTranslation(language: Language, key: string): string {
         return this.translations[language][key] ?? key;
     }    
 }
+
+enhanceClass(TranslationManager, "TranslationManager");
+
+export { TranslationManager }

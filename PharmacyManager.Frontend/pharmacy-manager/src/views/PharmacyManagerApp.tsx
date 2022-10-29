@@ -6,11 +6,13 @@ import { DependencyInjection } from '../base';
 import { NotFoundPage } from './pages';
 import { DateTime, LanguageSelector } from '../shared';
 import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, Language, ILanguageSelectorStore } from '../types';
+import { observer } from 'mobx-react';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
 }
 
+@observer
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps> {
   render() {
     const pageRenderer = this.props.DependencyInjection.getService<IPageRenderer>("IPageRenderer");

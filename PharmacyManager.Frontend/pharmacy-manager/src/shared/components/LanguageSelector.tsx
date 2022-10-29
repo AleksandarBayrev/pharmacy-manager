@@ -1,3 +1,4 @@
+import { observer } from "mobx-react";
 import React from "react";
 import { ILanguageSelectorStore, ITranslationManager, Language } from "../../types";
 
@@ -6,6 +7,7 @@ type LanguageSelectorProps = {
     translationManager: ITranslationManager;
 }
 
+@observer
 export class LanguageSelector extends React.Component<LanguageSelectorProps> {
     async componentDidMount() {
         await this.props.store.load();

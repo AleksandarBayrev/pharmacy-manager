@@ -1,11 +1,6 @@
-window.pharmacyManagerConfiguration = (function () {
-    return Object.freeze({
-        baseApiUrl: window.location.origin,
-        appLoadedEventName: "APP_LOADED",
-        appDivId: "root",
-        showLogo: true
-    });
+import { setupLoadBaseDependencies } from "./setupLoadBaseDependencies";
+import { setupPharmacyManagerConfiguration } from "./setupPharmacyManagerConfiguration";
+(async () => {
+    await setupPharmacyManagerConfiguration();
+    await setupLoadBaseDependencies();
 })();
-window.loadBaseDependencies = async () => {
-    // Use this function to extend the configuration for example on backend related stuff
-};

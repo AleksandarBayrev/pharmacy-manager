@@ -1,8 +1,8 @@
 {
-  "name": "pharmacy-manager-base-frontend-utils",
+  "name": "pharmacy-manager-bootstrap-frontend",
   "version": "1.0.0",
-  "description": "Base Frontend Utils for PharmacyManager",
-  "main": "dist/pharmacymanager-base.js",
+  "description": "PharmacyManager Frontend Bootstrap",
+  "main": "dist/pharmacymanager-bootstrap.js",
   "scripts": {
     "test": "jest",
     "clean": "npm run clean-build && npm run clean-dist",

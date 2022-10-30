@@ -7,6 +7,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
+import { SettingsPage } from './pages/SettingsPage';
 
 test('matches snapshot', () => {
   const services = (() => {
@@ -82,7 +83,7 @@ test('matches snapshot', () => {
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
     };
-    const SettingsStore: ISettingsStore = {
+    const settingsStore: ISettingsStore = {
       load: jest.fn(),
       unload: jest.fn(),
       selectLanguage: jest.fn(),
@@ -92,10 +93,11 @@ test('matches snapshot', () => {
       loadTranslations: jest.fn(),
       getTranslation: jest.fn()
     }
-    pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} SettingsStore={SettingsStore} translationManager={translationManager} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} SettingsStore={SettingsStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.Home, <HomePage settingsStore={settingsStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} settingsStore={settingsStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} settingsStore={settingsStore} translationManager={translationManager} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
+    pageRenderer.add(pages.Settings, <SettingsPage settingsStore={settingsStore} translationManager={translationManager} />);
     return {
       'IPageRenderer': pageRenderer,
       'IBackendService': backendService,
@@ -104,7 +106,7 @@ test('matches snapshot', () => {
       'ITimeFormatter': timeFormatter,
       'IGetMedicineListPageStore': getMedicineListPageStore,
       'IGetDateTimeStore': getDateTimeStore,
-      'ISettingsStore': SettingsStore,
+      'ISettingsStore': settingsStore,
       'ITranslationManager': translationManager
     }
   })();

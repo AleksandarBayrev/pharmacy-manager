@@ -6,6 +6,6 @@ window.pharmacyManagerConfiguration = (function () {
         showLogo: true
     });
 })();
-window.loadBaseDependencies = async function () {
+window.loadBaseDependencies = async () => {
     // Use this function to extend the configuration for example on backend related stuff
 };

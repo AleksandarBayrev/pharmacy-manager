@@ -4,7 +4,9 @@ rm -rfv ./**/bin
 rm -rfv ./**/obj
 echo "Finished cleaning old builds"
 echo "Start building FE..."
-cd ./PharmacyManager.Frontend/pharmacy-manager
+cd ./PharmacyManager.BaseFrontendUtils/pharmacy-manager-base-frontend-utils
+npm run copy-to-server
+cd ../../PharmacyManager.Frontend/pharmacy-manager
 npm run copy-to-server
 echo "Finished building FE"
 cd ../../

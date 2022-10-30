@@ -30,5 +30,7 @@
   "FORM_GET_MEDICINE_LOADING_PAGE_COUNT": "Loading page count...",
   "FORM_GET_MEDICINE_LOADING_DATA": "Loading data, please wait",
   "HEADER_SETTINGS": "Settings",
-  "MENU_SETTINGS": "Settings"
+  "MENU_SETTINGS": "Settings",
+  "FORM_SETTINGS_LANGUAGE": "Language",
+  "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Reload translations"
 }

@@ -18,7 +18,8 @@ test('matches snapshot', () => {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
       getInitialPageCalculations: jest.fn(),
-      getTranslations: jest.fn()
+      getTranslations: jest.fn(),
+      reloadTranslations: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn(),
@@ -91,6 +92,7 @@ test('matches snapshot', () => {
     };
     const translationManager: ITranslationManager = {
       loadTranslations: jest.fn(),
+      reloadTranslations: jest.fn(),
       getTranslation: jest.fn()
     }
     pageRenderer.add(pages.Home, <HomePage settingsStore={settingsStore} translationManager={translationManager} />);

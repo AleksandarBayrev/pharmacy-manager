@@ -78,6 +78,23 @@ class BackendService implements IBackendService {
         }
     }
 
+    public async reloadTranslations(): Promise<TranslationsResponse> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/settings/reloadTranslations`, {
+                method: "GET",
+                headers: this.getHeaders()
+            });
+            return await result.json() as TranslationsResponse;
+        } catch (err) {
+            this.logger.Warn("Translations not reloaded, check backend!");
+            this.logger.Error(err as Error);
+            return {
+                bg: {},
+                en: {}
+            }
+        }
+    }
+
     private getHeaders(): HeadersInit {
         return {
             "Content-Type": "application/json"

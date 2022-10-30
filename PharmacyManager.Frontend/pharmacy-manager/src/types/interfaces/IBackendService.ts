@@ -7,4 +7,5 @@ export interface IBackendService {
     getAllMedicines: (request: MedicineRequest) => Promise<MedicineResponse>;
     getInitialPageCalculations(request: MedicineRequest): Promise<PageCalculationsResponse>;
     getTranslations(): Promise<TranslationsResponse>;
+    reloadTranslations(): Promise<TranslationsResponse>;
 }

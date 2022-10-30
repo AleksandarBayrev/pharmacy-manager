@@ -23,6 +23,12 @@ namespace PharmacyManager.API.Services.Base
             MapToDictionary(bulgarianDictionary, BG);
             MapToDictionary(englishDictionary, EN);
         }
+        public async Task ReloadDictionaries()
+        {
+            this.BG.Clear();
+            this.EN.Clear();
+            await this.LoadDictionaries();
+        }
 
         public IDictionary<string, string> BG { get; }
 

@@ -13,6 +13,14 @@ class TranslationManager implements ITranslationManager {
         this.translations = await this.backendService.getTranslations();
     }
 
+    async reloadTranslations() {
+        const updatedTranslations = await this.backendService.reloadTranslations();
+        this.translations = {
+            ...{...this.translations},
+            ...updatedTranslations
+        };
+    }
+
     getTranslation(language: Language, key: string): string {
         return this.translations[language][key] ?? key;
     }    

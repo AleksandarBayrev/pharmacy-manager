@@ -28,5 +28,11 @@ namespace PharmacyManager.API.Controllers
         {
             return this.mediator.Send(new GetTranslationsFeature.GetTranslationsFeatureQuery());
         }
+
+        [HttpGet("reloadTranslations")]
+        public Task<TranslationsResponse> ReloadTranslations()
+        {
+            return this.mediator.Send(new ReloadTranslationsFeature.ReloadTranslationsQuery());
+        }
     }
 }

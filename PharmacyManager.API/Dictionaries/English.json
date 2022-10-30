@@ -33,5 +33,6 @@
   "HEADER_SETTINGS": "Settings",
   "MENU_SETTINGS": "Settings",
   "FORM_SETTINGS_LANGUAGE": "Language",
-  "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Reload translations"
+  "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Reload translations",
+  "HOME_PAGE_HEADER_CONTENT": "Select one of the actions from the menu above"
 }

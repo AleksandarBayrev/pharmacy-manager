@@ -18,7 +18,7 @@ export class HomePage extends React.Component<HomePageProps> {
       this.pageTitleObserver = observe(this.props.appStore.language, () => {
           window.document.title = this.pageTitle;
       });
-      window.document.title = "Pharmacy Manager - Get Medicines";
+      window.document.title = this.pageTitle;
     }
   
     componentWillUnmount = async () => {
@@ -28,7 +28,7 @@ export class HomePage extends React.Component<HomePageProps> {
     render(): React.ReactNode {
         return (
             <div className="App-page">
-                <div className="App-page-header">Select one of the actions from the menu above</div>
+                <div className="App-page-header">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HOME_PAGE_HEADER_CONTENT")}</div>
             </div>
         );
     }

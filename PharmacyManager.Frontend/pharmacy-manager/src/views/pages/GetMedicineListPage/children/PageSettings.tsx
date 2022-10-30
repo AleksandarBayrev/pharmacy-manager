@@ -32,7 +32,7 @@ export class PageSettings extends React.Component<PageSettingsProps> {
                 <div className='App-page-row-setting'>
                     <div className='row'>
                         <div className='column'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_PAGE")}</div>
-                        <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.props.store.request.page} disabled={this.props.store.loadingData.get()} />
+                        <div className='column'><input type="text" onChange={this.onPageChange} placeholder={this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_PAGE")} value={this.props.store.request.page} disabled={this.props.store.loadingData.get()} />
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ export class PageSettings extends React.Component<PageSettingsProps> {
                 <div className='App-page-row-setting'>
                     <div className='row'>
                         <div className='column'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_MANUFACTURER")}</div>
-                        <div className='column'>{this.renderTextBox((e) => this.onTextChange(e, "manufacturer"), "Manufacturer", this.props.store.request.manufacturer, this.props.store.loadingData.get())}</div>
+                        <div className='column'>{this.renderTextBox((e) => this.onTextChange(e, "manufacturer"), this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_MANUFACTURER"), this.props.store.request.manufacturer, this.props.store.loadingData.get())}</div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>

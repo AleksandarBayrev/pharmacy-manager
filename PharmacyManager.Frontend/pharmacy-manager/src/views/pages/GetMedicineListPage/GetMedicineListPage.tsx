@@ -22,7 +22,7 @@ export class GetMedicineListPage extends React.Component<GetMedicineListPageProp
     this.pageTitleObserver = observe(this.props.appStore.language, () => {
         window.document.title = this.pageTitle;
     });
-    window.document.title = "Pharmacy Manager - Get Medicines";
+    window.document.title = this.pageTitle;
     await this.props.store.load();
   }
 

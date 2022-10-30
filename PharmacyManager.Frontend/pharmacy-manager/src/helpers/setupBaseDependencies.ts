@@ -2,7 +2,8 @@ import { DependencyInjection } from "../base";
 import { LogManager, BackendService } from "../services";
 import { TranslationManager } from "../services/TranslationManager";
 import { SettingsStore } from "../stores";
-import { ILogManager, IBackendService, ITranslationManager, ISettingsStore } from "../types";
+import { AppStore } from "../stores/AppStore";
+import { ILogManager, IBackendService, ITranslationManager, ISettingsStore, IAppStore } from "../types";
 import { setupLoggers } from "./setupLoggers";
 
 export const setupBaseDependencies = async (DI: DependencyInjection) => {
@@ -15,4 +16,5 @@ export const setupBaseDependencies = async (DI: DependencyInjection) => {
     const translationManager = DI.getService<ITranslationManager>("ITranslationManager");
     await translationManager.loadTranslations();
     DI.registerService<ISettingsStore>("ISettingsStore", "singleton", SettingsStore, []);
+    DI.registerService<IAppStore>("IAppStore", "singleton", AppStore, []);
 }

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
 import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ISettingsStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ISettingsStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
@@ -13,7 +13,13 @@ test('matches snapshot', () => {
   const services = (() => {
     const logManager: ILogManager = new LogManager();
     logManager.addLogger("PageRenderer")
-    const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"));
+    const appStore: IAppStore = {
+      setCurrentPage: jest.fn(),
+      currentPage: observable.box("/"),
+      load: jest.fn(),
+      unload: jest.fn()
+    };
+    const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"), appStore);
     const backendService: IBackendService = {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
@@ -109,7 +115,8 @@ test('matches snapshot', () => {
       'IGetMedicineListPageStore': getMedicineListPageStore,
       'IGetDateTimeStore': getDateTimeStore,
       'ISettingsStore': settingsStore,
-      'ITranslationManager': translationManager
+      'ITranslationManager': translationManager,
+      'IAppStore': appStore
     }
   })();
   const DI: DependencyInjection = {

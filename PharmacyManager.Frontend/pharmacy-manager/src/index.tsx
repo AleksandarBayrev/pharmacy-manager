@@ -4,7 +4,7 @@ import { AppLoadedEvent } from "./constants";
 import { setupBaseDependencies, setupPageRenderer, showLogo } from "./helpers";
 import { PageRenderer, DateFormatter, TimeFormatter } from "./services";
 import { GetMedicineListPageStore, GetDateTimeStore, AddMedicinePageStore } from "./stores";
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
+import { IAddMedicinePageStore, IAppStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from "./types";
 
 (async () => {
   DependencyInjection.setupInstance(console.log);
@@ -15,7 +15,7 @@ import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeSto
     await showLogo();
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     const backendService = DependencyInjectionInstance.getService<IBackendService>("IBackendService");
-    DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
+    DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer"), DependencyInjectionInstance.getService<IAppStore>("IAppStore")]);
     DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);
     DependencyInjectionInstance.registerService<ITimeFormatter>("ITimeFormatter", "singleton", TimeFormatter, []);
     DependencyInjectionInstance.registerService<IGetMedicineListPageStore>("IGetMedicineListPageStore", "singleton", GetMedicineListPageStore, [backendService]);

@@ -35,5 +35,7 @@
   "FORM_SETTINGS_LANGUAGE": "Language",
   "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Reload translations",
   "HOME_PAGE_HEADER_CONTENT": "Select one of the actions from the menu above",
-  "HEADER_HOME": "Home"
+  "HEADER_HOME": "Home",
+  "RESULTS_MAKE_QUERY": "Please, make a query.",
+  "RESULTS_NO_RESULTS_FOR_QUERY": "No results for given query."
 }

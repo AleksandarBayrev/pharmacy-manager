@@ -53,9 +53,9 @@ export class PageResults extends React.Component<PageResultsProps> {
         page: number
     ) {
         return (
-            !isInitialRequestMade ? <div className='no-results'>Please make a query.</div>
+            !isInitialRequestMade ? <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_MAKE_QUERY")}</div>
                 :
-                !medicines.length ? <div className='no-results'>No results for given query</div> :
+                !medicines.length ? <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_NO_RESULTS_FOR_QUERY")}</div> :
                     <MedicinesWrapper
                         dateFormatter={dateFormatter}
                         store={store}

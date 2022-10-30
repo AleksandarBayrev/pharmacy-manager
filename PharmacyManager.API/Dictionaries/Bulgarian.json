@@ -35,5 +35,7 @@
   "FORM_SETTINGS_LANGUAGE": "Език на приложението",
   "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Презареди преводи",
   "HOME_PAGE_HEADER_CONTENT": "Изберете действие от горното меню",
-  "HEADER_HOME": "Начало"
+  "HEADER_HOME": "Начало",
+  "RESULTS_MAKE_QUERY": "Моля, направете заявка.",
+  "RESULTS_NO_RESULTS_FOR_QUERY": "Няма резултати за направената от Вас заявка."
 }

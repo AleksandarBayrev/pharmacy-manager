@@ -1,1 +1,1 @@
-export type ValidURL = "/" | "/medicines/get" | "/medicines/add" | "/medicines/update";
+export type ValidURL = "/" | "/medicines/get" | "/medicines/add" | "/medicines/update" | "/settings";

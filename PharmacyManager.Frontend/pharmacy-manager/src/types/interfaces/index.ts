@@ -9,4 +9,4 @@ export * from "./IGetDateTimeStore";
 export * from "./IAddMedicinePageStore";
 export * from "./IBaseStore";
 export * from "./ITranslationManager";
-export * from "./ILanguageSelectorStore";
+export * from "./ISettingsStore";

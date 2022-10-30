@@ -28,5 +28,7 @@
   "FORM_GET_MEDICINE_RESET_REQUEST": "Clear form",
   "FORM_GET_MEDICINE_AVAILABLE_PAGES": "Available pages: ",
   "FORM_GET_MEDICINE_LOADING_PAGE_COUNT": "Loading page count...",
-  "FORM_GET_MEDICINE_LOADING_DATA": "Loading data, please wait"
+  "FORM_GET_MEDICINE_LOADING_DATA": "Loading data, please wait",
+  "HEADER_SETTINGS": "Settings",
+  "MENU_SETTINGS": "Settings"
 }

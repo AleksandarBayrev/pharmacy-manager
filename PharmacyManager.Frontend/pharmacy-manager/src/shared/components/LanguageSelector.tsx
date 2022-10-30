@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { ILanguageSelectorStore, ITranslationManager, Language } from "../../types";
+import { ISettingsStore, ITranslationManager, Language } from "../../types";
 
 type LanguageSelectorProps = {
-    store: ILanguageSelectorStore;
+    store: ISettingsStore;
     translationManager: ITranslationManager;
 }
 

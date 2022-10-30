@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
 import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILanguageSelectorStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ISettingsStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
@@ -82,7 +82,7 @@ test('matches snapshot', () => {
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
     };
-    const languageSelectorStore: ILanguageSelectorStore = {
+    const SettingsStore: ISettingsStore = {
       load: jest.fn(),
       unload: jest.fn(),
       selectLanguage: jest.fn(),
@@ -93,8 +93,8 @@ test('matches snapshot', () => {
       getTranslation: jest.fn()
     }
     pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} languageSelectorStore={languageSelectorStore} translationManager={translationManager} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} languageSelectorStore={languageSelectorStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} SettingsStore={SettingsStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} SettingsStore={SettingsStore} translationManager={translationManager} />);
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
     return {
       'IPageRenderer': pageRenderer,
@@ -104,7 +104,7 @@ test('matches snapshot', () => {
       'ITimeFormatter': timeFormatter,
       'IGetMedicineListPageStore': getMedicineListPageStore,
       'IGetDateTimeStore': getDateTimeStore,
-      'ILanguageSelectorStore': languageSelectorStore,
+      'ISettingsStore': SettingsStore,
       'ITranslationManager': translationManager
     }
   })();

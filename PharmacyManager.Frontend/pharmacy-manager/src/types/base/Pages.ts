@@ -5,4 +5,5 @@ export type Pages = {
     GetMedicinesList: ValidURL;
     AddMedicines: ValidURL;
     UpdateMedicines: ValidURL;
+    Settings: ValidURL;
 }

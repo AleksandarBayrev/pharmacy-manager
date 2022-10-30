@@ -28,5 +28,7 @@
   "FORM_GET_MEDICINE_RESET_REQUEST": "Изчисти формата",
   "FORM_GET_MEDICINE_AVAILABLE_PAGES": "Брой страници: ",
   "FORM_GET_MEDICINE_LOADING_PAGE_COUNT": "Зареждам броя на страниците...",
-  "FORM_GET_MEDICINE_LOADING_DATA": "Зареждам данни, моля изчакайте"
+  "FORM_GET_MEDICINE_LOADING_DATA": "Зареждам данни, моля изчакайте",
+  "HEADER_SETTINGS": "Настройки",
+  "MENU_SETTINGS": "Настройки"
 }

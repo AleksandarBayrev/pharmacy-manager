@@ -1,12 +1,12 @@
 import React from "react";
-import { ILanguageSelectorStore, ILogger, ITranslationManager, Language } from "../types";
+import { ISettingsStore, ILogger, ITranslationManager, Language } from "../types";
 import loadingGif from '../shared/images/loading.gif';
 import "./Loader.css";
 
 type LoaderProps = {
     logger: ILogger;
     translationManager: ITranslationManager;
-    languageSelectorStore: ILanguageSelectorStore;
+    SettingsStore: ISettingsStore;
 }
 
 export class Loader extends React.Component<LoaderProps> {
@@ -22,7 +22,7 @@ export class Loader extends React.Component<LoaderProps> {
     render() {
         return <div className="Loader">
             <div><img src={loadingGif} /></div>
-            <div>{this.props.translationManager.getTranslation(this.props.languageSelectorStore.language.get(), "LOADING_TEXT")}</div>
+            <div>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "LOADING_TEXT")}</div>
         </div>
     }
 }

@@ -1,8 +1,8 @@
 import { action, IObservableValue, observable } from "mobx";
 import { enhanceClass } from "../base/enhanceClass";
-import { ILanguageSelectorStore, Language } from "../types";
+import { ISettingsStore, Language } from "../types";
 
-class LanguageSelectorStore implements ILanguageSelectorStore {
+class SettingsStore implements ISettingsStore {
     @observable
     public language: IObservableValue<Language>;
 
@@ -31,6 +31,6 @@ class LanguageSelectorStore implements ILanguageSelectorStore {
     }
 }
 
-enhanceClass(LanguageSelectorStore, "LanguageSelectorStore");
+enhanceClass(SettingsStore, "SettingsStore");
 
-export { LanguageSelectorStore };
+export { SettingsStore };

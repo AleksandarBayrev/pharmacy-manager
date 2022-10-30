@@ -5,7 +5,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { DependencyInjection } from '../base';
 import { NotFoundPage } from './pages';
 import { DateTime } from '../shared';
-import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, ISettingsStore, ValidURL, IAppStore } from '../types';
+import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, IAppStore } from '../types';
 import { observer } from 'mobx-react';
 import { action, computed } from 'mobx';
 
@@ -17,7 +17,6 @@ export type PharmacyManagerAppProps = {
 export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps> {
   private readonly pageRenderer = this.props.DependencyInjection.getService<IPageRenderer>("IPageRenderer");
   private readonly translationsManager = this.props.DependencyInjection.getService<ITranslationManager>("ITranslationManager");
-  private readonly settingsStore = this.props.DependencyInjection.getService<ISettingsStore>("ISettingsStore");
   private readonly appStore: IAppStore = this.props.DependencyInjection.getService<IAppStore>("IAppStore");
 
   componentWillMount() {
@@ -30,11 +29,11 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
         <div className="App">
           <header className="App-header">
             <div className='App-menu'>
-              <Link to={`${pages.Home}`} className={this.getAppMenuClasses(pages.Home)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_HOME")}</Link>
-              <Link to={`${pages.GetMedicinesList}`} className={this.getAppMenuClasses(pages.GetMedicinesList)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
-              <Link to={`${pages.AddMedicines}`} className={this.getAppMenuClasses(pages.AddMedicines)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
-              <Link to={`${pages.UpdateMedicines}`} className={this.getAppMenuClasses(pages.UpdateMedicines)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
-              <Link to={`${pages.Settings}`} className={this.getAppMenuClasses(pages.Settings)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_SETTINGS")}</Link>
+              <Link to={`${pages.Home}`} className={this.getAppMenuClasses(pages.Home)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_HOME")}</Link>
+              <Link to={`${pages.GetMedicinesList}`} className={this.getAppMenuClasses(pages.GetMedicinesList)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
+              <Link to={`${pages.AddMedicines}`} className={this.getAppMenuClasses(pages.AddMedicines)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
+              <Link to={`${pages.UpdateMedicines}`} className={this.getAppMenuClasses(pages.UpdateMedicines)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
+              <Link to={`${pages.Settings}`} className={this.getAppMenuClasses(pages.Settings)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_SETTINGS")}</Link>
             </div>
           </header>
           <div className='App-page-container'>
@@ -43,7 +42,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
                 store={this.props.DependencyInjection.getService<IGetDateTimeStore>("IGetDateTimeStore")}
                 dateFormatter={this.props.DependencyInjection.getService<IDateFormatter>("IDateFormatter")}
                 timeFormatter={this.props.DependencyInjection.getService<ITimeFormatter>("ITimeFormatter")}
-                phrase={this.translationsManager.getTranslation(this.settingsStore.language.get(), "CURRENT_TIME")} />
+                phrase={this.translationsManager.getTranslation(this.appStore.language.get(), "CURRENT_TIME")} />
             </div>
             <div className='App-page'>
               <Routes>

@@ -1,10 +1,10 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { IGetMedicineListPageStore, ISettingsStore, ITranslationManager, MedicineRequest } from "../../../../types";
+import { IAppStore, IGetMedicineListPageStore, ITranslationManager, MedicineRequest } from "../../../../types";
 import { ItemsPerPage } from "./pageComponents/ItemsPerPage";
 export type PageSettingsProps = {
     store: IGetMedicineListPageStore;
-    SettingsStore: ISettingsStore;
+    appStore: IAppStore;
     translationManager: ITranslationManager;
 }
 
@@ -20,37 +20,37 @@ export class PageSettings extends React.Component<PageSettingsProps> {
                 <div className='App-page-row-setting'>
                     <div className='row'>
                         <div className='column'><input id='only-available-medicines' type="checkbox" checked={this.props.store.request.availableOnly} disabled={this.props.store.loadingData.get()} onChange={(e) => this.onCheckboxChange(e, "availableOnly")} /></div>
-                        <label className='column' htmlFor='only-available-medicines'>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_SHOW_AVAILABLE")}</label>
+                        <label className='column' htmlFor='only-available-medicines'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_SHOW_AVAILABLE")}</label>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
                         <div className='column'><input id='only-not-expired-medicines' type="checkbox" checked={this.props.store.request.notExpired} disabled={this.props.store.loadingData.get()} onChange={(e) => this.onCheckboxChange(e, "notExpired")} /></div>
-                        <label className='column' htmlFor='only-not-expired-medicines'>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_SHOW_NOT_EXPIRED")}</label>
+                        <label className='column' htmlFor='only-not-expired-medicines'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_SHOW_NOT_EXPIRED")}</label>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_PAGE")}</div>
+                        <div className='column'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_PAGE")}</div>
                         <div className='column'><input type="text" onChange={this.onPageChange} placeholder={'Page'} value={this.props.store.request.page} disabled={this.props.store.loadingData.get()} />
                         </div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_ITEMS_PER_PAGE")}</div>
+                        <div className='column'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_ITEMS_PER_PAGE")}</div>
                         <div className='column'>{this.getItemsPerPageComponent(this.onSelectChange, this.props.store.request.itemsPerPage, this.props.store.loadingData.get())}</div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_MANUFACTURER")}</div>
+                        <div className='column'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_MANUFACTURER")}</div>
                         <div className='column'>{this.renderTextBox((e) => this.onTextChange(e, "manufacturer"), "Manufacturer", this.props.store.request.manufacturer, this.props.store.loadingData.get())}</div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'><button onClick={this.onResetRequest} disabled={this.props.store.loadingData.get()}>{this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_RESET_REQUEST")}</button></div>
+                        <div className='column'><button onClick={this.onResetRequest} disabled={this.props.store.loadingData.get()}>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_RESET_REQUEST")}</button></div>
                     </div>
                 </div>
                 <div className='App-page-row-setting'>
@@ -76,8 +76,8 @@ export class PageSettings extends React.Component<PageSettingsProps> {
     }
 
     private renderPageCountText(showPageCount: boolean, pages: number) {
-        const availablePagesText = this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_AVAILABLE_PAGES");
-        const loadingPageCountText = this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_LOADING_PAGE_COUNT");
+        const availablePagesText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_AVAILABLE_PAGES");
+        const loadingPageCountText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_LOADING_PAGE_COUNT");
         return showPageCount ? `${availablePagesText} ${pages}` : loadingPageCountText;
     }
     

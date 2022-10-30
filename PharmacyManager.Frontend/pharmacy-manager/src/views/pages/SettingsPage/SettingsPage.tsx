@@ -2,11 +2,10 @@ import React from "react";
 import { action, computed, Lambda, observe } from "mobx";
 import "../../../shared/Styles.css";
 import { LanguageSelector } from "../../../shared";
-import { IAppStore, ISettingsStore, ITranslationManager } from "../../../types";
+import { IAppStore, ITranslationManager } from "../../../types";
 import { observer } from "mobx-react";
 
 type SettingsPageProps = {
-    settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
     appStore: IAppStore;
 }
@@ -15,9 +14,9 @@ type SettingsPageProps = {
 export class SettingsPage extends React.Component<SettingsPageProps> {
     private pageTitleObserver!: Lambda;
     componentDidMount = async () => {
+        await this.props.appStore.load();
         this.props.appStore.setCurrentPage(window.location.pathname);
-        await this.props.settingsStore.load();
-        this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
+        this.pageTitleObserver = observe(this.props.appStore.language, () => {
             window.document.title = this.pageTitle;
         });
         window.document.title = this.pageTitle;
@@ -25,28 +24,28 @@ export class SettingsPage extends React.Component<SettingsPageProps> {
 
     componentWillUnmount = async () => {
         this.pageTitleObserver();
-        await this.props.settingsStore.unload();
+        await this.props.appStore.unload();
     }
     render() {
         return (
             <div className="App-page">
-                <div className="App-page-header">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "HEADER_SETTINGS")}</div>
+                <div className="App-page-header">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_SETTINGS")}</div>
                 <div className='App-page-container'>
                     <div className='App-page-row-setting'>
                         <div className='row'>
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_SETTINGS_LANGUAGE")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_SETTINGS_LANGUAGE")}</div>
                             <div className="column">
                                 <LanguageSelector
-                                    store={this.props.settingsStore}
+                                    appStore={this.props.appStore}
                                     translationManager={this.props.translationManager} />
                             </div>
                         </div>
                     </div>
                     <div className='App-page-row-setting'>
                         <div className='row'>
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_SETTINGS_RELOAD_TRANSLATIONS")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_SETTINGS_RELOAD_TRANSLATIONS")}</div>
                             <div className="column">
-                                <button onClick={this.reloadTranslations}>{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_SETTINGS_RELOAD_TRANSLATIONS")}</button>
+                                <button onClick={this.reloadTranslations}>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_SETTINGS_RELOAD_TRANSLATIONS")}</button>
                             </div>
                         </div>
                     </div>
@@ -64,6 +63,6 @@ export class SettingsPage extends React.Component<SettingsPageProps> {
 
     @computed
     private get pageTitle() {
-        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "HEADER_SETTINGS")}`;
+        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_SETTINGS")}`;
     }
 }

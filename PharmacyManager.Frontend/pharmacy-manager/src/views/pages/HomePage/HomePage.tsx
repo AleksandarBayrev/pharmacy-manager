@@ -2,10 +2,9 @@ import { computed, Lambda, observe } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import "../../../shared/Styles.css";
-import { IAppStore, ISettingsStore, ITranslationManager } from "../../../types";
+import { IAppStore, ITranslationManager } from "../../../types";
 
 type HomePageProps = {
-    settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
     appStore: IAppStore;
 }
@@ -14,9 +13,9 @@ type HomePageProps = {
 export class HomePage extends React.Component<HomePageProps> {
     private pageTitleObserver!: Lambda;
     componentDidMount = async () => {
+      await this.props.appStore.load();
       this.props.appStore.setCurrentPage(window.location.pathname);
-      await this.props.settingsStore.load();
-      this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
+      this.pageTitleObserver = observe(this.props.appStore.language, () => {
           window.document.title = this.pageTitle;
       });
       window.document.title = "Pharmacy Manager - Get Medicines";
@@ -24,7 +23,7 @@ export class HomePage extends React.Component<HomePageProps> {
   
     componentWillUnmount = async () => {
       this.pageTitleObserver();
-      await this.props.settingsStore.unload();
+      await this.props.appStore.unload();
     }
     render(): React.ReactNode {
         return (
@@ -36,6 +35,6 @@ export class HomePage extends React.Component<HomePageProps> {
 
     @computed
     private get pageTitle() {
-        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "HEADER_HOME")}`;
+        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_HOME")}`;
     }
 }

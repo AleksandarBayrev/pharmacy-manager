@@ -1,13 +1,12 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { IDateFormatter, IAddMedicinePageStore, ISettingsStore, ITranslationManager, IAppStore } from "../../../types";
+import { IDateFormatter, IAddMedicinePageStore, ITranslationManager, IAppStore } from "../../../types";
 import "../../../shared/Styles.css";
 import { computed, Lambda, observe } from "mobx";
 
 export type AddMedicinePageProps = {
     dateFormatter: IDateFormatter;
     store: IAddMedicinePageStore;
-    settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
     appStore: IAppStore;
 }
@@ -22,8 +21,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
     }
     componentDidMount = async () => {
         this.props.appStore.setCurrentPage(window.location.pathname);
-        await this.props.settingsStore.load();
-        this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
+        await this.props.appStore.load();
+        this.pageTitleObserver = observe(this.props.appStore.language, () => {
             window.document.title = this.pageTitle;
         });
         window.document.title = this.pageTitle;
@@ -31,17 +30,17 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
     }
     componentWillUnmount = async() => {
         this.pageTitleObserver();
-        await this.props.settingsStore.unload();
+        await this.props.appStore.unload();
         await this.props.store.unload();
     }
     render(): React.ReactNode {
         return (
             <div className="App-page">
-                <div className="App-page-header">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "HEADER_ADD_MEDICINE")}</div>
+                <div className="App-page-header">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_ADD_MEDICINE")}</div>
                 <div className="form">
                     <div className="medicine-name">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_NAME")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_NAME")}</div>
                             <div className="column">
                                 <input
                                     type="text"
@@ -53,7 +52,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-manufacturer">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_MANUFACTURER")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_MANUFACTURER")}</div>
                             <div className="column">
                                 <input
                                     type="text"
@@ -65,7 +64,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-description">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_DESCRIPTION")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_DESCRIPTION")}</div>
                             <div className="column">
                                 <input
                                     type="text"
@@ -77,7 +76,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-manufacturing-date">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_MANUFACTURING_DATE")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_MANUFACTURING_DATE")}</div>
                             <div className="column">
                                 <input
                                     type="date"
@@ -89,7 +88,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-expiration-date">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_EXPIRATION_DATE")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_EXPIRATION_DATE")}</div>
                             <div className="column">
                                 <input
                                     type="date"
@@ -101,7 +100,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-price">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_PRICE")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_PRICE")}</div>
                             <div className="column">
                                 <input
                                     type="number"
@@ -113,7 +112,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                     </div>
                     <div className="medicine-quantity">
                         <div className="row">
-                            <div className="column">{this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_QUANTITY")}</div>
+                            <div className="column">{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_QUANTITY")}</div>
                             <div className="column">
                                 <input
                                     type="number"
@@ -130,7 +129,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                                     onClick={this.props.store.addMedicine}
                                     disabled={this.isInputInvalid() || this.props.store.isAddingMedicine.get()}
                                 >
-                                    {this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_ADD")}
+                                    {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_ADD")}
                                 </button>
                             </div>
                         </div>
@@ -140,7 +139,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
                                     onClick={this.clearInput}
                                     disabled={this.props.store.isAddingMedicine.get()}
                                 >
-                                    {this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_CLEAR")}
+                                    {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_CLEAR")}
                                 </button>
                             </div>
                         </div>
@@ -153,7 +152,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
 
     @computed
     private get pageTitle() {
-        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "HEADER_ADD_MEDICINE")}`
+        return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_ADD_MEDICINE")}`
     }
 
     private clearInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -161,8 +160,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
     }
 
     private renderRequestStatusMessage = () => {
-        const successMessage = this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_ADD_SUCCESS");
-        const errorMessage = this.props.translationManager.getTranslation(this.props.settingsStore.language.get(), "FORM_MEDICINE_ADD_FAILURE");
+        const successMessage = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_ADD_SUCCESS");
+        const errorMessage = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_ADD_FAILURE");
         return (this.props.store.isRequestSuccessful.get() !== undefined ?
             this.props.store.isRequestSuccessful.get() ?
                 `${successMessage} ${this.props.store.request.name}`

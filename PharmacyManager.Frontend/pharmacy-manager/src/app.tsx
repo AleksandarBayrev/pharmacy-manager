@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './shared/Base.css';
 import { Loader, PharmacyManagerApp } from './views';
 import { DependencyInjection } from './base';
-import { ISettingsStore, ILogManager, ITranslationManager } from './types';
+import { IAppStore, ILogManager, ITranslationManager } from './types';
 
 let root: ReactDOM.Root
 
@@ -21,7 +21,7 @@ const renderLoader = (DI: DependencyInjection) => {
             <Loader
                 logger={DI.getService<ILogManager>("ILogManager").getLogger("App")}
                 translationManager={DI.getService<ITranslationManager>("ITranslationManager")}
-                SettingsStore={DI.getService<ISettingsStore>("ISettingsStore")} />
+                appStore={DI.getService<IAppStore>("IAppStore")} />
         </React.StrictMode>
     );
 }

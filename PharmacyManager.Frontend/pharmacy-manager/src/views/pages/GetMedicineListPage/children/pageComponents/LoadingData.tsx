@@ -1,10 +1,10 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { ISettingsStore, ITranslationManager } from "../../../../../types";
+import { IAppStore, ITranslationManager } from "../../../../../types";
 
 type LoadingDataProps = {
     rerenderDotsInMs: number;
-    SettingsStore: ISettingsStore;
+    appStore: IAppStore;
     translationManager: ITranslationManager;
 }
 type LoadingDataState = {
@@ -44,6 +44,6 @@ export class LoadingData extends React.Component<LoadingDataProps, LoadingDataSt
 
     private getMessage() {
         let dots = this.dot.repeat(this.state.numberOfDots % 3 + 1);
-        return `${this.props.translationManager.getTranslation(this.props.SettingsStore.language.get(), "FORM_GET_MEDICINE_LOADING_DATA")}${dots}`;
+        return `${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_LOADING_DATA")}${dots}`;
     }
 }

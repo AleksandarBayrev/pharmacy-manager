@@ -6,6 +6,7 @@
   "MENU_UPDATE_MEDICINE": "Промени данни за лекарство",
   "HEADER_ADD_MEDICINE": "Добави лекарство",
   "HEADER_GET_MEDICINE_LIST": "Списък с лекарства",
+  "HEADER_UPDATE_MEDICINE": "Промени данни за лекарство",
   "FORM_MEDICINE_NAME": "Име на лекарство",
   "FORM_MEDICINE_MANUFACTURER": "Производител",
   "FORM_MEDICINE_DESCRIPTION": "Описание",

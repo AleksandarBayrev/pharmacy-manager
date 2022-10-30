@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { IDateFormatter, IGetMedicineListPageStore, ISettingsStore, ITranslationManager, MedicineModel } from "../../../../types";
+import { IAppStore, IDateFormatter, IGetMedicineListPageStore, ITranslationManager, MedicineModel } from "../../../../types";
 import { LoadingData } from "./pageComponents/LoadingData";
 import { MedicinesWrapper } from "./pageComponents/MedicinesWrapper";
 /**
@@ -9,7 +9,7 @@ import { MedicinesWrapper } from "./pageComponents/MedicinesWrapper";
 export type PageResultsProps = {
     dateFormatter: IDateFormatter;
     store: IGetMedicineListPageStore;
-    SettingsStore: ISettingsStore;
+    appStore: IAppStore;
     translationManager: ITranslationManager;
 }
 
@@ -32,7 +32,7 @@ export class PageResults extends React.Component<PageResultsProps> {
         page: number
     ) {
         return (
-            loadingData ? <LoadingData rerenderDotsInMs={100} SettingsStore={this.props.SettingsStore} translationManager={this.props.translationManager} />
+            loadingData ? <LoadingData rerenderDotsInMs={100} appStore={this.props.appStore} translationManager={this.props.translationManager} />
                 :
                 this.renderMedicines(
                     isInitialRequestMade,

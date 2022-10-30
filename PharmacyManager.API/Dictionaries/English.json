@@ -6,6 +6,7 @@
   "MENU_UPDATE_MEDICINE": "Update Medicine",
   "HEADER_ADD_MEDICINE": "Add Medicine",
   "HEADER_GET_MEDICINE_LIST": "List of Medicines",
+  "HEADER_UPDATE_MEDICINE": "Update Medicine",
   "FORM_MEDICINE_NAME": "Medicine Name",
   "FORM_MEDICINE_MANUFACTURER": "Medicine Manufacturer",
   "FORM_MEDICINE_DESCRIPTION": "Medicine Description",

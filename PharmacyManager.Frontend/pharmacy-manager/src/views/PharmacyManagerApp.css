@@ -29,6 +29,10 @@
   margin-left: 20px;
 }
 
+.App-menu-item-selected {
+  font-weight: bold;
+}
+
 a {
   color: #fff;
 }

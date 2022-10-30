@@ -34,5 +34,6 @@
   "MENU_SETTINGS": "Настройки",
   "FORM_SETTINGS_LANGUAGE": "Език на приложението",
   "FORM_SETTINGS_RELOAD_TRANSLATIONS": "Презареди преводи",
-  "HOME_PAGE_HEADER_CONTENT": "Изберете действие от горното меню"
+  "HOME_PAGE_HEADER_CONTENT": "Изберете действие от горното меню",
+  "HEADER_HOME": "Начало"
 }

@@ -58,6 +58,6 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
 
   @computed
   private get selectedClass() {
-    return window.location.href.includes(this.appStore.currentPage.get()) ? "App-menu-item-selected" : "";
+    return window.location.pathname === this.appStore.currentPage.get() ? "App-menu-item-selected" : "";
   }
 }

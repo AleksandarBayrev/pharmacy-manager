@@ -13,7 +13,7 @@ namespace PharmacyManager.API.Extensions
             builder.Services.AddServices();
             return builder;
         }
-        public static WebApplication ConfigureApplication(this WebApplication app)
+        public static async Task<WebApplication> ConfigureApplication(this WebApplication app)
         {
             app.ConfigureMiddlewares();
             var configuration = app.Services.GetService<IApplicationConfiguration>();
@@ -22,6 +22,12 @@ namespace PharmacyManager.API.Extensions
                 throw new NullReferenceException("Application not configured!");
             }
             app.ConfigureSwaggerAndStaticFiles(configuration);
+            var translationManager = app.Services.GetService<ITranslationManager>();
+            if (translationManager == null)
+            {
+                throw new NullReferenceException("TranslationManager not configured!");
+            }
+            await translationManager.LoadDictionaries();
             app.UseAuthorization();
             app.MapControllers();
             return app;

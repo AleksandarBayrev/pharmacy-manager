@@ -23,6 +23,19 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>React App</title>
+  <script>
+    window.pharmacyManagerConfiguration = Object.freeze({
+      baseApiUrl: '',
+      appLoadedEventName: 'APP_LOADED',
+      appDivId: 'root'
+    });
+    window.addEventListener(window.pharmacyManagerConfiguration.appLoadedEventName, () => {
+        RenderPharmacyManager(window.pharmacyManagerConfiguration.appDivId, async function (DI) {
+            const appLogger = DI.getService("ILogManager").getLogger("App");
+            appLogger.Info("Starting frontend application...");
+        });
+    });
+  </script>
 </head>
 
 <body>
@@ -38,15 +51,6 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  <script>
-    window.pharmacyManagerConfiguration = Object.freeze({
-      baseApiUrl: ''
-    });
-    window.addEventListener("load", () => {
-      console.log('Starting frontend application...');
-      RenderPharmacyManager('root');
-    });
-  </script>
 </body>
 
 </html>

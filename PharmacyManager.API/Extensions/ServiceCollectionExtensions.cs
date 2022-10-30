@@ -8,6 +8,7 @@ using PharmacyManager.API.Services.Medicines;
 using PharmacyManager.API.Interfaces.Frontend;
 using PharmacyManager.API.Services.Frontend;
 using PharmacyManager.API.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PharmacyManager.API.Extensions
 {
@@ -39,7 +40,9 @@ namespace PharmacyManager.API.Extensions
                 return new ApplicationConfiguration(
                     configuration.GetSection("EnableSwagger").Get<bool>(),
                     configuration.GetSection("UseMocks").Get<bool>(),
-                    configuration.GetSection("RelativeHtmlPath").Get<string>()
+                    configuration.GetSection("RelativeHtmlPath").Get<string>(),
+                    configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
+                    configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>()
                 );
             });
             #endregion
@@ -51,6 +54,10 @@ namespace PharmacyManager.API.Extensions
 
             #region Instantiate Medicines filter
             services.AddSingleton<IMedicinesFilter<MedicineRequest, MedicineModel>, MedicinesFilter>();
+            #endregion
+
+            #region Instantiate translationManager
+            services.AddSingleton<ITranslationManager, TranslationManager>();
             #endregion
         }
 

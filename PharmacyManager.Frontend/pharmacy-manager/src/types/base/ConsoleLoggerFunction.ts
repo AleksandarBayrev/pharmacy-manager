@@ -1,0 +1,1 @@
+export type ConsoleLoggerFunction = typeof console.log | typeof console.error | typeof console.warn;

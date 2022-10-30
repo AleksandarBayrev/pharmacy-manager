@@ -8,3 +8,5 @@ export * from "./IGetMedicineListPageStore";
 export * from "./IGetDateTimeStore";
 export * from "./IAddMedicinePageStore";
 export * from "./IBaseStore";
+export * from "./ITranslationManager";
+export * from "./IAppStore";

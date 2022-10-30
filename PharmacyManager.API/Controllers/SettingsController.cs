@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.MediatRFeatures;
+using PharmacyManager.API.Models.APIResponses;
 
 namespace PharmacyManager.API.Controllers
 {
@@ -20,6 +21,18 @@ namespace PharmacyManager.API.Controllers
         public Task<IApplicationConfiguration> GetConfiguration()
         {
             return this.mediator.Send(new GetConfigurationFeature.GetConfigurationFeatureQuery());
+        }
+
+        [HttpGet("translations")]
+        public Task<TranslationsResponse> GetTranslations()
+        {
+            return this.mediator.Send(new GetTranslationsFeature.GetTranslationsFeatureQuery());
+        }
+
+        [HttpGet("reloadTranslations")]
+        public Task<TranslationsResponse> ReloadTranslations()
+        {
+            return this.mediator.Send(new ReloadTranslationsFeature.ReloadTranslationsQuery());
         }
     }
 }

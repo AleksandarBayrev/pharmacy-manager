@@ -28,7 +28,7 @@ namespace PharmacyManager.API
             }
 
             await logger.Log(nameof(Program), "Configuring application...");
-            app.ConfigureApplication();
+            await app.ConfigureApplication();
             await logger.Log(nameof(Program), "Starting application...");
             app.Run();
         }

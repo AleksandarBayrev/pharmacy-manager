@@ -1,13 +1,18 @@
+import { observer } from "mobx-react";
 import React from "react";
+import { IAppStore, ITranslationManager } from "../../../../../types";
 
 type LoadingDataProps = {
     rerenderDotsInMs: number;
+    appStore: IAppStore;
+    translationManager: ITranslationManager;
 }
 type LoadingDataState = {
     numberOfDots: number;
     rerenderDotsInMs: number;
 }
 
+@observer
 export class LoadingData extends React.Component<LoadingDataProps, LoadingDataState> {
     private readonly dot = ".";
     private interval: NodeJS.Timer | null = null;
@@ -39,6 +44,6 @@ export class LoadingData extends React.Component<LoadingDataProps, LoadingDataSt
 
     private getMessage() {
         let dots = this.dot.repeat(this.state.numberOfDots % 3 + 1);
-        return `Loading data, please wait${dots}`;
+        return `${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_LOADING_DATA")}${dots}`;
     }
 }

@@ -1,10 +1,12 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { ILogger, LogLevel } from "../types";
+import { ConsoleLoggerFunction, ILogger, LogLevel } from "../types";
 
 class Logger implements ILogger {
     private readonly context: string;
+    private readonly logFunctions: Map<LogLevel, ConsoleLoggerFunction>;
     constructor(context: string) {
         this.context = context;
+        this.logFunctions = this.setupLogFunctions();
     }
 
     Info = (message: string) => {
@@ -14,8 +16,20 @@ class Logger implements ILogger {
         this.getLoggingFunction('error')(`[${this.context}] (${new Date().toISOString()}) => Error: ${error.name}, Message: ${error.message}, Stack: ${error.stack}`);
     }
 
+    Warn = (message: string) => {
+        this.getLoggingFunction('warn')(`[${this.context}] (${new Date().toISOString()}) => Warning: ${message}`);
+    }
+
+    private setupLogFunctions() {
+        const functions = new Map<LogLevel, ConsoleLoggerFunction>();
+        functions.set('info', console.log);
+        functions.set('error', console.error);
+        functions.set('warn', console.warn);
+        return functions;
+    }
+
     private getLoggingFunction(level: LogLevel) {
-        return level === 'info' ? console.log : console.error;
+        return this.logFunctions.get(level) as ConsoleLoggerFunction;
     }
 }
 

@@ -3,20 +3,31 @@ import { render } from '@testing-library/react';
 import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
 import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
+import { SettingsPage } from './pages/SettingsPage';
 
 test('matches snapshot', () => {
   const services = (() => {
     const logManager: ILogManager = new LogManager();
     logManager.addLogger("PageRenderer")
+    const appStore: IAppStore = {
+      setCurrentPage: jest.fn(),
+      currentPage: observable.box("/"),
+      selectLanguage: jest.fn(),
+      language: observable.box(Language.English),
+      load: jest.fn(),
+      unload: jest.fn()
+    };
     const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"));
     const backendService: IBackendService = {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
-      getInitialPageCalculations: jest.fn()
+      getInitialPageCalculations: jest.fn(),
+      getTranslations: jest.fn(),
+      reloadTranslations: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn(),
@@ -80,11 +91,17 @@ test('matches snapshot', () => {
       resetMessage: jest.fn(),
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
+    };
+    const translationManager: ITranslationManager = {
+      loadTranslations: jest.fn(),
+      reloadTranslations: jest.fn(),
+      getTranslation: jest.fn()
     }
-    pageRenderer.add(pages.Home, <HomePage />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} />);
-    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
+    pageRenderer.add(pages.Home, <HomePage translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore}  translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} appStore={appStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.Settings, <SettingsPage translationManager={translationManager} appStore={appStore} />);
     return {
       'IPageRenderer': pageRenderer,
       'IBackendService': backendService,
@@ -92,7 +109,9 @@ test('matches snapshot', () => {
       'IDateFormatter': dateFormatter,
       'ITimeFormatter': timeFormatter,
       'IGetMedicineListPageStore': getMedicineListPageStore,
-      'IGetDateTimeStore': getDateTimeStore
+      'IGetDateTimeStore': getDateTimeStore,
+      'ITranslationManager': translationManager,
+      'IAppStore': appStore
     }
   })();
   const DI: DependencyInjection = {

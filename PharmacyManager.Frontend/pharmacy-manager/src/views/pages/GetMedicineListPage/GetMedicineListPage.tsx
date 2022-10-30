@@ -1,5 +1,5 @@
 import React from 'react';
-import { IDateFormatter, IGetMedicineListPageStore, ISettingsStore, ITranslationManager } from '../../../types';
+import { IAppStore, IDateFormatter, IGetMedicineListPageStore, ISettingsStore, ITranslationManager } from '../../../types';
 import "../../../shared/Styles.css";
 import { PageSettings } from './children/PageSettings';
 import { PageResults } from './children/PageResults';
@@ -11,12 +11,14 @@ export type GetMedicineListPageProps = {
   store: IGetMedicineListPageStore;
   settingsStore: ISettingsStore;
   translationManager: ITranslationManager;
+  appStore: IAppStore;
 }
 
 @observer
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps> {
   private pageTitleObserver!: Lambda;
   componentDidMount = async () => {
+    this.props.appStore.setCurrentPage(window.location.pathname);
     await this.props.settingsStore.load();
     this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
         window.document.title = this.pageTitle;

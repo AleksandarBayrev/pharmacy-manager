@@ -1,17 +1,13 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { IAppStore, ILogger } from "../types";
+import { ILogger } from "../types";
 import { IPageRenderer } from "../types/interfaces/IPageRenderer";
 
 class PageRenderer implements IPageRenderer {
     private readonly pages: Map<string, JSX.Element>;
     private readonly logger: ILogger;
-    private readonly appStore: IAppStore;
 
-    constructor(
-        logger: ILogger,
-        appStore: IAppStore) {
+    constructor(logger: ILogger) {
         this.logger = logger;
-        this.appStore = appStore;
         this.pages = new Map<string, JSX.Element>();
     }
 
@@ -27,7 +23,6 @@ class PageRenderer implements IPageRenderer {
             throw error;
         }
         this.logger.Info(`Registering page for path = ${path}`);
-        this.appStore.setCurrentPage(path);
         return page;
     }
 }

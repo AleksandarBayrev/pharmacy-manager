@@ -2,17 +2,19 @@ import { computed, Lambda, observe } from "mobx";
 import { observer } from "mobx-react";
 import React from "react";
 import "../../../shared/Styles.css";
-import { ISettingsStore, ITranslationManager } from "../../../types";
+import { IAppStore, ISettingsStore, ITranslationManager } from "../../../types";
 
 type HomePageProps = {
     settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
+    appStore: IAppStore;
 }
 
 @observer
 export class HomePage extends React.Component<HomePageProps> {
     private pageTitleObserver!: Lambda;
     componentDidMount = async () => {
+      this.props.appStore.setCurrentPage(window.location.pathname);
       await this.props.settingsStore.load();
       this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
           window.document.title = this.pageTitle;

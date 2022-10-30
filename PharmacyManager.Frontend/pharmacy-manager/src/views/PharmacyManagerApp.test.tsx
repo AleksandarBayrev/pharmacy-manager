@@ -19,7 +19,7 @@ test('matches snapshot', () => {
       load: jest.fn(),
       unload: jest.fn()
     };
-    const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"), appStore);
+    const pageRenderer: IPageRenderer = new PageRenderer(logManager.getLogger("PageRenderer"));
     const backendService: IBackendService = {
       addMedicine: jest.fn(),
       getAllMedicines: jest.fn(),
@@ -101,11 +101,11 @@ test('matches snapshot', () => {
       reloadTranslations: jest.fn(),
       getTranslation: jest.fn()
     }
-    pageRenderer.add(pages.Home, <HomePage settingsStore={settingsStore} translationManager={translationManager} />);
-    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} settingsStore={settingsStore} translationManager={translationManager} />);
-    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} settingsStore={settingsStore} translationManager={translationManager} />);
-    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} />);
-    pageRenderer.add(pages.Settings, <SettingsPage settingsStore={settingsStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.Home, <HomePage settingsStore={settingsStore} translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} settingsStore={settingsStore} translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore} settingsStore={settingsStore} translationManager={translationManager} appStore={appStore} />);
+    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} appStore={appStore} />);
+    pageRenderer.add(pages.Settings, <SettingsPage settingsStore={settingsStore} translationManager={translationManager} appStore={appStore} />);
     return {
       'IPageRenderer': pageRenderer,
       'IBackendService': backendService,

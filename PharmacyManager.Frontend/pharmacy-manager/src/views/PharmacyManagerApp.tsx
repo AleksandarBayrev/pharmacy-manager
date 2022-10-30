@@ -7,7 +7,7 @@ import { NotFoundPage } from './pages';
 import { DateTime } from '../shared';
 import { IPageRenderer, IGetDateTimeStore, IDateFormatter, ITimeFormatter, ITranslationManager, ISettingsStore, ValidURL, IAppStore } from '../types';
 import { observer } from 'mobx-react';
-import { computed } from 'mobx';
+import { action, computed } from 'mobx';
 
 export type PharmacyManagerAppProps = {
   DependencyInjection: DependencyInjection;
@@ -19,17 +19,22 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
   private readonly translationsManager = this.props.DependencyInjection.getService<ITranslationManager>("ITranslationManager");
   private readonly settingsStore = this.props.DependencyInjection.getService<ISettingsStore>("ISettingsStore");
   private readonly appStore: IAppStore = this.props.DependencyInjection.getService<IAppStore>("IAppStore");
+
+  componentWillMount() {
+    this.appStore.setCurrentPage(window.location.pathname);
+  }
+
   render() {
     return (
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
             <div className='App-menu'>
-              <Link to={`${pages.Home}`} className={`App-menu-item ${this.selectedClass}`}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_HOME")}</Link>
-              <Link to={`${pages.GetMedicinesList}`} className={`App-menu-item ${this.selectedClass}`}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
-              <Link to={`${pages.AddMedicines}`} className={`App-menu-item ${this.selectedClass}`}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
-              <Link to={`${pages.UpdateMedicines}`} className={`App-menu-item ${this.selectedClass}`}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
-              <Link to={`${pages.Settings}`} className={`App-menu-item ${this.selectedClass}`}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_SETTINGS")}</Link>
+              <Link to={`${pages.Home}`} className={this.getAppMenuClasses(pages.Home)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_HOME")}</Link>
+              <Link to={`${pages.GetMedicinesList}`} className={this.getAppMenuClasses(pages.GetMedicinesList)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
+              <Link to={`${pages.AddMedicines}`} className={this.getAppMenuClasses(pages.AddMedicines)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
+              <Link to={`${pages.UpdateMedicines}`} className={this.getAppMenuClasses(pages.UpdateMedicines)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
+              <Link to={`${pages.Settings}`} className={this.getAppMenuClasses(pages.Settings)}>{this.translationsManager.getTranslation(this.settingsStore.language.get(), "MENU_SETTINGS")}</Link>
             </div>
           </header>
           <div className='App-page-container'>
@@ -56,8 +61,13 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
     );
   }
 
-  @computed
-  private get selectedClass() {
-    return window.location.pathname === this.appStore.currentPage.get() ? "App-menu-item-selected" : "";
+  @action
+  private getAppMenuClasses(path: string) {
+    const classList: string[] = [];
+    classList.push("App-menu-item");
+    if (path === window.location.pathname && this.appStore.currentPage.get() === path) {
+      classList.push("App-menu-item-selected");
+    }
+    return classList.join(" ").trim();
   }
 }

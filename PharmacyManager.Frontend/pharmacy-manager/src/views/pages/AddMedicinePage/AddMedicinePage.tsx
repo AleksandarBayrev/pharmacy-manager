@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { IDateFormatter, IAddMedicinePageStore, ISettingsStore, ITranslationManager } from "../../../types";
+import { IDateFormatter, IAddMedicinePageStore, ISettingsStore, ITranslationManager, IAppStore } from "../../../types";
 import "../../../shared/Styles.css";
 import { computed, Lambda, observe } from "mobx";
 
@@ -9,6 +9,7 @@ export type AddMedicinePageProps = {
     store: IAddMedicinePageStore;
     settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
+    appStore: IAppStore;
 }
 
 @observer
@@ -20,6 +21,7 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
         this.dateFormatter = props.dateFormatter;
     }
     componentDidMount = async () => {
+        this.props.appStore.setCurrentPage(window.location.pathname);
         await this.props.settingsStore.load();
         this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
             window.document.title = this.pageTitle;

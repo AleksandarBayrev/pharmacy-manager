@@ -2,18 +2,20 @@ import React from "react";
 import { action, computed, Lambda, observe } from "mobx";
 import "../../../shared/Styles.css";
 import { LanguageSelector } from "../../../shared";
-import { ISettingsStore, ITranslationManager } from "../../../types";
+import { IAppStore, ISettingsStore, ITranslationManager } from "../../../types";
 import { observer } from "mobx-react";
 
 type SettingsPageProps = {
     settingsStore: ISettingsStore;
     translationManager: ITranslationManager;
+    appStore: IAppStore;
 }
 
 @observer
 export class SettingsPage extends React.Component<SettingsPageProps> {
     private pageTitleObserver!: Lambda;
     componentDidMount = async () => {
+        this.props.appStore.setCurrentPage(window.location.pathname);
         await this.props.settingsStore.load();
         this.pageTitleObserver = observe(this.props.settingsStore.language, () => {
             window.document.title = this.pageTitle;

@@ -1,13 +1,15 @@
 import React from "react";
-import { IBackendService } from "../../../types";
+import { IAppStore, IBackendService } from "../../../types";
 import "../../../shared/Styles.css";
 
 export type UpdateMedicinePageProps = {
     backendService: IBackendService;
+    appStore: IAppStore;
 }
 
 export class UpdateMedicinePage extends React.Component<UpdateMedicinePageProps> {
     componentDidMount(): void {
+        this.props.appStore.setCurrentPage(window.location.pathname);
         window.document.title = "Pharmacy Manager - Update Medicine";
     }
     render() {

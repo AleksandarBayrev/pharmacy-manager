@@ -15,7 +15,7 @@ import { IAddMedicinePageStore, IAppStore, IBackendService, IDateFormatter, IGet
     await showLogo();
     const logManager = DependencyInjectionInstance.getService<ILogManager>("ILogManager");
     const backendService = DependencyInjectionInstance.getService<IBackendService>("IBackendService");
-    DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer"), DependencyInjectionInstance.getService<IAppStore>("IAppStore")]);
+    DependencyInjectionInstance.registerService<IPageRenderer>("IPageRenderer", "singleton", PageRenderer, [logManager.getLogger("PageRenderer")]);
     DependencyInjectionInstance.registerService<IDateFormatter>("IDateFormatter", "singleton", DateFormatter, []);
     DependencyInjectionInstance.registerService<ITimeFormatter>("ITimeFormatter", "singleton", TimeFormatter, []);
     DependencyInjectionInstance.registerService<IGetMedicineListPageStore>("IGetMedicineListPageStore", "singleton", GetMedicineListPageStore, [backendService]);

@@ -3,6 +3,7 @@ import { observable, IObservableValue, action } from "mobx";
 import { enhanceClass } from "../base/enhanceClass";
 
 class GetDateTimeStore implements IGetDateTimeStore {
+    @observable
     public date: IObservableValue<Date>;
 
     constructor() {

@@ -14,9 +14,6 @@ export class DateTime extends React.Component<DateTimeProps> {
     private updateInterval: NodeJS.Timer | undefined;
     constructor(props: DateTimeProps) {
         super(props);
-        this.state = {
-            date: new Date()
-        };
     }
 
     componentDidMount(): void {

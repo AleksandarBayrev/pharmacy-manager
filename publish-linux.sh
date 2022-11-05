@@ -3,6 +3,9 @@ echo "Cleaning old builds..."
 rm -rfv ./**/bin
 rm -rfv ./**/obj
 echo "Finished cleaning old builds"
+echo "Cleaning node modules..."
+rm -rfv ./**/node_modules
+echo "Finished cleaning node modules"
 echo "Start building FE..."
 cd ./PharmacyManager.BaseFrontendUtils/pharmacy-manager-base-frontend-utils
 npm install

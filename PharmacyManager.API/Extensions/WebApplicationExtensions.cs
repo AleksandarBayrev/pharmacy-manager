@@ -14,7 +14,9 @@ namespace PharmacyManager.API.Extensions
         }
         public static async Task<WebApplication> ConfigureApplication(this WebApplication app)
         {
-            app.ConfigureMiddlewares();
+            app
+                .ConfigureProxySupport()
+                .ConfigureMiddlewares();
             var configuration = app.Services.GetService<IApplicationConfiguration>();
             if (configuration == null)
             {
@@ -29,12 +31,18 @@ namespace PharmacyManager.API.Extensions
             await translationManager.LoadDictionaries();
             app.UseAuthorization();
             app.MapControllers();
+			return app;
+        }
+
+        private static WebApplication ConfigureProxySupport(this WebApplication app)
+        {
 			app.UseForwardedHeaders(new ForwardedHeadersOptions
 			{
 				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 			});
-			return app;
-        }
+
+            return app;
+		}
 
         private static WebApplication ConfigureMiddlewares(this WebApplication app)
         {

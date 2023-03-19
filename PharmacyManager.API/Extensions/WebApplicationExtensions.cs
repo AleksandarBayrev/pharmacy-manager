@@ -1,12 +1,11 @@
-﻿using MediatR;
+﻿using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
 using PharmacyManager.API.Interfaces.Base;
-using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Middlewares;
 
 namespace PharmacyManager.API.Extensions
 {
-    public static class WebApplicationExtensions
+	public static class WebApplicationExtensions
     {
         public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
         {
@@ -30,7 +29,11 @@ namespace PharmacyManager.API.Extensions
             await translationManager.LoadDictionaries();
             app.UseAuthorization();
             app.MapControllers();
-            return app;
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			});
+			return app;
         }
 
         private static WebApplication ConfigureMiddlewares(this WebApplication app)

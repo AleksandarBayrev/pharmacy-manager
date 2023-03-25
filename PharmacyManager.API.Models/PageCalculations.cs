@@ -3,7 +3,6 @@
     public class PageCalculations
     {
         public decimal Pages { get; set; }
-        public long Page { get; set; }
         public long ItemsPerPage { get; set; }
     }
 }

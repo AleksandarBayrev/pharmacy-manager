@@ -20,3 +20,8 @@
     margin-left: 7px;
     margin-right: 7px;
 }
+
+.disabled {
+    pointer-events: none;
+    text-decoration: line-through underline;
+}

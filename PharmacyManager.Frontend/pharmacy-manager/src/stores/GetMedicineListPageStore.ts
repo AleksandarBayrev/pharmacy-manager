@@ -100,9 +100,8 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
             this.loadingData.set(true);
             this.isInitialRequestMade.set(true);
             this.showPageCount.set(false);
-        } else {
-            this.isLoadingPage.set(true);
         }
+
         const response = await this.backendService.getAllMedicines(request);
         const timeout = useLoadingTimeout ? this.loadingTimeout : 0;
         setTimeout(() => {
@@ -111,7 +110,6 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
                 this.pages.set(response.pages);
                 this.loadingData.set(false);
                 this.showPageCount.set(true);
-                this.isLoadingPage.set(false);
             });
         }, timeout);
     }

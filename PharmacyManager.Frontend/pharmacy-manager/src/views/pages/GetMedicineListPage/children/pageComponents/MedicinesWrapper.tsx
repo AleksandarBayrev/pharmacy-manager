@@ -50,7 +50,11 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
         this.props.store.updateRequestProperties({
             page
         });
+        this.props.store.isLoadingPage.set(true);
         this.props.store.updateCurrentRequest();
+        setTimeout(() => {
+            this.props.store.isLoadingPage.set(false);
+        }, 1000);
     }
 
     private renderPages(currentPage: number, maxPageCount: number, isLoadingPage: boolean) {

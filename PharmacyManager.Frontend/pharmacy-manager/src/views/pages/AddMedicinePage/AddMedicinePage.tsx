@@ -20,8 +20,8 @@ export class AddMedicinePage extends React.Component<AddMedicinePageProps> {
         this.dateFormatter = props.dateFormatter;
     }
     componentDidMount = async () => {
-        this.props.appStore.setCurrentPage(window.location.pathname);
         await this.props.appStore.load();
+        this.props.appStore.setCurrentPage(window.location.pathname);
         this.pageTitleObserver = observe(this.props.appStore.language, () => {
             window.document.title = this.pageTitle;
         });

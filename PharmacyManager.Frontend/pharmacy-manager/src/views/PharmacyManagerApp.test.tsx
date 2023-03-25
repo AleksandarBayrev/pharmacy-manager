@@ -41,6 +41,7 @@ test('matches snapshot', () => {
       medicines: observable([]),
       showPageCount: observable.box(true),
       loadingData: observable.box(true),
+      isLoadingPage: observable.box(false),
       request: {
         availableOnly: false,
         notExpired: false,

@@ -8,6 +8,7 @@ export interface IGetMedicineListPageStore extends IBaseStore {
     medicines: IObservableArray<MedicineModel>; 
     pages: IObservableValue<number>;
     loadingData: IObservableValue<boolean>;
+    isLoadingPage: IObservableValue<boolean>;
     isInitialRequestMade: IObservableValue<boolean>;
     showPageCount: IObservableValue<boolean>;
     readonly defaultRequest: MedicineRequest;

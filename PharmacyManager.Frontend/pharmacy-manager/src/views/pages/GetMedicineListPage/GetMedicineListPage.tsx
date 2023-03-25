@@ -17,8 +17,8 @@ export type GetMedicineListPageProps = {
 export class GetMedicineListPage extends React.Component<GetMedicineListPageProps> {
   private pageTitleObserver!: Lambda;
   componentDidMount = async () => {
-    this.props.appStore.setCurrentPage(window.location.pathname);
     await this.props.appStore.load();
+    this.props.appStore.setCurrentPage(window.location.pathname);
     this.pageTitleObserver = observe(this.props.appStore.language, () => {
         window.document.title = this.pageTitle;
     });

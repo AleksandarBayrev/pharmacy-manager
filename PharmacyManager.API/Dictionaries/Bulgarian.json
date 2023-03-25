@@ -37,5 +37,6 @@
   "HOME_PAGE_HEADER_CONTENT": "Изберете действие от горното меню",
   "HEADER_HOME": "Начало",
   "RESULTS_MAKE_QUERY": "Моля, направете заявка.",
-  "RESULTS_NO_RESULTS_FOR_QUERY": "Няма резултати за направената от Вас заявка."
+  "RESULTS_NO_RESULTS_FOR_QUERY": "Няма резултати за направената от Вас заявка.",
+  "FORM_GET_MEDICINE_LOADING_PAGE": "Зареждам страница"
 }

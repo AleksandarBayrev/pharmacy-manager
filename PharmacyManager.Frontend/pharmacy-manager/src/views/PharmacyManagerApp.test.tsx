@@ -1,16 +1,23 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { PharmacyManagerApp } from './PharmacyManagerApp';
 import { DependencyInjection } from '../base';
-import { pages } from '../constants';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore, Pages } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
 import { SettingsPage } from './pages/SettingsPage';
+import { TranslationsMock } from '../mocks/TranslationsMock';
 
-test('matches snapshot', () => {
-  const services = (() => {
+test('matches snapshot', async () => {
+  window.pharmacyManagerConfiguration = {
+    baseApiUrl: "",
+    appLoadedEventName: "APP_LOADED",
+    appDivId: "root",
+    showLogo: false
+  };
+  const { pages } = await import('../constants');
+  const { PharmacyManagerApp } = await import('./PharmacyManagerApp');
+  const services = ((pages: Pages) => {
     const logManager: ILogManager = new LogManager();
     logManager.addLogger("PageRenderer")
     const appStore: IAppStore = {
@@ -30,12 +37,12 @@ test('matches snapshot', () => {
       reloadTranslations: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
-      getDateForInput: jest.fn(),
-      getDateForTable: jest.fn(),
-      getDateForDateTimeComponent: jest.fn()
+      getDateForInput: jest.fn((date) => "01.01.2023"),
+      getDateForTable: jest.fn((date) => "01.01.2023"),
+      getDateForDateTimeComponent: jest.fn((date) => "01.01.2023")
     };
     const timeFormatter: ITimeFormatter = {
-      getTimeForDateTimeComponent: jest.fn()
+      getTimeForDateTimeComponent: jest.fn((time) => "00:00")
     };
     const getMedicineListPageStore: IGetMedicineListPageStore = {
       medicines: observable([]),
@@ -96,7 +103,7 @@ test('matches snapshot', () => {
     const translationManager: ITranslationManager = {
       loadTranslations: jest.fn(),
       reloadTranslations: jest.fn(),
-      getTranslation: jest.fn()
+      getTranslation: jest.fn((language, key) => (TranslationsMock[language] as any)[key])
     }
     pageRenderer.add(pages.Home, <HomePage translationManager={translationManager} appStore={appStore} />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} translationManager={translationManager} appStore={appStore} />);
@@ -114,10 +121,10 @@ test('matches snapshot', () => {
       'ITranslationManager': translationManager,
       'IAppStore': appStore
     }
-  })();
+  });
   const DI: DependencyInjection = {
     getService: jest.fn((name) => {
-      return (services as any)[name];
+      return (services(pages) as any)[name];
     }),
     registerService: jest.fn(),
     logger: jest.fn(),

@@ -15,7 +15,7 @@ Object {
             class="App-menu"
           >
             <a
-              class="App-menu-item"
+              class="App-menu-item App-menu-item-selected"
               href="/"
             >
               Home
@@ -24,7 +24,7 @@ Object {
               class="App-menu-item"
               href="/medicines/get"
             >
-              Get Medicine List
+              List of Medicines
             </a>
             <a
               class="App-menu-item"
@@ -38,72 +38,14 @@ Object {
             >
               Update Medicine
             </a>
-          </div>
-          <div
-            class="App-page-container"
-          >
-            <div
-              class="App-date-time"
+            <a
+              class="App-menu-item"
+              href="/settings"
             >
-              <div
-                class="App-date-time-container"
-              >
-                Current time: undefined undefined
-              </div>
-            </div>
-            <div
-              class="App-page"
-            >
-              <div
-                class="App-page"
-              >
-                <div
-                  class="App-page-header"
-                >
-                  Select one of the actions from the menu above
-                </div>
-              </div>
-            </div>
+              Settings
+            </a>
           </div>
         </header>
-      </div>
-    </div>
-  </body>,
-  "container": <div>
-    <div
-      class="App"
-    >
-      <header
-        class="App-header"
-      >
-        <div
-          class="App-menu"
-        >
-          <a
-            class="App-menu-item"
-            href="/"
-          >
-            Home
-          </a>
-          <a
-            class="App-menu-item"
-            href="/medicines/get"
-          >
-            Get Medicine List
-          </a>
-          <a
-            class="App-menu-item"
-            href="/medicines/add"
-          >
-            Add Medicine
-          </a>
-          <a
-            class="App-menu-item"
-            href="/medicines/update"
-          >
-            Update Medicine
-          </a>
-        </div>
         <div
           class="App-page-container"
         >
@@ -113,7 +55,7 @@ Object {
             <div
               class="App-date-time-container"
             >
-              Current time: undefined undefined
+              Current time: 01.01.2023 00:00
             </div>
           </div>
           <div
@@ -130,7 +72,77 @@ Object {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="App"
+    >
+      <header
+        class="App-header"
+      >
+        <div
+          class="App-menu"
+        >
+          <a
+            class="App-menu-item App-menu-item-selected"
+            href="/"
+          >
+            Home
+          </a>
+          <a
+            class="App-menu-item"
+            href="/medicines/get"
+          >
+            List of Medicines
+          </a>
+          <a
+            class="App-menu-item"
+            href="/medicines/add"
+          >
+            Add Medicine
+          </a>
+          <a
+            class="App-menu-item"
+            href="/medicines/update"
+          >
+            Update Medicine
+          </a>
+          <a
+            class="App-menu-item"
+            href="/settings"
+          >
+            Settings
+          </a>
+        </div>
       </header>
+      <div
+        class="App-page-container"
+      >
+        <div
+          class="App-date-time"
+        >
+          <div
+            class="App-date-time-container"
+          >
+            Current time: 01.01.2023 00:00
+          </div>
+        </div>
+        <div
+          class="App-page"
+        >
+          <div
+            class="App-page"
+          >
+            <div
+              class="App-page-header"
+            >
+              Select one of the actions from the menu above
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>,
   "debug": [Function],

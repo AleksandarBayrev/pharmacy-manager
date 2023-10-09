@@ -112,7 +112,11 @@ namespace PharmacyManager.API.Extensions
 
         private static void AddMediatR(IServiceCollection services)
         {
-            services.AddMediatR(typeof(GetConfigurationFeature), typeof(GetWebhostAbsolutePathFeature));
+            services.AddMediatR((configuration) =>
+            {
+                configuration.RegisterServicesFromAssemblyContaining<GetWebhostAbsolutePathFeature>();
+                configuration.RegisterServicesFromAssemblyContaining<AddMedicineFeature>();
+            });
         }
     }
 }

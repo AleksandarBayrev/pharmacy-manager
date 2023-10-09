@@ -96,7 +96,7 @@ namespace PharmacyManager.API.Services.Medicines
 
         private async Task<IEnumerable<MedicineModel>> OrderDescending(IEnumerable<MedicineModel> medicines)
         {
-            await logger.Log(this.loggerContext, "Ordering medicines by expiration date");
+            await logger.Log(this.loggerContext, "Ordering medicines by expiration date", LogLevel.Info);
             return medicines.OrderByDescending(x => x.ExpirationDate);
         }
 

@@ -17,7 +17,7 @@ namespace PharmacyManager.API.Services.Base
         {
             var calculation = (decimal)(itemsCount) / (decimal)(pageSize);
             var roundedCalculation = itemsCount > pageSize ? Math.Ceiling(calculation) : 1;
-            await logger.Log(this.loggerContext, $"Calculation for items count = {itemsCount} and items per page = {pageSize} = {calculation}, rounded calculation = {roundedCalculation}");
+            await logger.Log(this.loggerContext, $"Calculation for items count = {itemsCount} and items per page = {pageSize} = {calculation}, rounded calculation = {roundedCalculation}", LogLevel.Info);
             return new PageCalculations
             {
                 Pages = roundedCalculation,

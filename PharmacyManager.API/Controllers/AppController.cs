@@ -3,11 +3,11 @@ using ILogger = PharmacyManager.API.Interfaces.Base.ILogger;
 using MediatR;
 using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Features;
-using PharmacyManager.API.Models;
+using LogLevel = PharmacyManager.API.Interfaces.Base.LogLevel;
 
 namespace PharmacyManager.API.Controllers
 {
-    [Route("/")]
+	[Route("/")]
     [ApiController]
     public class AppController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace PharmacyManager.API.Controllers
         [HttpGet("404")]
         public async Task<IActionResult> GetHTML()
         {
-            await logger.Log(this.loggerContext, "Rendering App UI");
+            await logger.Log(this.loggerContext, "Rendering App UI", LogLevel.Info);
             return new FileContentResult(await mediator.Send(new GetFrontendHTMLFeature.GetFrontendHTMLFeatureQuery
             {
                 Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.GetWebhostAbsolutePathFeatureQuery())
@@ -42,7 +42,7 @@ namespace PharmacyManager.API.Controllers
         [HttpGet("reload")]
         public async Task<bool> ReloadHTML()
         {
-            await logger.Log(this.loggerContext, "Reloading App UI");
+            await logger.Log(this.loggerContext, "Reloading App UI", LogLevel.Info);
             return await mediator.Send(new GetFrontendHTMLReloadFeature.GetFrontendHTMLReloadFeatureQuery
             {
                 Path = await this.mediator.Send(new GetWebhostAbsolutePathFeature.GetWebhostAbsolutePathFeatureQuery())

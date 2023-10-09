@@ -12,6 +12,7 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
             IApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(
                 EnableSwagger: true,
                 UseMocks: true,
+                LogErrorsOnly: false,
                 RelativeHtmlPath: "",
                 Dictionaries: Enumerable.Empty<string>(),
                 DictionaryValidationKeys: Enumerable.Empty<string>());

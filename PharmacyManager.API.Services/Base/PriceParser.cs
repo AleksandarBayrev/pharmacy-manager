@@ -14,7 +14,7 @@ namespace PharmacyManager.API.Services.Base
 
         public async Task<decimal>Parse(string priceAsString)
         {
-            await this.logger.Log(nameof(PriceParser), $"Parsing price as string {priceAsString} to decimal");
+            await this.logger.Log(nameof(PriceParser), $"Parsing price as string {priceAsString} to decimal", LogLevel.Info);
             return Math.Round(decimal.Parse(priceAsString, CultureInfo.InvariantCulture), 2, MidpointRounding.AwayFromZero);
         }
     }

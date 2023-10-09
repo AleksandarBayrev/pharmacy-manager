@@ -28,7 +28,7 @@ namespace PharmacyManager.API.Services.Medicines
         {
             if (request.AvailableOnly)
             {
-                await logger.Log(this.loggerContext, "Filtering by Available Only");
+                await logger.Log(this.loggerContext, "Filtering by Available Only", LogLevel.Info);
                 filteredMedicines = filteredMedicines.Where(x => x.Quantity > 0);
             }
             return filteredMedicines;
@@ -38,7 +38,7 @@ namespace PharmacyManager.API.Services.Medicines
         {
             if (request.NotExpired)
             {
-                await logger.Log(this.loggerContext, "Filtering by Not Expired");
+                await logger.Log(this.loggerContext, "Filtering by Not Expired", LogLevel.Info);
                 filteredMedicines = filteredMedicines.Where(x => x.ExpirationDate > DateTime.Now);
             }
             return filteredMedicines;
@@ -48,7 +48,7 @@ namespace PharmacyManager.API.Services.Medicines
         {
             if (request.Manufacturer != null && request.Manufacturer.Length != 0)
             {
-                await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}");
+                await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}", LogLevel.Info);
                 filteredMedicines = filteredMedicines.Where(x => x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower()));
             }
             return filteredMedicines;

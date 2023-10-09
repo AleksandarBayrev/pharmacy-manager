@@ -13,8 +13,15 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 			{
 				Console.SetOut(sw);
 
-				ILogger logger = new Logger();
-				await logger.Log("Test", "Test");
+				ILogger logger = new Logger(new ApplicationConfiguration(
+					EnableSwagger: false,
+					UseMocks: true,
+					LogErrorsOnly: true,
+					RelativeHtmlPath: "",
+					new List<string>(),
+					new List<string>()
+				));
+				await logger.Log("Test", "Test", LogLevel.Info);
 
 				string expected = "<Test>: Test";
 				sw.ToString().Should().Contain(expected);

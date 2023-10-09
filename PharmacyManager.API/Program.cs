@@ -27,9 +27,9 @@ namespace PharmacyManager.API
                 throw new NullReferenceException("Missing application logger!");
             }
 
-            await logger.Log(nameof(Program), "Configuring application...");
+            await logger.Log(nameof(Program), "Configuring application...", Interfaces.Base.LogLevel.Info);
             await app.ConfigureApplication();
-            await logger.Log(nameof(Program), "Starting application...");
+            await logger.Log(nameof(Program), "Starting application...", Interfaces.Base.LogLevel.Info);
             app.Run();
         }
     }

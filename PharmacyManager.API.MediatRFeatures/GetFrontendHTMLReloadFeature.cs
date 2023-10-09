@@ -26,7 +26,7 @@ namespace PharmacyManager.API.MediatRFeatures
             }
             public async Task<bool> Handle(GetFrontendHTMLReloadFeatureQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(loggerContext, $"Reloading path {request.Path}", cancellationToken);
+                await logger.Log(loggerContext, $"Reloading path {request.Path}", LogLevel.Info, cancellationToken);
                 return await reader.ReloadHTML(request.Path);
             }
         }

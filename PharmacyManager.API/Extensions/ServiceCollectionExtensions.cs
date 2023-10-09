@@ -40,6 +40,7 @@ namespace PharmacyManager.API.Extensions
                 return new ApplicationConfiguration(
                     configuration.GetSection("EnableSwagger").Get<bool>(),
                     configuration.GetSection("UseMocks").Get<bool>(),
+                    configuration.GetSection("LogErrorsOnly").Get<bool>(),
                     configuration.GetSection("RelativeHtmlPath").Get<string>(),
                     configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
                     configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>()

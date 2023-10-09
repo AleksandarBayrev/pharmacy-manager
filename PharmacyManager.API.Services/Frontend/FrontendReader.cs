@@ -18,10 +18,10 @@ namespace PharmacyManager.API.Services.Frontend
 
         public async Task<string> ReadHTML(string path)
         {
-            await logger.Log(this.loggerContext, $"Reading path {path}");
+            await logger.Log(this.loggerContext, $"Reading path {path}", LogLevel.Info);
             if (this.htmlCache.ContainsKey(path))
             {
-                await logger.Log(this.loggerContext, $"Path {path} found in cache, returning content");
+                await logger.Log(this.loggerContext, $"Path {path} found in cache, returning content", LogLevel.Info);
                 return this.htmlCache[path];
             }
             var content = File.ReadAllText(path);
@@ -31,7 +31,7 @@ namespace PharmacyManager.API.Services.Frontend
 
         public async Task<bool> ReloadHTML(string path)
         {
-            await logger.Log(this.loggerContext, $"Reloading path {path}");
+            await logger.Log(this.loggerContext, $"Reloading path {path}", LogLevel.Info);
             if (this.htmlCache.ContainsKey(path))
             {
                 var content = File.ReadAllText(path);

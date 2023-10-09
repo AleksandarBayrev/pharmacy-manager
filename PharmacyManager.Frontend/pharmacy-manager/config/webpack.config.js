@@ -85,6 +85,8 @@ const hasJsxRuntime = (() => {
   }
 })();
 
+const WebpackObfuscator = require('webpack-obfuscator');
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function (webpackEnv) {
@@ -563,6 +565,19 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new WebpackObfuscator({
+        compact: true,
+        deadCodeInjection: true,
+        deadCodeInjectionThreshold: 1,
+        debugProtection: true,
+        identifierNamesGenerator: 'hexadecimal',
+        selfDefending: true,
+        splitStrings: true,
+        splitStringsChunkLength: 2,
+        stringArrayEncoding: ['rc4'],
+        target: 'browser',
+        unicodeEscapeSequence: true
+      }),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(

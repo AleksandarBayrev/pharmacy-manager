@@ -39,7 +39,10 @@ namespace PharmacyManager.API.Extensions
 
                 return new ApplicationConfiguration(
                     configuration.GetSection("EnableSwagger").Get<bool>(),
-                    configuration.GetSection("UseMocks").Get<bool>(),
+                    new MocksConfiguration(
+                        Use: configuration.GetSection("Mocks").GetSection("Use").Get<bool>(),
+                        GeneratedNumberOfPharmacies: configuration.GetSection("Mocks").GetSection("GeneratedNumberOfPharmacies").Get<int>()
+                    ),
                     configuration.GetSection("LogErrorsOnly").Get<bool>(),
                     configuration.GetSection("RelativeHtmlPath").Get<string>(),
                     configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
@@ -98,9 +101,9 @@ namespace PharmacyManager.API.Extensions
                     throw new NullReferenceException("MedicinesFilter not available!");
                 }
 
-                if (appConfig.UseMocks)
+                if (appConfig.Mocks.Use)
                 {
-                    return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter);
+                    return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                 }
                 return new MedicinesProvider();
             });

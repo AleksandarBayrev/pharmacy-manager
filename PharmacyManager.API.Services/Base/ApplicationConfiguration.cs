@@ -6,7 +6,7 @@ namespace PharmacyManager.API.Services.Base
     {
         public ApplicationConfiguration(
             bool EnableSwagger,
-            bool UseMocks,
+            IMocksConfiguration Mocks,
             bool LogErrorsOnly,
             string RelativeHtmlPath,
             IEnumerable<string> Dictionaries,
@@ -14,14 +14,14 @@ namespace PharmacyManager.API.Services.Base
             )
         {
             this.EnableSwagger = EnableSwagger;
-            this.UseMocks = UseMocks;
+            this.Mocks = Mocks;
             this.LogErrorsOnly = LogErrorsOnly;
             this.RelativeHtmlPath = RelativeHtmlPath;
             this.Dictionaries = Dictionaries;
             this.DictionaryValidationKeys = DictionaryValidationKeys;
         }
         public bool EnableSwagger { get; private set; }
-        public bool UseMocks { get; private set; }
+        public IMocksConfiguration Mocks{ get; private set; }
 		public bool LogErrorsOnly { get; private set; }
 		public string RelativeHtmlPath { get; private set; }
         public IEnumerable<string> Dictionaries { get; private set; }

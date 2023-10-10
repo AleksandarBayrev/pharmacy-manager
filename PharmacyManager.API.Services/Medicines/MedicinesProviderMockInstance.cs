@@ -15,7 +15,8 @@ namespace PharmacyManager.API.Services.Medicines
         public MedicinesProviderMockInstance(
             ILogger logger,
             IIdGenerator idGenerator,
-            IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)
+            IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter,
+            int generatedNumberOfPharmacies)
         {
             this.logger = logger;
             this.idGenerator = idGenerator;
@@ -68,7 +69,7 @@ namespace PharmacyManager.API.Services.Medicines
                 }
             };
 
-            for (var i = 0; i < 100000; i++)
+            for (var i = 0; i < generatedNumberOfPharmacies; i++)
             {
                 this._medicines.Add(new MedicineModel { Id = this.idGenerator.GenerateId(), Name = "Paracetamol " + i, Manufacturer = "Bayer " + i, Description = "Paracetamol", ExpirationDate = DateTime.Now, ManufacturingDate = new DateTime(2020, 1, 1), Price = 1.99m, Quantity = new Random().Next(0, 500) }); 
             }

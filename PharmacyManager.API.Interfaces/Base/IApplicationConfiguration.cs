@@ -3,7 +3,7 @@
     public interface IApplicationConfiguration
     {
         public bool EnableSwagger { get; }
-        public bool UseMocks { get; }
+        public IMocksConfiguration Mocks { get; }
         public bool LogErrorsOnly { get; }
         public string RelativeHtmlPath { get; }
         public IEnumerable<string> Dictionaries { get; }

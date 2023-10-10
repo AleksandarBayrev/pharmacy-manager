@@ -11,15 +11,16 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
         {
             IApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(
                 EnableSwagger: true,
-                UseMocks: true,
+                new MocksConfiguration(true, 1000),
                 LogErrorsOnly: false,
                 RelativeHtmlPath: "",
                 Dictionaries: Enumerable.Empty<string>(),
                 DictionaryValidationKeys: Enumerable.Empty<string>());
 
             applicationConfiguration.EnableSwagger.Should().Be(true);
-            applicationConfiguration.UseMocks.Should().Be(true);
-            applicationConfiguration.RelativeHtmlPath.Should().Be("");
+			applicationConfiguration.Mocks.Use.Should().Be(true);
+			applicationConfiguration.Mocks.GeneratedNumberOfPharmacies.Should().Be(1000);
+			applicationConfiguration.RelativeHtmlPath.Should().Be("");
             applicationConfiguration.Dictionaries.Count().Should().Be(0);
             applicationConfiguration.DictionaryValidationKeys.Count().Should().Be(0);
 		}

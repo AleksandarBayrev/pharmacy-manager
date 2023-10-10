@@ -163,8 +163,8 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         return {
             manufacturer: this.url.searchParams.get('manufacturer') || '',
             page: parseInt(this.url.searchParams.get('page') || this.defaultRequest.page.toString()),
-            notExpired: Boolean(this.url.searchParams.get('notExpired')),
-            availableOnly: Boolean(this.url.searchParams.get('availableOnly')),
+            notExpired: this.url.searchParams.get('notExpired') === "true",
+            availableOnly: this.url.searchParams.get('availableOnly') === "true",
             itemsPerPage: parseInt(dropdownOptions.includes(parseInt(this.url.searchParams.get('itemsPerPage') || '0')) ? (this.url.searchParams.get('itemsPerPage') || this.defaultRequest.itemsPerPage).toString() : this.defaultRequest.itemsPerPage.toString())
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace PharmacyManager.API.Interfaces.Base
+﻿using System.Text.Json.Serialization;
+
+namespace PharmacyManager.API.Interfaces.Base
 {
 	public enum LogLevel
 	{

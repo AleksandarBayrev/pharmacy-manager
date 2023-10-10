@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.MediatR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.Models", "PharmacyManager.API.Models\PharmacyManager.API.Models.csproj", "{03C86BE2-800B-4D90-9C18-9FA459AE08FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PharmacyManager.API.Tests", "PharmacyManager.API.Tests\PharmacyManager.API.Tests.csproj", "{B8340922-6AB4-4180-AF8C-5E7C426525B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PharmacyManager.API.Tests", "PharmacyManager.API.Tests\PharmacyManager.API.Tests.csproj", "{B8340922-6AB4-4180-AF8C-5E7C426525B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PharmacyManager.API.Extensions", "PharmacyManager.API.Extensions\PharmacyManager.API.Extensions.csproj", "{AEEB68C7-F6C8-4BA7-BC64-31C75718C2EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{B8340922-6AB4-4180-AF8C-5E7C426525B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8340922-6AB4-4180-AF8C-5E7C426525B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8340922-6AB4-4180-AF8C-5E7C426525B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEEB68C7-F6C8-4BA7-BC64-31C75718C2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEEB68C7-F6C8-4BA7-BC64-31C75718C2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEEB68C7-F6C8-4BA7-BC64-31C75718C2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEEB68C7-F6C8-4BA7-BC64-31C75718C2EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

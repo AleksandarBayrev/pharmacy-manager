@@ -27,7 +27,7 @@ namespace PharmacyManager.API.Services.Base
         private string BuildLog(string context, string message, LogLevel logLevel)
         {
             var currentTime = DateTime.Now.ToString("yyyy-MM-ddThh:mm:ss.fffZ");
-            return $"[{currentTime}] <{context}>: {message}";
+			return $"[{currentTime}] ({logLevel}) <{context}>: {message}";
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
+using PharmacyManager.API.Extensions;
 
 namespace PharmacyManager.API.Services.Medicines
 {
@@ -14,44 +15,26 @@ namespace PharmacyManager.API.Services.Medicines
             this.logger = logger;
         }
 
-        public async Task<IEnumerable<MedicineModel>> ApplyFilters(MedicineRequest request, IEnumerable<MedicineModel> medicines)
-        {
-            var filteredMedicines = medicines.AsEnumerable();
-            return await FilterByAvailableOnly(request,
-                await FilterByNotExpired(request,
-                    await FilterByManufacturer(request, filteredMedicines)
-                )
-            );
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByAvailableOnly(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.AvailableOnly)
-            {
-                await logger.Log(this.loggerContext, "Filtering by Available Only", LogLevel.Info);
-                filteredMedicines = filteredMedicines.Where(x => x.Quantity > 0);
-            }
-            return filteredMedicines;
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByNotExpired(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.NotExpired)
-            {
-                await logger.Log(this.loggerContext, "Filtering by Not Expired", LogLevel.Info);
-                filteredMedicines = filteredMedicines.Where(x => x.ExpirationDate > DateTime.Now);
-            }
-            return filteredMedicines;
-        }
-
-        private async Task<IEnumerable<MedicineModel>> FilterByManufacturer(MedicineRequest request, IEnumerable<MedicineModel> filteredMedicines)
-        {
-            if (request.Manufacturer != null && request.Manufacturer.Length != 0)
-            {
-                await logger.Log(this.loggerContext, $"Filtering by Manufacturer containing {request.Manufacturer}", LogLevel.Info);
-                filteredMedicines = filteredMedicines.Where(x => x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower()));
-            }
-            return filteredMedicines;
+        public Task<IEnumerable<MedicineModel>> ApplyFilters(MedicineRequest request, IEnumerable<MedicineModel> medicines)
+		{
+			return Task.FromResult(medicines
+                .WhereWhen(x =>
+				{
+					return x.Quantity > 0;
+                }, request.AvailableOnly,
+                () => logger.Log(this.loggerContext, "Filtering by Available Only", LogLevel.Info, new CancellationToken()))
+                .WhereWhen(x =>
+				{
+					return x.ExpirationDate > DateTime.Now;
+                },
+                request.NotExpired,
+                () => logger.Log(this.loggerContext, "Filtering by Not Expired", LogLevel.Info, new CancellationToken()))
+                .WhereWhen(x =>
+				{
+					return x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower());
+                },
+                request.Manufacturer != null && request.Manufacturer.Length != 0,
+                () => logger.Log(this.loggerContext, "Filtering by Manufacturer Name", LogLevel.Info, new CancellationToken())));
         }
     }
 }

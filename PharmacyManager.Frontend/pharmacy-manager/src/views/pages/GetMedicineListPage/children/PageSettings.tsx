@@ -127,6 +127,6 @@ export class PageSettings extends React.Component<PageSettingsProps> {
     }
 
     private onResetRequest = (e: React.MouseEvent<HTMLButtonElement>) => {
-        this.props.store.resetRequestToDefaults(true);
+        this.props.store.resetRequestToDefaults(true, false);
     }
 }

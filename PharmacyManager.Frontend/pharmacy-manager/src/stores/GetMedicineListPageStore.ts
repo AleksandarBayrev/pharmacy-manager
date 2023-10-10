@@ -59,7 +59,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @action
     unload = async () => {
         clearTimeout(this.loadDataTimeout);
-        this.resetRequestToDefaults(false);
+        this.resetRequestToDefaults(false, false);
         this.stopUpdateInterval();
         this.medicines.replace([]);
         this.pages.set(1);
@@ -142,13 +142,15 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     }
 
     @action
-    public resetRequestToDefaults = (reloadData: boolean) => {
+    public resetRequestToDefaults = (reloadData: boolean, shouldUpdateUrl: boolean) => {
         this.request.availableOnly = this.defaultRequest.availableOnly;
         this.request.itemsPerPage = this.defaultRequest.itemsPerPage;
         this.request.manufacturer = this.defaultRequest.manufacturer;
         this.request.notExpired = this.defaultRequest.notExpired;
         this.request.page = this.defaultRequest.page;
-        this.updateURL();
+        if (shouldUpdateUrl) {
+            this.updateURL();
+        }
         if (reloadData) {
             this.getMedicines(this.request, true)
                 .then(() => {
@@ -177,7 +179,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.url.searchParams.set('itemsPerPage', this.request.itemsPerPage.toString());
         this.url.searchParams.set('availableOnly', String(this.request.availableOnly));
         this.url.searchParams.set('notExpired', String(this.request.notExpired));
-        window.history.pushState({}, '', this.url.toString());
+        window.history.replaceState({}, '', this.url.toString());
     }
 }
 

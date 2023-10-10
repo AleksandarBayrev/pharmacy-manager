@@ -2,6 +2,7 @@ import React from "react";
 import { observer } from "mobx-react";
 import { IAppStore, IGetMedicineListPageStore, ITranslationManager, MedicineRequest } from "../../../../types";
 import { ItemsPerPage } from "./pageComponents/ItemsPerPage";
+import { dropdownOptions } from "../../../../constants";
 export type PageSettingsProps = {
     store: IGetMedicineListPageStore;
     appStore: IAppStore;
@@ -67,9 +68,8 @@ export class PageSettings extends React.Component<PageSettingsProps> {
         itemsPerPage: number,
         loadingData: boolean
     ) {
-        const options: number[] = [10, 15, 20, 50, 100, 500];
         return <ItemsPerPage
-            options={options}
+            options={dropdownOptions}
             onChangeHandler={onSelectChange}
             selectedOption={itemsPerPage}
             shouldDisable={loadingData} />;
@@ -127,6 +127,6 @@ export class PageSettings extends React.Component<PageSettingsProps> {
     }
 
     private onResetRequest = (e: React.MouseEvent<HTMLButtonElement>) => {
-        this.props.store.resetRequestToDefaults(true);
+        this.props.store.resetRequestToDefaults(true, false);
     }
 }

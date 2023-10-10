@@ -24,7 +24,6 @@ class AddMedicinePageStore implements IAddMedicinePageStore {
 
     @action
     load = async () => {
-
     }
 
     @action

@@ -8,3 +8,5 @@ export const pages: Pages= {
     UpdateMedicines: "/medicines/update",
     Settings: "/settings"
 }
+
+export const dropdownOptions: number[] = [10, 15, 20, 50, 100, 500];

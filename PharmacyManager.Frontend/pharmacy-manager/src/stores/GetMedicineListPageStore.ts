@@ -2,6 +2,7 @@ import { action, computed, observable, IObservableValue, IObservableArray, runIn
 import { enhanceClass } from "../base/enhanceClass";
 import { MedicineModel, MedicineRequest } from "../types";
 import { IBackendService, IGetMedicineListPageStore } from "../types/interfaces";
+import { dropdownOptions } from "../constants";
 
 class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @observable
@@ -30,6 +31,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
     private readonly loadingTimeout: number = 1000;
     private readonly backendService: IBackendService;
+    private url: URL = new URL(window.location.href);
 
     constructor(backendService: IBackendService) {
         this.backendService = backendService;
@@ -44,6 +46,8 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
 
     @action
     load = async () => {
+        this.url = new URL(window.location.href);
+        this.updateRequestProperties(this.buildRequestFromURL());
         this.loadingData.set(true);
         const pageCalculations = await this.backendService.getInitialPageCalculations(this.request);
         this.pages.set(pageCalculations.pages);
@@ -70,7 +74,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         notExpired: false,
         manufacturer: '',
         page: 1,
-        itemsPerPage: 10
+        itemsPerPage: dropdownOptions[0]
     };
 
     @action
@@ -122,6 +126,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.request.manufacturer = request.manufacturer ?? this.request.manufacturer;
         this.request.notExpired = request.notExpired ?? this.request.notExpired;
         this.request.page = request.page ?? this.request.page;
+        this.updateURL();
     }
 
     @action
@@ -143,12 +148,36 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.request.manufacturer = this.defaultRequest.manufacturer;
         this.request.notExpired = this.defaultRequest.notExpired;
         this.request.page = this.defaultRequest.page;
+        this.updateURL();
         if (reloadData) {
             this.getMedicines(this.request, true)
                 .then(() => {
                     this.resetUpdateInterval();
                 });
         }
+    }
+
+    private buildRequestFromURL = () => {
+        return {
+            manufacturer: this.url.searchParams.get('manufacturer') || '',
+            page: parseInt(this.url.searchParams.get('page') || this.defaultRequest.page.toString()),
+            notExpired: Boolean(this.url.searchParams.get('notExpired')),
+            availableOnly: Boolean(this.url.searchParams.get('availableOnly')),
+            itemsPerPage: parseInt(dropdownOptions.includes(this.request.itemsPerPage) ? this.request.itemsPerPage.toString() : this.defaultRequest.itemsPerPage.toString())
+        }
+    }
+
+    private updateURL = () => {
+        if (this.request.manufacturer) {
+            this.url.searchParams.set('manufacturer', this.request.manufacturer)
+        } else {
+            this.url.searchParams.delete('manufacturer');
+        }
+        this.url.searchParams.set('page', this.request.page.toString());
+        this.url.searchParams.set('itemsPerPage', this.request.itemsPerPage.toString());
+        this.url.searchParams.set('availableOnly', String(this.request.availableOnly));
+        this.url.searchParams.set('notExpired', String(this.request.notExpired));
+        window.history.pushState({}, '', this.url.toString());
     }
 }
 

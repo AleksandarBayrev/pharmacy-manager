@@ -113,7 +113,7 @@ namespace PharmacyManager.API.Extensions
                 {
                     return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                 }
-                return new MedicinesProvider(appConfig, medicinesFilter);
+                return new MedicinesProvider(logger, appConfig, medicinesFilter);
             });
             #endregion
 

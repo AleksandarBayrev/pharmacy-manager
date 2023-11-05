@@ -4,6 +4,7 @@
     {
         public bool EnableSwagger { get; }
         public IMocksConfiguration Mocks { get; }
+        public IDatabaseConfiguration DatabaseConfiguration { get; }
         public bool LogErrorsOnly { get; }
         public string RelativeHtmlPath { get; }
         public IEnumerable<string> Dictionaries { get; }

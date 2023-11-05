@@ -19,7 +19,8 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 					LogErrorsOnly: true,
 					RelativeHtmlPath: "",
 					new List<string>(),
-					new List<string>()
+					new List<string>(),
+					new DatabaseConfiguration()
 				));
 				await logger.Log("Test", "Test", LogLevel.Info);
 

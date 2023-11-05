@@ -15,14 +15,20 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
                 LogErrorsOnly: false,
                 RelativeHtmlPath: "",
                 Dictionaries: Enumerable.Empty<string>(),
-                DictionaryValidationKeys: Enumerable.Empty<string>());
+                DictionaryValidationKeys: Enumerable.Empty<string>(),
+                DatabaseConfiguration: new DatabaseConfiguration());
 
             applicationConfiguration.EnableSwagger.Should().Be(true);
 			applicationConfiguration.Mocks.Use.Should().Be(true);
 			applicationConfiguration.Mocks.GeneratedNumberOfPharmacies.Should().Be(1000);
 			applicationConfiguration.RelativeHtmlPath.Should().Be("");
             applicationConfiguration.Dictionaries.Count().Should().Be(0);
-            applicationConfiguration.DictionaryValidationKeys.Count().Should().Be(0);
+			applicationConfiguration.DictionaryValidationKeys.Count().Should().Be(0);
+			applicationConfiguration.DatabaseConfiguration.Host.Should().Be(null);
+			applicationConfiguration.DatabaseConfiguration.Username.Should().Be(null);
+			applicationConfiguration.DatabaseConfiguration.Password.Should().Be(null);
+			applicationConfiguration.DatabaseConfiguration.Database.Should().Be(null);
+			applicationConfiguration.DatabaseConfiguration.Port.Should().Be(0);
 		}
     }
 }

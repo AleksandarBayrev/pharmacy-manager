@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Npgsql" Version="7.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PharmacyManager.API.Extensions\PharmacyManager.API.Extensions.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Interfaces\PharmacyManager.API.Interfaces.csproj" />
     <ProjectReference Include="..\PharmacyManager.API.Models\PharmacyManager.API.Models.csproj" />

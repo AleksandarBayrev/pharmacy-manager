@@ -46,7 +46,15 @@ namespace PharmacyManager.API.Extensions
                     configuration.GetSection("LogErrorsOnly").Get<bool>(),
                     configuration.GetSection("RelativeHtmlPath").Get<string>(),
                     configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
-                    configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>()
+                    configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>(),
+                    new DatabaseConfiguration
+                    {
+                        Host = configuration.GetSection("DatabaseConfiguration").GetSection("Host").Get<string>(),
+						Username = configuration.GetSection("DatabaseConfiguration").GetSection("Username").Get<string>(),
+						Password = configuration.GetSection("DatabaseConfiguration").GetSection("Password").Get<string>(),
+						Database = configuration.GetSection("DatabaseConfiguration").GetSection("Database").Get<string>(),
+						Port = configuration.GetSection("DatabaseConfiguration").GetSection("Port").Get<int>(),
+					}
                 );
             });
             #endregion
@@ -105,7 +113,7 @@ namespace PharmacyManager.API.Extensions
                 {
                     return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                 }
-                return new MedicinesProvider();
+                return new MedicinesProvider(appConfig, medicinesFilter);
             });
             #endregion
 

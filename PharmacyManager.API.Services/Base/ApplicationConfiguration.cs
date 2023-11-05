@@ -10,7 +10,8 @@ namespace PharmacyManager.API.Services.Base
             bool LogErrorsOnly,
             string RelativeHtmlPath,
             IEnumerable<string> Dictionaries,
-            IEnumerable<string> DictionaryValidationKeys
+            IEnumerable<string> DictionaryValidationKeys,
+            IDatabaseConfiguration DatabaseConfiguration
             )
         {
             this.EnableSwagger = EnableSwagger;
@@ -19,6 +20,7 @@ namespace PharmacyManager.API.Services.Base
             this.RelativeHtmlPath = RelativeHtmlPath;
             this.Dictionaries = Dictionaries;
             this.DictionaryValidationKeys = DictionaryValidationKeys;
+			this.DatabaseConfiguration = DatabaseConfiguration;
         }
         public bool EnableSwagger { get; private set; }
         public IMocksConfiguration Mocks{ get; private set; }
@@ -26,5 +28,6 @@ namespace PharmacyManager.API.Services.Base
 		public string RelativeHtmlPath { get; private set; }
         public IEnumerable<string> Dictionaries { get; private set; }
         public IEnumerable<string> DictionaryValidationKeys { get; private set; }
+		public IDatabaseConfiguration DatabaseConfiguration { get; }
 	}
 }

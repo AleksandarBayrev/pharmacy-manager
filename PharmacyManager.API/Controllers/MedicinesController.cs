@@ -36,7 +36,7 @@ namespace PharmacyManager.API.Controllers
 		}
 
 		[HttpPost("deleteMedicine")]
-		public Task<MedicineModel> DeleteMedicine([FromBody] AddMedicineFeature.AddMedicineFeatureQuery request)
+		public Task<DeleteMedicineResponse> DeleteMedicine([FromBody] DeleteMedicineFeature.DeleteMedicineFeatureQuery request)
 		{
 			return this.mediator.Send(request);
 		}

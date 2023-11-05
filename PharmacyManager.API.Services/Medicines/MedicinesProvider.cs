@@ -49,7 +49,11 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
-			while (this.isReloadingData) { }
+			if (this.isReloadingData)
+			{
+				await Task.Delay(500);
+				return await this.GetFilteredMedicines(request);
+			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicines.Values);
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
@@ -57,7 +61,11 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<int> GetFilteredMedicinesCount(MedicineRequest request)
 		{
-			while (this.isReloadingData) { }
+			if (this.isReloadingData)
+			{
+				await Task.Delay(500);
+				return await this.GetFilteredMedicinesCount(request);
+			}
 			await this.Log($"Getting medicines count for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.GetFilteredMedicines(request);
 			return filteredMedicines.Count();

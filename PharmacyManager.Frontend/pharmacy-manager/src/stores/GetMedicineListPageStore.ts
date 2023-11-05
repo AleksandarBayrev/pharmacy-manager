@@ -48,6 +48,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.additionalMessage = observable.box("");
     }
 
+    @action
     deleteMedicine = async (medicineId: string): Promise<void> => {
         try {
             var result = await this.backendService.deleteMedicine(medicineId);

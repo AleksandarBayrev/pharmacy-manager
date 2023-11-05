@@ -73,26 +73,28 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private async Task LoadMedicines()
 		{
-			this.isReloadingData = true;
-			await this.Log($"Started reloading medicines from database", LogLevel.Info);
-			this.medicines.Clear();
-			using (var dbClient = this.BuildConnection())
+			while (true)
 			{
-				await dbClient.OpenAsync();
-				using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
-				using (var reader = await command.ExecuteReaderAsync())
+				this.isReloadingData = true;
+				await this.Log($"Started reloading medicines from database", LogLevel.Info);
+				this.medicines.Clear();
+				using (var dbClient = this.BuildConnection())
 				{
-					while (await reader.ReadAsync())
+					await dbClient.OpenAsync();
+					using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
+					using (var reader = await command.ExecuteReaderAsync())
 					{
-						var medicine = await this.BuildMedicine(reader);
-						this.medicines.Add(medicine.Id, medicine);
+						while (await reader.ReadAsync())
+						{
+							var medicine = await this.BuildMedicine(reader);
+							this.medicines.Add(medicine.Id, medicine);
+						}
 					}
 				}
+				this.isReloadingData = false;
+				await this.Log($"Finished reloading medicines from database", LogLevel.Info);
+				await Task.Delay(1000);
 			}
-			this.isReloadingData = false;
-			await this.Log($"Finished reloading medicines from database", LogLevel.Info);
-			await Task.Delay(1000);
-			await LoadMedicines();
 		}
 
 		private async Task<MedicineModel> BuildMedicine(NpgsqlDataReader reader)

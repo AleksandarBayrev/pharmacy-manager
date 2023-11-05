@@ -82,7 +82,7 @@ namespace PharmacyManager.API.Extensions
             #endregion
 
             #region Setup Medicines Provider
-            services.AddSingleton<IMedicinesProvider<MedicineRequest, MedicineModel>>((sp) =>
+            services.AddSingleton<IMedicinesProvider<MedicineRequest, string, MedicineModel>>((sp) =>
             {
                 var appConfig = sp.GetService<IApplicationConfiguration>();
                 var idGenerator = sp.GetService<IIdGenerator>();
@@ -111,9 +111,13 @@ namespace PharmacyManager.API.Extensions
 
                 if (appConfig.Mocks.Use)
                 {
-                    return new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
+                    var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
+                    mockInstance.LoadMedicines().GetAwaiter().GetResult();
+                    return mockInstance;
                 }
-                return new MedicinesProvider(logger, appConfig, medicinesFilter);
+                var instance = new MedicinesProvider(logger, appConfig, medicinesFilter);
+                instance.LoadMedicines().GetAwaiter().GetResult();
+                return instance;
             });
             #endregion
 

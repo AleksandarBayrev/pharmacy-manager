@@ -21,12 +21,12 @@ namespace PharmacyManager.API.MediatRFeatures
 
         public class AddMedicineFeatureQueryHandler : IRequestHandler<AddMedicineFeatureQuery, MedicineModel>
         {
-            private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
+            private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
             private readonly IIdGenerator idGenerator;
             private readonly IPriceParser priceParser;
 
             public AddMedicineFeatureQueryHandler(
-                IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
+                IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider,
                 IIdGenerator idGenerator,
                 IPriceParser priceParser)
             {

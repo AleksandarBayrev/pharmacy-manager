@@ -19,12 +19,12 @@ namespace PharmacyManager.API.MediatRFeatures
         public class GetPageCalculationsQueryHandler : IRequestHandler<GetPageCalculationsQuery, PageCalculations>
         {
             private readonly ILogger logger;
-            private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
+            private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
             private readonly IPageCalculation<PageCalculations> pageCalculation;
 
             public GetPageCalculationsQueryHandler(
                 ILogger logger,
-                IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
+                IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider,
                 IPageCalculation<PageCalculations> pageCalculation)
             {
                 this.logger = logger;

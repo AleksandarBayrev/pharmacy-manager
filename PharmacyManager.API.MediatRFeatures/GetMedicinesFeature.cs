@@ -20,13 +20,13 @@ namespace PharmacyManager.API.MediatRFeatures
         public class GetMedicinesQueryHandler : IRequestHandler<GetMedicinesQuery, MedicinesResponse>
         {
             private readonly ILogger logger;
-            private readonly IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider;
+            private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
             private readonly IPageCalculation<PageCalculations> pageCalculation;
             private readonly string loggerContext = nameof(GetMedicinesFeature);
 
             public GetMedicinesQueryHandler(
                 ILogger logger,
-                IMedicinesProvider<MedicineRequest, MedicineModel> medicinesProvider,
+                IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider,
                 IPageCalculation<PageCalculations> pageCalculation)
             {
                 this.logger = logger;

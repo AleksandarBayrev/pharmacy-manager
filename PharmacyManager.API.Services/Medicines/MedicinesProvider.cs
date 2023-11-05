@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace PharmacyManager.API.Services.Medicines
 {
-	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, MedicineModel>
+	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
 		private bool isReloadingData = false;
 		private readonly IDictionary<string, MedicineModel> medicines;
@@ -16,6 +16,9 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
+		private readonly IList<string> idsToAdd;
+		private readonly IList<string> idsToUpdate;
+		private readonly IList<string> idsToRemove;
 
 		public MedicinesProvider(
 			ILogger logger,
@@ -27,26 +30,48 @@ namespace PharmacyManager.API.Services.Medicines
 			this.medicinesFilter = medicinesFilter;
 			this.medicines = new ConcurrentDictionary<string, MedicineModel>();
 			this.oldMedicines = new ConcurrentDictionary<string, MedicineModel>();
-			this.LoadMedicines();
+			this.idsToAdd = new List<string>();
+			this.idsToUpdate = new List<string>();
+			this.idsToRemove = new List<string>();
+			this.UpdateMedicinesInDB();
 		}
-		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
+
+		public async Task LoadMedicines()
 		{
-			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
+			await this.Log($"Started loading medicines from database", LogLevel.Info);
 			using (var dbClient = this.BuildConnection())
 			{
 				await dbClient.OpenAsync();
-				var id = Guid.NewGuid();
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity});", dbClient))
+				using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
+				using (var reader = await command.ExecuteReaderAsync())
 				{
-					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{id}'", dbClient))
+					while (await reader.ReadAsync())
 					{
-						var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
-						await this.Log($"Successfully added medicine: {JsonSerializer.Serialize(data)}", LogLevel.Info);
-						return data;
+						var medicine = await this.BuildMedicine(reader);
+						this.medicines.Add(medicine.Id, medicine);
 					}
 				}
 			}
+			await this.Log($"Finished reloading medicines from database", LogLevel.Info);
+		}
+
+		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
+		{
+			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
+			this.medicines.Add(medicine.Id, medicine);
+			this.idsToAdd.Add(medicine.Id);
+			return this.medicines[medicine.Id];
+		}
+
+		public async Task<bool> RemoveMedicine(string medicineId)
+		{
+			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
+			var isRemoved = this.medicines.Remove(medicineId);
+			if (isRemoved)
+			{
+				this.idsToRemove.Add(medicineId);
+			}
+			return isRemoved;
 		}
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
@@ -67,37 +92,6 @@ namespace PharmacyManager.API.Services.Medicines
 			await this.Log($"Getting medicines count for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.GetFilteredMedicines(request);
 			return filteredMedicines.Count();
-		}
-
-		private async Task LoadMedicines()
-		{
-			while (true)
-			{
-				this.isReloadingData = true;
-				await this.Log($"Started reloading medicines from database", LogLevel.Info);
-				foreach (var key in this.medicines.Keys)
-				{
-					this.oldMedicines[key] = medicines[key];
-				}
-				this.medicines.Clear();
-				using (var dbClient = this.BuildConnection())
-				{
-					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
-					using (var reader = await command.ExecuteReaderAsync())
-					{
-						while (await reader.ReadAsync())
-						{
-							var medicine = await this.BuildMedicine(reader);
-							this.medicines.Add(medicine.Id, medicine);
-						}
-					}
-				}
-				this.isReloadingData = false;
-				await this.Log($"Finished reloading medicines from database", LogLevel.Info);
-				await Task.Delay(1000);
-				this.oldMedicines.Clear();
-			}
 		}
 
 		private async Task<MedicineModel> BuildMedicine(NpgsqlDataReader reader)
@@ -135,6 +129,81 @@ namespace PharmacyManager.API.Services.Medicines
 				Port = this.applicationConfiguration.DatabaseConfiguration.Port,
 			};
 			return new NpgsqlConnection(connectionStringBuilder.ToString());
+		}
+
+		private async Task UpdateMedicinesInDB()
+		{
+			while (true)
+			{
+				foreach (var medicineId in this.idsToAdd)
+				{
+					using (var dbClient = this.BuildConnection())
+					{
+						await dbClient.OpenAsync();
+						var id = medicineId;
+						var medicine = this.medicines[medicineId];
+						using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity});", dbClient))
+						{
+							await addCommand.ExecuteNonQueryAsync();
+							using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{id}'", dbClient))
+							{
+								var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+								if (data == null)
+								{
+									throw new Exception($"Failed to fetch medicine for id = {id}");
+								}
+								await this.Log($"Successfully added medicine: {JsonSerializer.Serialize(data)}", LogLevel.Info);
+							}
+						}
+					}
+				}
+
+				foreach (var medicineId in this.idsToUpdate)
+				{
+					using (var dbClient = this.BuildConnection())
+					{
+						await dbClient.OpenAsync();
+						var medicine = this.medicines[medicineId];
+						using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
+						{
+							await addCommand.ExecuteNonQueryAsync();
+							using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
+							{
+								var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+								if (data != null)
+								{
+									await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
+								}
+							}
+						}
+					}
+				}
+
+				foreach (var medicineId in this.idsToRemove)
+                {
+					using (var dbClient = this.BuildConnection())
+					{
+						await dbClient.OpenAsync();
+						using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}", dbClient))
+						{
+							await addCommand.ExecuteNonQueryAsync();
+							using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
+							{
+								var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+								if (data == null)
+								{
+									await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
+								}
+							}
+						}
+					}
+				}
+
+				this.idsToUpdate.Clear();
+				this.idsToRemove.Clear();
+
+				await Task.Delay(1000);
+            }
 		}
 
 		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");

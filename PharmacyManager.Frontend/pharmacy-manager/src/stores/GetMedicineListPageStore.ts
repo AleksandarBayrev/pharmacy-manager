@@ -53,7 +53,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         try {
             var result = await this.backendService.deleteMedicine(medicineId);
             if (result.deleted) {
-                this.medicines.slice(this.medicines.findIndex(x => x.id == medicineId), 1);
+                await this.getMedicines(this.request, false);
                 this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
             }
             if (result.error) {

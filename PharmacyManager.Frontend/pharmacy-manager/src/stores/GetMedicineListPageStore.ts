@@ -53,6 +53,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         try {
             var result = await this.backendService.deleteMedicine(medicineId);
             if (result.deleted) {
+                this.medicines.slice(this.medicines.findIndex(x => x.id == medicineId), 1);
                 this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
             }
             if (result.error) {
@@ -61,7 +62,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         } catch (err) {
             this.additionalMessage.set((err as Error).message);
         } finally {
-            setTimeout(() => this.additionalMessage.set(""), 5000);
+            setTimeout(() => runInAction(() => {this.additionalMessage.set("")}), 5000);
         }
     }
 

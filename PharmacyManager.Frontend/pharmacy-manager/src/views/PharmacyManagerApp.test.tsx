@@ -34,7 +34,8 @@ test('matches snapshot', async () => {
       getAllMedicines: jest.fn(),
       getInitialPageCalculations: jest.fn(),
       getTranslations: jest.fn(),
-      reloadTranslations: jest.fn()
+      reloadTranslations: jest.fn(),
+      deleteMedicine: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn((date) => "01.01.2023"),
@@ -65,6 +66,7 @@ test('matches snapshot', async () => {
         itemsPerPage: 10,
         manufacturer: ""
       },
+      additionalMessage: observable.box(""),
       load: jest.fn(),
       unload: jest.fn(),
       updateCurrentRequest: jest.fn(),
@@ -73,7 +75,8 @@ test('matches snapshot', async () => {
       getMedicines: jest.fn(),
       updateRequestProperties: jest.fn(),
       refetch: jest.fn(),
-      resetRequestToDefaults: jest.fn()
+      resetRequestToDefaults: jest.fn(),
+      deleteMedicine: jest.fn()
     };
     const getDateTimeStore: IGetDateTimeStore = {
       load: jest.fn(),

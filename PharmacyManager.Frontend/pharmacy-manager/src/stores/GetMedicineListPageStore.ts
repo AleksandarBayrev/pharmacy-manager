@@ -26,6 +26,9 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @observable
     public showPageCount: IObservableValue<boolean>;
 
+    @observable
+    public additionalMessage: IObservableValue<string>;
+
 
     private updateInterval: NodeJS.Timeout | undefined = undefined;
     private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
@@ -42,6 +45,23 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.isLoadingPage = observable.box(false);
         this.isInitialRequestMade = observable.box(false);
         this.showPageCount = observable.box(false);
+        this.additionalMessage = observable.box("");
+    }
+
+    deleteMedicine = async (medicineId: string): Promise<void> => {
+        try {
+            var result = await this.backendService.deleteMedicine(medicineId);
+            if (result.deleted) {
+                this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
+            }
+            if (result.error) {
+                throw new Error(`Failed deleting medicine ID ${medicineId}`);
+            }
+        } catch (err) {
+            this.additionalMessage.set((err as Error).message);
+        } finally {
+            setTimeout(() => this.additionalMessage.set(""), 5000);
+        }
     }
 
     @action

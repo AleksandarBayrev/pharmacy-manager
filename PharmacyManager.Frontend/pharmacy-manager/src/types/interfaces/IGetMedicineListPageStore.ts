@@ -11,6 +11,7 @@ export interface IGetMedicineListPageStore extends IBaseStore {
     isLoadingPage: IObservableValue<boolean>;
     isInitialRequestMade: IObservableValue<boolean>;
     showPageCount: IObservableValue<boolean>;
+    additionalMessage: IObservableValue<string>;
     readonly defaultRequest: MedicineRequest;
 
     updateRequestProperties(request: Partial<MedicineRequest>): void;
@@ -20,4 +21,5 @@ export interface IGetMedicineListPageStore extends IBaseStore {
     getMedicines(request: MedicineRequest, useLoadingTimeout: boolean): Promise<void>;
     refetch(shouldWait: boolean): void;
     resetRequestToDefaults(reloadData: boolean, shouldUpdateUrl: boolean): void;
+    deleteMedicine(medicineId: string): Promise<void>;
 }

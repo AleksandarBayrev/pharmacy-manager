@@ -1,17 +1,36 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { AddMedicineRequest, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse, TranslationsResponse } from "../types";
+import { AddMedicineRequest, DeleteMedicineResponse, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse, TranslationsResponse } from "../types";
 
 class BackendService implements IBackendService {
     private readonly baseUrl: string;
     private readonly logger: ILogger;
-    
+
     constructor(
         baseUrl: string,
         logger: ILogger) {
         this.baseUrl = baseUrl;
         this.logger = logger;
     }
-    
+
+    public async deleteMedicine(medicineId: string): Promise<DeleteMedicineResponse> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/medicines/deleteMedicine`, {
+                method: "POST",
+                headers: this.getHeaders(),
+                body: JSON.stringify({ medicineId })
+            });
+            return await result.json() as DeleteMedicineResponse;
+        } catch (err) {
+            this.logger.Error(err as Error);
+            return {
+                medicineId,
+                deleted: false,
+                error: true
+            };
+        }
+
+    }
+
     public async addMedicine(addMedicineRequest: AddMedicineRequest): Promise<MedicineModel | undefined> {
         try {
             const result = await fetch(`${this.baseUrl}/api/medicines/addMedicine`, {

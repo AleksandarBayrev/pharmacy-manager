@@ -1,11 +1,12 @@
 import React from 'react';
-import { IDateFormatter, MedicineModel } from '../../../../../types';
+import { IDateFormatter, IGetMedicineListPageStore, MedicineModel } from '../../../../../types';
 import { Separator } from './Separator';
 import "./Style.css";
 
 export type MedicineProps = {
     dateFormatter: IDateFormatter;
     medicine: MedicineModel;
+    store: IGetMedicineListPageStore;
 };
 
 export class Medicine extends React.Component<MedicineProps> {
@@ -28,6 +29,8 @@ export class Medicine extends React.Component<MedicineProps> {
                     <div className='column'>{this.props.medicine.price}</div>
                     <Separator />
                     <div className='column'>{this.props.medicine.quantity}</div>
+                    <Separator />
+                    <div className='column'><button onClick={() => this.props.store.deleteMedicine(this.props.medicine.id)}>Delete</button></div>
                 </div>
             </div>
         )

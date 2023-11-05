@@ -33,6 +33,12 @@ namespace PharmacyManager.API.Controllers
         public Task<PageCalculations> GetInitalPageCalculations([FromBody] GetPageCalculations.GetPageCalculationsQuery request)
         {
             return this.mediator.Send(request);
-        }
-    }
+		}
+
+		[HttpPost("deleteMedicine")]
+		public Task<MedicineModel> DeleteMedicine([FromBody] AddMedicineFeature.AddMedicineFeatureQuery request)
+		{
+			return this.mediator.Send(request);
+		}
+	}
 }

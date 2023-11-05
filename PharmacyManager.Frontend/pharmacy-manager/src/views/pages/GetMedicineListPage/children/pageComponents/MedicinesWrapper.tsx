@@ -34,9 +34,11 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                     <div className='row-header'>Price</div>
                     <Separator />
                     <div className='row-header'>Quantity</div>
+                    <Separator />
+                    <div className='row-header'>Delete</div>
                 </div>
                 <div className="Medicines-list">
-                    {this.props.medicines.map(medicine => <Medicine medicine={medicine} dateFormatter={this.props.dateFormatter} />)}
+                    {this.props.medicines.map(medicine => <Medicine medicine={medicine} dateFormatter={this.props.dateFormatter} store={this.props.store} />)}
                 </div>
                 <div className="Pagination">
                     {this.renderPages(this.props.currentPage, this.props.pages, this.props.store.isLoadingPage.get())}

@@ -112,9 +112,10 @@ namespace PharmacyManager.API.Services.Medicines
 			}
 		}
 
-		public Task<bool> RemoveMedicine(string medicine)
+		public async Task<bool> RemoveMedicine(string medicineId)
 		{
-			throw new NotImplementedException();
+            var item = this._medicines.First(x => x.Id == medicineId);
+            return this._medicines.Remove(item);
 		}
 	}
 }

@@ -12,6 +12,7 @@ namespace PharmacyManager.API.Services.Medicines
 	{
 		private bool isReloadingData = false;
 		private readonly IDictionary<string, MedicineModel> medicines;
+		private readonly IDictionary<string, MedicineModel> oldMedicines;
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
@@ -25,6 +26,7 @@ namespace PharmacyManager.API.Services.Medicines
 			this.applicationConfiguration = applicationConfiguration;
 			this.medicinesFilter = medicinesFilter;
 			this.medicines = new ConcurrentDictionary<string, MedicineModel>();
+			this.oldMedicines = new ConcurrentDictionary<string, MedicineModel>();
 			this.LoadMedicines();
 		}
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
@@ -51,8 +53,9 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			if (this.isReloadingData)
 			{
-				await Task.Delay(500);
-				return await this.GetFilteredMedicines(request);
+				await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
+				var filteredMedicinesOld = await this.medicinesFilter.ApplyFilters(request, oldMedicines.Values);
+				return filteredMedicinesOld.OrderByDescending(x => x.ExpirationDate);
 			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicines.Values);
@@ -61,11 +64,6 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<int> GetFilteredMedicinesCount(MedicineRequest request)
 		{
-			if (this.isReloadingData)
-			{
-				await Task.Delay(500);
-				return await this.GetFilteredMedicinesCount(request);
-			}
 			await this.Log($"Getting medicines count for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.GetFilteredMedicines(request);
 			return filteredMedicines.Count();
@@ -77,6 +75,10 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				this.isReloadingData = true;
 				await this.Log($"Started reloading medicines from database", LogLevel.Info);
+				foreach (var key in this.medicines.Keys)
+				{
+					this.oldMedicines[key] = medicines[key];
+				}
 				this.medicines.Clear();
 				using (var dbClient = this.BuildConnection())
 				{
@@ -94,6 +96,7 @@ namespace PharmacyManager.API.Services.Medicines
 				this.isReloadingData = false;
 				await this.Log($"Finished reloading medicines from database", LogLevel.Info);
 				await Task.Delay(1000);
+				this.oldMedicines.Clear();
 			}
 		}
 

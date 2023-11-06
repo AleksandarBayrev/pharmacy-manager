@@ -96,11 +96,10 @@ namespace PharmacyManager.API.Services.Medicines
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
 		}
 
-		public async Task<int> GetFilteredMedicinesCount(MedicineRequest request)
+		public async Task<int> GetTotalCount()
 		{
-			await this.Log($"Getting medicines count for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
-			var filteredMedicines = await this.GetFilteredMedicines(request);
-			return filteredMedicines.Count();
+			await this.Log($"Getting total medicines count", LogLevel.Info);
+			return this.medicines.Count;
 		}
 
 		private async Task<MedicineModel> BuildMedicine(NpgsqlDataReader reader)

@@ -33,7 +33,7 @@ namespace PharmacyManager.API.MediatRFeatures
             }
             public async Task<PageCalculations> Handle(GetPageCalculationsQuery request, CancellationToken cancellationToken)
             {
-                var medicinesCount = await this.medicinesProvider.GetFilteredMedicinesCount(new MedicineRequest
+                var medicines = await this.medicinesProvider.GetFilteredMedicines(new MedicineRequest
                 {
                     AvailableOnly = request.AvailableOnly,
                     ItemsPerPage = request.ItemsPerPage,
@@ -42,7 +42,7 @@ namespace PharmacyManager.API.MediatRFeatures
                     Page = request.Page
                 });
                 var itemsPerPage = request.ItemsPerPage;
-                var pageCalculations = await pageCalculation.GetPageCalculations(itemsPerPage, medicinesCount);
+                var pageCalculations = await pageCalculation.GetPageCalculations(itemsPerPage, medicines.Count());
                 return pageCalculations;
             }
         }

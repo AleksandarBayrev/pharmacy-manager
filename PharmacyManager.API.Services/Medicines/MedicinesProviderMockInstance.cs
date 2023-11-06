@@ -87,11 +87,6 @@ namespace PharmacyManager.API.Services.Medicines
                 ));
         }
 
-        public Task<int> GetFilteredMedicinesCount(MedicineRequest request)
-        {
-            return GetCount(request);
-        }
-
         private async Task<IEnumerable<MedicineModel>> OrderDescending(IEnumerable<MedicineModel> medicines)
         {
             await logger.Log(this.loggerContext, "Ordering medicines by expiration date", LogLevel.Info);
@@ -121,6 +116,11 @@ namespace PharmacyManager.API.Services.Medicines
 		public Task StartWorkers()
 		{
             return Task.CompletedTask;
+		}
+
+		public async Task<int> GetTotalCount()
+		{
+            return this._medicines.Count;
 		}
 	}
 }

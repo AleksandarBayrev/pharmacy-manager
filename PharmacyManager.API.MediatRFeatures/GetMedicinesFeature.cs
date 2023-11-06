@@ -48,7 +48,9 @@ namespace PharmacyManager.API.MediatRFeatures
                 return new MedicinesResponse
                 {
                     Medicines = await GetPageItems(filteredMedicines, request, cancellationToken),
-                    Pages = await CalculatePages(request, filteredMedicines, cancellationToken)
+                    Pages = await CalculatePages(request, filteredMedicines, cancellationToken),
+                    TotalFilteredCount = filteredMedicines.Count(),
+                    TotalCount = await this.medicinesProvider.GetTotalCount()
                 };
             }
 

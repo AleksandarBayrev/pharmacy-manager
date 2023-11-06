@@ -157,7 +157,7 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				return;
 			}
-			var medicinesList = new StringBuilder();
+			var medicinesList = new ConcurrentBag<string>();
 			foreach (var medicineId in this.idsToAdd.Keys)
 			{
 				var id = medicineId;
@@ -165,14 +165,23 @@ namespace PharmacyManager.API.Services.Medicines
 				this.medicines.TryGetValue(medicineId, out medicine);
 				if (medicine != null)
 				{
-					medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}), ");
+					medicinesList.Add($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}), ");
 				}
 			}
 			using (var dbClient = this.BuildConnection())
 			{
-				var trimmedList = medicinesList.ToString().Trim();
-				if (trimmedList.Length < 0) { return; }
-				var listToAdd = trimmedList.Substring(0, trimmedList.Length - 1);
+				StringBuilder trimmedList;
+				string listToAdd;
+				lock (new object())
+				{
+					trimmedList = new StringBuilder();
+					while (medicinesList.TryTake(out string r))
+					{
+						trimmedList.Append(r);
+					}
+					if (trimmedList.Length < 0) { return; }
+					listToAdd = trimmedList.ToString().Substring(0, trimmedList.Length - 1);
+				}
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicines: {listToAdd}", LogLevel.Info);
 

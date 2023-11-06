@@ -234,7 +234,11 @@ namespace PharmacyManager.API.Services.Medicines
 							}
 						}
 					}
-					this.idsToUpdate.Clear();
+					medicine = null;
+					lock (lockObject)
+					{
+						this.idsToUpdate.Clear();
+					}
 				}
 			}
 		}
@@ -263,7 +267,10 @@ namespace PharmacyManager.API.Services.Medicines
 							}
 						}
 					}
-					this.idsToRemove.Clear();
+					lock (lockObject)
+					{
+						this.idsToRemove.Clear();
+					}
 				}
 			}
 		}

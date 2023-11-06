@@ -141,17 +141,26 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private async Task DatabaseWorker()
 		{
+			IEnumerable<CancellationToken> cancellationTokens = new List<CancellationToken>()
+			{
+				new CancellationToken(),
+				new CancellationToken(),
+				new CancellationToken(),
+				new CancellationToken(),
+				new CancellationToken()
+			};
+
 			await Task.WhenAll(new[]
 			{
-				this.AddMedicinesToDB(),
-				this.UpdateMedicinesInDB(),
-				this.DeleteMedicinesInDB()
+				this.AddMedicinesToDB(cancellationTokens.ElementAt(0)),
+				this.UpdateMedicinesInDB(new[] { cancellationTokens.ElementAt(1), cancellationTokens.ElementAt(2) }),
+				this.DeleteMedicinesInDB(new[] { cancellationTokens.ElementAt(3), cancellationTokens.ElementAt(4) })
 			});
 
 			await Task.Delay(1000);
 		}
 
-		private async Task AddMedicinesToDB()
+		private async Task AddMedicinesToDB(CancellationToken cancellationToken)
 		{
 			if (this.idsToAdd.Count == 0)
 			{
@@ -172,7 +181,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES {listToAdd};", dbClient))
 				{
-					var rows = await addCommand.ExecuteScalarAsync();
+					var rows = await addCommand.ExecuteScalarAsync(cancellationToken);
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
 				}
 			}
@@ -180,7 +189,7 @@ namespace PharmacyManager.API.Services.Medicines
 			this.idsToAdd.Clear();
 		}
 
-		private async Task UpdateMedicinesInDB()
+		private async Task UpdateMedicinesInDB(IEnumerable<CancellationToken> cancellationTokens)
 		{
 			foreach (var medicineId in this.idsToUpdate.Keys)
 			{
@@ -192,10 +201,10 @@ namespace PharmacyManager.API.Services.Medicines
 					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
-						await addCommand.ExecuteNonQueryAsync();
+						await addCommand.ExecuteNonQueryAsync(cancellationTokens.ElementAt(0));
 						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
 						{
-							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+							var data = await getCommand.ExecuteScalarAsync(cancellationTokens.ElementAt(1)) as MedicineModel;
 							if (data != null)
 							{
 								await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
@@ -208,7 +217,7 @@ namespace PharmacyManager.API.Services.Medicines
 			}
 		}
 
-		private async Task DeleteMedicinesInDB()
+		private async Task DeleteMedicinesInDB(IEnumerable<CancellationToken> cancellationTokens)
 		{
 			foreach (var medicineId in this.idsToRemove.Keys)
 			{
@@ -218,10 +227,10 @@ namespace PharmacyManager.API.Services.Medicines
 					await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
 					using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}'", dbClient))
 					{
-						await addCommand.ExecuteNonQueryAsync();
+						await addCommand.ExecuteNonQueryAsync(cancellationTokens.ElementAt(0));
 						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
 						{
-							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+							var data = await getCommand.ExecuteScalarAsync(cancellationTokens.ElementAt(1)) as MedicineModel;
 							if (data == null)
 							{
 								await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
@@ -244,7 +253,7 @@ namespace PharmacyManager.API.Services.Medicines
 				await dbClient.OpenAsync();
 				using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
 				{
-					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
+					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync(new CancellationToken()));
 					this.shouldReloadDataFromDB = count == this.medicines.Count;
 					await this.Log($"isReloadingData: {this.shouldReloadDataFromDB}", LogLevel.Info);
 				}

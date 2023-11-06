@@ -161,8 +161,12 @@ namespace PharmacyManager.API.Services.Medicines
 			foreach (var medicineId in this.idsToAdd.Keys)
 			{
 				var id = medicineId;
-				var medicine = this.medicines[medicineId];
-				medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}), ");
+				MedicineModel? medicine;
+				this.medicines.TryGetValue(medicineId, out medicine);
+				if (medicine != null)
+				{
+					medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}), ");
+				}
 			}
 			using (var dbClient = this.BuildConnection())
 			{
@@ -187,23 +191,27 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = this.BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					var medicine = this.medicines[medicineId];
+					MedicineModel? medicine;
+					this.medicines.TryGetValue(medicineId, out medicine);
 
-					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
+					if (medicine != null)
 					{
-						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
-						await addCommand.ExecuteNonQueryAsync();
-						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
+						using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
 						{
-							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
-							if (data != null)
+							await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
+							await addCommand.ExecuteNonQueryAsync();
+							using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
 							{
-								await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
+								var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
+								if (data != null)
+								{
+									await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
+								}
 							}
 						}
+						medicine = null;
+						this.idsToUpdate.Clear();
 					}
-					medicine = null;
-					this.idsToUpdate.Clear();
 				}
 			}
 		}

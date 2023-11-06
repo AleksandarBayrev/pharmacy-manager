@@ -3,8 +3,6 @@ using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using System.Collections.Concurrent;
-using System.Numerics;
-using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
 
@@ -21,6 +19,7 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly IList<string> idsToAdd;
 		private readonly IList<string> idsToUpdate;
 		private readonly IList<string> idsToRemove;
+		private object lockObject = new object();
 
 		public MedicinesProvider(
 			ILogger logger,
@@ -31,11 +30,21 @@ namespace PharmacyManager.API.Services.Medicines
 			this.applicationConfiguration = applicationConfiguration;
 			this.medicinesFilter = medicinesFilter;
 			this.medicines = new ConcurrentDictionary<string, MedicineModel>();
-			this.idsToAdd = new List<string>();
-			this.idsToUpdate = new List<string>();
-			this.idsToRemove = new List<string>();
-			this.DatabaseWorker();
-			this.StartReloadInterval();
+			lock (this.lockObject)
+			{
+				this.idsToAdd = new List<string>();
+				this.idsToUpdate = new List<string>();
+				this.idsToRemove = new List<string>();
+			}
+		}
+
+		public async Task StartWorkers()
+		{
+			while (true)
+			{
+				await this.DatabaseWorker();
+				await this.StartReloadInterval();
+			}
 		}
 
 		public async Task LoadMedicines()
@@ -65,7 +74,10 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 			this.medicines.Add(medicine.Id, medicine);
-			this.idsToAdd.Add(medicine.Id);
+			lock (lockObject)
+			{
+				this.idsToAdd.Add(medicine.Id);
+			}
 			return this.medicines[medicine.Id];
 		}
 
@@ -75,7 +87,10 @@ namespace PharmacyManager.API.Services.Medicines
 			var isRemoved = this.medicines.Remove(medicineId);
 			if (isRemoved)
 			{
-				this.idsToRemove.Add(medicineId);
+				lock (lockObject)
+				{
+					this.idsToRemove.Add(medicineId);
+				}
 			}
 			return isRemoved;
 		}
@@ -137,28 +152,34 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private async Task DatabaseWorker()
 		{
-			while (true)
+			await Task.WhenAll(new[]
 			{
-				await this.AddMedicinesToDB();
-				await this.UpdateMedicinesInDB();
-				await this.DeleteMedicinesInDB();
+				this.AddMedicinesToDB(),
+				this.UpdateMedicinesInDB(),
+				this.DeleteMedicinesInDB()
+			});
 
-				this.idsToAdd.Clear();
-				this.idsToUpdate.Clear();
-				this.idsToRemove.Clear();
-
-				await Task.Delay(1000);
-            }
+			await Task.Delay(1000);
 		}
 
 		private async Task AddMedicinesToDB()
 		{
-			var medicinesList = new StringBuilder();
-			foreach (var medicineId in this.idsToAdd)
+			lock (lockObject)
 			{
-				var id = medicineId;
-				var medicine = this.medicines[medicineId];
-				medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}) ");
+				if (this.idsToAdd.Count == 0)
+				{
+					return;
+				}
+			}
+			var medicinesList = new StringBuilder();
+			lock (lockObject)
+			{
+				foreach (var medicineId in this.idsToAdd)
+				{
+					var id = medicineId;
+					var medicine = this.medicines[medicineId];
+					medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}) ");
+				}
 			}
 			using (var dbClient = this.BuildConnection())
 			{
@@ -168,15 +189,25 @@ namespace PharmacyManager.API.Services.Medicines
 					var rows = await addCommand.ExecuteNonQueryAsync();
 					if (rows != 0)
 					{
-						await this.Log($"Successfully added medicines", LogLevel.Info);
+						await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
 					}
 				}
+			}
+			medicinesList = null;
+			lock (lockObject)
+			{
+				this.idsToAdd.Clear();
 			}
 		}
 
 		private async Task UpdateMedicinesInDB()
 		{
-			foreach (var medicineId in this.idsToUpdate)
+			var idsToUpdate = new List<string>();
+			lock (lockObject)
+			{
+				idsToUpdate.AddRange(this.idsToUpdate);
+			}
+			foreach (var medicineId in idsToUpdate)
 			{
 				using (var dbClient = this.BuildConnection())
 				{
@@ -194,13 +225,19 @@ namespace PharmacyManager.API.Services.Medicines
 							}
 						}
 					}
+					this.idsToUpdate.Clear();
 				}
 			}
 		}
 
 		private async Task DeleteMedicinesInDB()
 		{
-			foreach (var medicineId in this.idsToRemove)
+			var idsToRemove = new List<string>();
+			lock (lockObject)
+			{
+				idsToRemove.AddRange(this.idsToRemove);
+			}
+			foreach (var medicineId in idsToRemove)
 			{
 				using (var dbClient = this.BuildConnection())
 				{
@@ -217,32 +254,43 @@ namespace PharmacyManager.API.Services.Medicines
 							}
 						}
 					}
+					this.idsToRemove.Clear();
 				}
 			}
 		}
 
 		private async Task StartReloadInterval()
 		{
-			while (true)
+			lock (lockObject)
 			{
-				using (var dbClient = this.BuildConnection())
+				if (idsToAdd.Count == 0 && idsToUpdate.Count == 0 && idsToRemove.Count > 0)
 				{
-					await dbClient.OpenAsync();
-					using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
-					{
-						long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
+					return;
+				}
+			}
+			using (var dbClient = this.BuildConnection())
+			{
+				await dbClient.OpenAsync();
+				using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
+				{
+					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
 
-						if (count == this.medicines.Count)
+					if (count == this.medicines.Count)
+					{
+						lock (lockObject)
 						{
 							this.isReloadingData = false;
-							continue;
 						}
+						return;
+					}
+					lock (lockObject)
+					{
 						this.isReloadingData = true;
 						this.isReloadingInProgress = true;
 					}
 				}
-				await Task.Delay(1000);
 			}
+			await Task.Delay(1000);
 		}
 
 		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");

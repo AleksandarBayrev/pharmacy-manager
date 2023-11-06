@@ -113,11 +113,13 @@ namespace PharmacyManager.API.Extensions
                 {
                     var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                     mockInstance.LoadMedicines().GetAwaiter().GetResult();
+                    mockInstance.StartWorkers();
                     return mockInstance;
                 }
                 var instance = new MedicinesProvider(logger, appConfig, medicinesFilter);
                 instance.LoadMedicines().GetAwaiter().GetResult();
-                return instance;
+				instance.StartWorkers();
+				return instance;
             });
             #endregion
 

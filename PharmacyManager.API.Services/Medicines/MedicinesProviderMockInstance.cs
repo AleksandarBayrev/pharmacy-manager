@@ -117,5 +117,10 @@ namespace PharmacyManager.API.Services.Medicines
             var item = this._medicines.First(x => x.Id == medicineId);
             return this._medicines.Remove(item);
 		}
+
+		public Task StartWorkers()
+		{
+            return Task.CompletedTask;
+		}
 	}
 }

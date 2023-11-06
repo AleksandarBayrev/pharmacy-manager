@@ -170,7 +170,9 @@ namespace PharmacyManager.API.Services.Medicines
 			}
 			using (var dbClient = this.BuildConnection())
 			{
-				var listToAdd = medicinesList.ToString().Trim().Substring(0, medicinesList.ToString().Trim().Length - 1);
+				var trimmedList = medicinesList.ToString().Trim();
+				if (trimmedList.Length < 0) { return; }
+				var listToAdd = trimmedList.Substring(0, trimmedList.Length - 1);
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicines: {listToAdd}", LogLevel.Info);
 

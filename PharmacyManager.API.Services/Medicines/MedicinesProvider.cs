@@ -4,6 +4,7 @@ using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using System.Collections.Concurrent;
 using System.Numerics;
+using System.Security.Principal;
 using System.Text.Json;
 
 namespace PharmacyManager.API.Services.Medicines
@@ -12,7 +13,6 @@ namespace PharmacyManager.API.Services.Medicines
 	{
 		private bool isReloadingData = false;
 		private readonly IDictionary<string, MedicineModel> medicines;
-		private readonly IDictionary<string, MedicineModel> oldMedicines;
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
@@ -29,11 +29,11 @@ namespace PharmacyManager.API.Services.Medicines
 			this.applicationConfiguration = applicationConfiguration;
 			this.medicinesFilter = medicinesFilter;
 			this.medicines = new ConcurrentDictionary<string, MedicineModel>();
-			this.oldMedicines = new ConcurrentDictionary<string, MedicineModel>();
 			this.idsToAdd = new List<string>();
 			this.idsToUpdate = new List<string>();
 			this.idsToRemove = new List<string>();
 			this.UpdateMedicinesInDB();
+			this.StartReloadInterval();
 		}
 
 		public async Task LoadMedicines()
@@ -78,9 +78,8 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			if (this.isReloadingData)
 			{
-				await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
-				var filteredMedicinesOld = await this.medicinesFilter.ApplyFilters(request, oldMedicines.Values);
-				return filteredMedicinesOld.OrderByDescending(x => x.ExpirationDate);
+				this.medicines.Clear();
+				await this.LoadMedicines();
 			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
 			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicines.Values);
@@ -184,7 +183,7 @@ namespace PharmacyManager.API.Services.Medicines
 					using (var dbClient = this.BuildConnection())
 					{
 						await dbClient.OpenAsync();
-						using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}", dbClient))
+						using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}'", dbClient))
 						{
 							await addCommand.ExecuteNonQueryAsync();
 							using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
@@ -204,6 +203,29 @@ namespace PharmacyManager.API.Services.Medicines
 
 				await Task.Delay(1000);
             }
+		}
+
+		private async Task StartReloadInterval()
+		{
+			while (true)
+			{
+				using (var dbClient = this.BuildConnection())
+				{
+					await dbClient.OpenAsync();
+					using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
+					{
+						long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
+
+						if (count == this.medicines.Count)
+						{
+							this.isReloadingData = false;
+							continue;
+						}
+						this.isReloadingData = true;
+					}
+				}
+				await Task.Delay(1000);
+			}
 		}
 
 		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");

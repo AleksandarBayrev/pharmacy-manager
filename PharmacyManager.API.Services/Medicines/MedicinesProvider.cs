@@ -235,10 +235,6 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private async Task StartReloadInterval()
 		{
-			if (idsToAdd.Count == 0 && idsToUpdate.Count == 0 && idsToRemove.Count > 0)
-			{
-				return;
-			}
 			using (var dbClient = this.BuildConnection())
 			{
 				await dbClient.OpenAsync();

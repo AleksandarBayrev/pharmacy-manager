@@ -284,16 +284,13 @@ namespace PharmacyManager.API.Services.Medicines
 				{
 					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
 
-					if (count == this.medicines.Count)
-					{
-						lock (lockObject)
-						{
-							this.isReloadingData = false;
-						}
-						return;
-					}
 					lock (lockObject)
 					{
+						if (count == this.medicines.Count)
+						{
+							this.isReloadingData = false;
+							return;
+						}
 						this.isReloadingData = true;
 						this.isReloadingInProgress = true;
 					}

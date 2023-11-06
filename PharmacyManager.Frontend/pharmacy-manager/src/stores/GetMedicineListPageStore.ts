@@ -15,6 +15,12 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     public pages: IObservableValue<number>;
 
     @observable
+    public totalCount: IObservableValue<number>;
+
+    @observable
+    public totalFilteredCount: IObservableValue<number>;
+
+    @observable
     public loadingData: IObservableValue<boolean>;
 
     @observable
@@ -41,6 +47,8 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.request = observable({ ...this.defaultRequest });
         this.medicines = observable([]);
         this.pages = observable.box(1);
+        this.totalCount = observable.box(0);
+        this.totalFilteredCount = observable.box(0);
         this.loadingData = observable.box(false);
         this.isLoadingPage = observable.box(false);
         this.isInitialRequestMade = observable.box(false);
@@ -134,6 +142,8 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
             runInAction(() => {
                 this.medicines.replace(response.medicines);
                 this.pages.set(response.pages);
+                this.totalCount.set(response.totalCount);
+                this.totalFilteredCount.set(response.totalFilteredCount);
                 this.loadingData.set(false);
                 this.showPageCount.set(true);
             });

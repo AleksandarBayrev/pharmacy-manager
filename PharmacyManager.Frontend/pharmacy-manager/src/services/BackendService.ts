@@ -57,6 +57,8 @@ class BackendService implements IBackendService {
             this.logger.Error(err as Error);
             return {
                 medicines: [],
+                totalCount: 0,
+                totalFilteredCount: 0,
                 pages: 1
             }
         }

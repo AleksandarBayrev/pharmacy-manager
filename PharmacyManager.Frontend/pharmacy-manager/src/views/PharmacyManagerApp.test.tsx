@@ -76,7 +76,9 @@ test('matches snapshot', async () => {
       updateRequestProperties: jest.fn(),
       refetch: jest.fn(),
       resetRequestToDefaults: jest.fn(),
-      deleteMedicine: jest.fn()
+      deleteMedicine: jest.fn(),
+      totalCount: observable.box(0),
+      totalFilteredCount: observable.box(0)
     };
     const getDateTimeStore: IGetDateTimeStore = {
       load: jest.fn(),

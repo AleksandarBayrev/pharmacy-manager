@@ -36,7 +36,7 @@ namespace PharmacyManager.API.Services.Medicines
 			await this.Log($"Started loading medicines from database", LogLevel.Info);
 			if (!this.memoryCache.TryGetValue(cacheKey, out _))
 			{
-				this.memoryCache.Set(cacheKey, new ConcurrentDictionary<string, MedicineModel>());
+				this.CreateOrUpdateCache(null);
 			}
 			using (var dbClient = this.BuildConnection())
 			{
@@ -62,7 +62,7 @@ namespace PharmacyManager.API.Services.Medicines
 					}
 				}
 			}
-			this.memoryCache.Set<ConcurrentDictionary<string, MedicineModel>>(cacheKey, medicines, TimeSpan.FromMinutes(1));
+			this.CreateOrUpdateCache(medicines);
 			await this.Log($"Finished loading medicines from database", LogLevel.Info);
 		}
 
@@ -220,5 +220,11 @@ namespace PharmacyManager.API.Services.Medicines
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesProvider), message, logLevel);
 
 		private ConcurrentDictionary<string, MedicineModel> medicines => this.memoryCache.Get<ConcurrentDictionary<string, MedicineModel>>(cacheKey);
+
+		private void CreateOrUpdateCache(ConcurrentDictionary<string, MedicineModel>? medicines)
+		{
+			var data = medicines == null ? new ConcurrentDictionary<string, MedicineModel>() : medicines;
+			this.memoryCache.Set<ConcurrentDictionary<string, MedicineModel>>(cacheKey, data, TimeSpan.FromSeconds(10));
+		}
 	}
 }

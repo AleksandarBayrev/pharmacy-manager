@@ -86,9 +86,9 @@ namespace PharmacyManager.API.Services.Medicines
 				await this.LoadMedicines();
 			}
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
-			this.memoryCache.Remove(medicineId);
+			this.medicines.Remove(medicineId, out var _);
 			await this.DeleteMedicineInDB(medicineId);
-			return this.memoryCache.Get<IDictionary<string, MedicineModel>>(cacheKey) == null;
+			return this.medicines.TryGetValue(medicineId, out var _);
 		}
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)

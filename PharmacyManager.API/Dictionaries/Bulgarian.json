@@ -38,5 +38,7 @@
   "HEADER_HOME": "Начало",
   "RESULTS_MAKE_QUERY": "Моля, направете заявка.",
   "RESULTS_NO_RESULTS_FOR_QUERY": "Няма резултати за направената от Вас заявка.",
-  "FORM_GET_MEDICINE_LOADING_PAGE": "Зареждам страница"
+  "FORM_GET_MEDICINE_LOADING_PAGE": "Зареждам страница",
+  "FORM_GET_MEDICINE_AVAILABLE_MEDICINES_COUNT": "Общ брой лекарства в системата: ",
+  "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES_COUNT": "Общ брой на лекарствата спрямо търсенето: "
 }

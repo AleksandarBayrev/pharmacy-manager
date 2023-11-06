@@ -12,6 +12,7 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
 		private bool isReloadingData = false;
+		private bool isReloadingInProgress = false;
 		private readonly IDictionary<string, MedicineModel> medicines;
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
@@ -38,6 +39,8 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task LoadMedicines()
 		{
+			if (this.isReloadingInProgress) { return; }
+			this.medicines.Clear();
 			await this.Log($"Started loading medicines from database", LogLevel.Info);
 			using (var dbClient = this.BuildConnection())
 			{
@@ -45,6 +48,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
 				using (var reader = await command.ExecuteReaderAsync())
 				{
+					this.isReloadingInProgress = true;
 					while (await reader.ReadAsync())
 					{
 						var medicine = await this.BuildMedicine(reader);
@@ -52,6 +56,7 @@ namespace PharmacyManager.API.Services.Medicines
 					}
 				}
 			}
+			this.isReloadingInProgress = false;
 			await this.Log($"Finished reloading medicines from database", LogLevel.Info);
 		}
 
@@ -78,7 +83,6 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			if (this.isReloadingData)
 			{
-				this.medicines.Clear();
 				await this.LoadMedicines();
 			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
@@ -222,6 +226,7 @@ namespace PharmacyManager.API.Services.Medicines
 							continue;
 						}
 						this.isReloadingData = true;
+						this.isReloadingInProgress = true;
 					}
 				}
 				await Task.Delay(1000);

@@ -68,16 +68,23 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
 		{
+			if (this.medicines == null)
+			{
+				await this.LoadMedicines();
+			}
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-			var cache = this.memoryCache.Get<IDictionary<string, MedicineModel>>(cacheKey);
-			cache.TryAdd(medicine.Id, medicine);
-			cache.TryGetValue(medicine.Id, out medicine);
+			this.medicines.TryAdd(medicine.Id, medicine);
+			this.medicines.TryGetValue(medicine.Id, out medicine);
 			await this.AddMedicineToDB(medicine.Id);
 			return medicine;
 		}
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
+			if (this.medicines == null)
+			{
+				await this.LoadMedicines();
+			}
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
 			this.memoryCache.Remove(medicineId);
 			await this.DeleteMedicineInDB(medicineId);
@@ -97,6 +104,10 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<int> GetTotalCount()
 		{
+			if (this.medicines == null)
+			{
+				await this.LoadMedicines();
+			}
 			await this.Log($"Getting total medicines count", LogLevel.Info);
 			return this.medicines.Count;
 		}

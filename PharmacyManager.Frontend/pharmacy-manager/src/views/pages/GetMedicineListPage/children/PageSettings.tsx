@@ -56,7 +56,7 @@ export class PageSettings extends React.Component<PageSettingsProps> {
                 </div>
                 <div className='App-page-row-setting'>
                     <div className='row'>
-                        <div className='column'>{this.renderPageCountText(this.props.store.showPageCount.get(), this.props.store.pages.get())}</div>
+                        <div className='column'>{this.renderPageCountText(this.props.store.showPageCount.get(), this.props.store.pages.get(), this.props.store.totalFilteredCount.get(), this.props.store.totalCount.get())}</div>
                     </div>
                 </div>
             </div>
@@ -75,10 +75,16 @@ export class PageSettings extends React.Component<PageSettingsProps> {
             shouldDisable={loadingData} />;
     }
 
-    private renderPageCountText(showPageCount: boolean, pages: number) {
+    private renderPageCountText(showPageCount: boolean, pages: number, totalFilteredMedicinesCount: number, totalMedicinesCount: number) {
         const availablePagesText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_AVAILABLE_PAGES");
+        const totalMedicinesCountText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_AVAILABLE_MEDICINES");
+        const totalFilteredMedicinesCountText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES");
         const loadingPageCountText = this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_GET_MEDICINE_LOADING_PAGE_COUNT");
-        return showPageCount ? `${availablePagesText} ${pages}` : loadingPageCountText;
+        return showPageCount ? (<div>
+            <div>{availablePagesText} {pages}</div>
+            <div>{totalFilteredMedicinesCountText} {totalFilteredMedicinesCount}</div>
+            <div>{totalMedicinesCountText} {totalMedicinesCount}</div>
+        </div>) : loadingPageCountText;
     }
     
     private renderTextBox(textChangeHandler: (

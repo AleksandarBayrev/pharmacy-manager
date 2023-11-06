@@ -5,6 +5,7 @@ using PharmacyManager.API.Models;
 using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Json;
+using Timer = System.Timers.Timer;
 
 namespace PharmacyManager.API.Services.Medicines
 {
@@ -36,11 +37,12 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task StartWorkers()
 		{
-			while (true)
-			{
-				await this.DatabaseWorker();
-				await this.StartReloadInterval();
-			}
+			Timer databaseTimer = new Timer(1000);
+			databaseTimer.Elapsed += async (o, e) => await this.DatabaseWorker();
+			databaseTimer.Start();
+			Timer reloadTimer = new Timer(1000);
+			reloadTimer.Elapsed += async (o, e) => await this.StartReloadInterval();
+			reloadTimer.Start();
 		}
 
 		public async Task LoadMedicines()
@@ -147,8 +149,6 @@ namespace PharmacyManager.API.Services.Medicines
 				this.UpdateMedicinesInDB(),
 				this.DeleteMedicinesInDB()
 			});
-
-			await Task.Delay(1000);
 		}
 
 		private async Task AddMedicinesToDB()
@@ -245,7 +245,6 @@ namespace PharmacyManager.API.Services.Medicines
 					await this.Log($"isReloadingData: {this.shouldReloadDataFromDB}", LogLevel.Info);
 				}
 			}
-			await Task.Delay(1000);
 		}
 
 		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");

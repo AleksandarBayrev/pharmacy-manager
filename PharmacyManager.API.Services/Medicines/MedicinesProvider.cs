@@ -46,6 +46,7 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task LoadMedicines()
 		{
 			if (this.isReloadingInProgress) { return; }
+			this.isReloadingInProgress = true;
 			this.medicines.Clear();
 			await this.Log($"Started loading medicines from database", LogLevel.Info);
 			using (var dbClient = this.BuildConnection())
@@ -251,7 +252,6 @@ namespace PharmacyManager.API.Services.Medicines
 						return;
 					}
 					this.isReloadingData = true;
-					this.isReloadingInProgress = true;
 					await this.Log($"isReloadingData: {this.isReloadingData}", LogLevel.Info);
 				}
 			}

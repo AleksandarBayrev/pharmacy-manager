@@ -9,6 +9,7 @@ using PharmacyManager.API.Interfaces.Frontend;
 using PharmacyManager.API.Services.Frontend;
 using PharmacyManager.API.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace PharmacyManager.API.Extensions
 {
@@ -77,6 +78,8 @@ namespace PharmacyManager.API.Extensions
         {
             services.AddSingleton<Interfaces.Base.ILogger, Logger>();
 
+            services.AddMemoryCache();
+
             #region Setup Page calculation service
             services.AddSingleton<IPageCalculation<PageCalculations>, PageCalculation>();
             #endregion
@@ -88,6 +91,7 @@ namespace PharmacyManager.API.Extensions
                 var idGenerator = sp.GetService<IIdGenerator>();
                 var logger = sp.GetService<PharmacyManager.API.Interfaces.Base.ILogger>();
                 var medicinesFilter = sp.GetService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
+                var memoryCache = sp.GetService<IMemoryCache>();
 
                 if (appConfig == null)
                 {
@@ -109,16 +113,19 @@ namespace PharmacyManager.API.Extensions
                     throw new NullReferenceException("MedicinesFilter not available!");
                 }
 
+                if (memoryCache == null)
+                {
+                    throw new NullReferenceException("MemoryCache not available!");
+                }
+
                 if (appConfig.Mocks.Use)
                 {
-                    var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
+                    var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, memoryCache, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                     mockInstance.LoadMedicines().GetAwaiter().GetResult();
-                    mockInstance.StartWorkers().GetAwaiter().GetResult();
                     return mockInstance;
                 }
-                var instance = new MedicinesProvider(logger, appConfig, medicinesFilter);
+                var instance = new MedicinesProvider(logger, appConfig, memoryCache, medicinesFilter);
                 instance.LoadMedicines().GetAwaiter().GetResult();
-				instance.StartWorkers().GetAwaiter().GetResult();
 				return instance;
             });
             #endregion

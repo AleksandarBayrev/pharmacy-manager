@@ -1,4 +1,5 @@
-﻿using PharmacyManager.API.Interfaces.Base;
+﻿using Microsoft.Extensions.Caching.Memory;
+using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 
@@ -16,6 +17,7 @@ namespace PharmacyManager.API.Services.Medicines
         public MedicinesProviderMockInstance(
             ILogger logger,
             IIdGenerator idGenerator,
+            IMemoryCache memoryCache,
             IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter,
             int generatedNumberOfPharmacies)
         {

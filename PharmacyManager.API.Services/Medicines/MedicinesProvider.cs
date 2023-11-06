@@ -10,7 +10,7 @@ namespace PharmacyManager.API.Services.Medicines
 {
 	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
-		private bool isReloadingData = false;
+		private bool shouldReloadDataFromDB = false;
 		private bool isReloadingInProgress = false;
 		private readonly IDictionary<string, MedicineModel> medicines;
 		private readonly ILogger logger;
@@ -46,7 +46,6 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task LoadMedicines()
 		{
 			if (this.isReloadingInProgress) { return; }
-			this.isReloadingInProgress = true;
 			this.medicines.Clear();
 			await this.Log($"Started loading medicines from database", LogLevel.Info);
 			using (var dbClient = this.BuildConnection())
@@ -88,7 +87,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
-			if (this.isReloadingData)
+			if (this.shouldReloadDataFromDB)
 			{
 				await this.LoadMedicines();
 			}
@@ -246,13 +245,8 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
 				{
 					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
-					if (count == this.medicines.Count)
-					{
-						this.isReloadingData = false;
-						return;
-					}
-					this.isReloadingData = true;
-					await this.Log($"isReloadingData: {this.isReloadingData}", LogLevel.Info);
+					this.shouldReloadDataFromDB = count == this.medicines.Count;
+					await this.Log($"isReloadingData: {this.shouldReloadDataFromDB}", LogLevel.Info);
 				}
 			}
 			await Task.Delay(1000);

@@ -16,10 +16,9 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
-		private readonly IList<string> idsToAdd;
-		private readonly IList<string> idsToUpdate;
-		private readonly IList<string> idsToRemove;
-		private object lockObject = new object();
+		private readonly IDictionary<string, string> idsToAdd;
+		private readonly IDictionary<string, string> idsToUpdate;
+		private readonly IDictionary<string, string> idsToRemove;
 
 		public MedicinesProvider(
 			ILogger logger,
@@ -30,12 +29,9 @@ namespace PharmacyManager.API.Services.Medicines
 			this.applicationConfiguration = applicationConfiguration;
 			this.medicinesFilter = medicinesFilter;
 			this.medicines = new ConcurrentDictionary<string, MedicineModel>();
-			lock (this.lockObject)
-			{
-				this.idsToAdd = new List<string>();
-				this.idsToUpdate = new List<string>();
-				this.idsToRemove = new List<string>();
-			}
+			this.idsToAdd = new ConcurrentDictionary<string, string>();
+			this.idsToUpdate = new ConcurrentDictionary<string, string>();
+			this.idsToRemove = new ConcurrentDictionary<string, string>();
 		}
 
 		public async Task StartWorkers()
@@ -73,41 +69,30 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
 		{
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-			lock (lockObject)
-			{
-				this.medicines.Add(medicine.Id, medicine);
-				this.idsToAdd.Add(medicine.Id);
-				return this.medicines[medicine.Id];
-			}
+			this.medicines.Add(medicine.Id, medicine);
+			this.idsToAdd.TryAdd(medicine.Id, medicine.Id);
+			return this.medicines[medicine.Id];
 		}
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
-			lock (lockObject)
+			var isRemoved = this.medicines.Remove(medicineId);
+			if (isRemoved)
 			{
-				var isRemoved = this.medicines.Remove(medicineId);
-				if (isRemoved)
-				{
-					this.idsToRemove.Add(medicineId);
-				}
-				return isRemoved;
+				this.idsToRemove.TryAdd(medicineId, medicineId);
 			}
+			return isRemoved;
 		}
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
-			var medicinesCopy = new List<MedicineModel>();
-			lock (lockObject)
-			{
-				medicinesCopy.AddRange(medicines.Values);
-			}
 			if (this.isReloadingData)
 			{
 				await this.LoadMedicines();
 			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
-			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicinesCopy);
+			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicines.Values);
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
 		}
 
@@ -169,61 +154,45 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private async Task AddMedicinesToDB()
 		{
-			lock (lockObject)
+			if (this.idsToAdd.Count == 0)
 			{
-				if (this.idsToAdd.Count == 0)
-				{
-					return;
-				}
+				return;
 			}
 			var medicinesList = new StringBuilder();
-			lock (lockObject)
+			foreach (var medicineId in this.idsToAdd.Keys)
 			{
-				foreach (var medicineId in this.idsToAdd)
-				{
-					var id = medicineId;
-					var medicine = this.medicines[medicineId];
-					medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}) ");
-				}
+				var id = medicineId;
+				var medicine = this.medicines[medicineId];
+				medicinesList.Append($"('{id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity}), ");
 			}
 			using (var dbClient = this.BuildConnection())
 			{
+				var listToAdd = medicinesList.ToString().Trim().Substring(0, medicinesList.ToString().Trim().Length - 1);
 				await dbClient.OpenAsync();
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES {medicinesList.ToString().Trim()};", dbClient))
+				await this.Log($"Trying to add medicines: {listToAdd}", LogLevel.Info);
+
+				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES {listToAdd};", dbClient))
 				{
-					var rows = await addCommand.ExecuteNonQueryAsync();
-					if (rows != 0)
-					{
-						await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
-					}
+					var rows = await addCommand.ExecuteScalarAsync();
+					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
 				}
 			}
 			medicinesList = null;
-			lock (lockObject)
-			{
-				this.idsToAdd.Clear();
-			}
+			this.idsToAdd.Clear();
 		}
 
 		private async Task UpdateMedicinesInDB()
 		{
-			var idsToUpdate = new List<string>();
-			lock (lockObject)
-			{
-				idsToUpdate.AddRange(this.idsToUpdate);
-			}
-			foreach (var medicineId in idsToUpdate)
+			foreach (var medicineId in this.idsToUpdate.Keys)
 			{
 				using (var dbClient = this.BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					MedicineModel medicine = null;
-					lock (lockObject)
-					{
-						medicine = this.medicines[medicineId];
-					}
+					var medicine = this.medicines[medicineId];
+
 					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
 					{
+						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
 						await addCommand.ExecuteNonQueryAsync();
 						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
 						{
@@ -235,26 +204,19 @@ namespace PharmacyManager.API.Services.Medicines
 						}
 					}
 					medicine = null;
-					lock (lockObject)
-					{
-						this.idsToUpdate.Clear();
-					}
+					this.idsToUpdate.Clear();
 				}
 			}
 		}
 
 		private async Task DeleteMedicinesInDB()
 		{
-			var idsToRemove = new List<string>();
-			lock (lockObject)
-			{
-				idsToRemove.AddRange(this.idsToRemove);
-			}
-			foreach (var medicineId in idsToRemove)
+			foreach (var medicineId in this.idsToRemove.Keys)
 			{
 				using (var dbClient = this.BuildConnection())
 				{
 					await dbClient.OpenAsync();
+					await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
 					using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}'", dbClient))
 					{
 						await addCommand.ExecuteNonQueryAsync();
@@ -267,22 +229,16 @@ namespace PharmacyManager.API.Services.Medicines
 							}
 						}
 					}
-					lock (lockObject)
-					{
-						this.idsToRemove.Clear();
-					}
+					this.idsToRemove.Clear();
 				}
 			}
 		}
 
 		private async Task StartReloadInterval()
 		{
-			lock (lockObject)
+			if (idsToAdd.Count == 0 && idsToUpdate.Count == 0 && idsToRemove.Count > 0)
 			{
-				if (idsToAdd.Count == 0 && idsToUpdate.Count == 0 && idsToRemove.Count > 0)
-				{
-					return;
-				}
+				return;
 			}
 			using (var dbClient = this.BuildConnection())
 			{
@@ -290,17 +246,14 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
 				{
 					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
-
-					lock (lockObject)
+					if (count == this.medicines.Count)
 					{
-						if (count == this.medicines.Count)
-						{
-							this.isReloadingData = false;
-							return;
-						}
-						this.isReloadingData = true;
-						this.isReloadingInProgress = true;
+						this.isReloadingData = false;
+						return;
 					}
+					this.isReloadingData = true;
+					this.isReloadingInProgress = true;
+					await this.Log($"isReloadingData: {this.isReloadingData}", LogLevel.Info);
 				}
 			}
 			await Task.Delay(1000);

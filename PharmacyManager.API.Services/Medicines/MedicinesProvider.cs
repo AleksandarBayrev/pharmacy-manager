@@ -241,7 +241,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var addCommand = new NpgsqlCommand($"SELECT COUNT(id) FROM public.medicines", dbClient))
 				{
 					long count = Convert.ToInt64(await addCommand.ExecuteScalarAsync());
-					this.shouldReloadDataFromDB = count == this.medicines.Count;
+					this.shouldReloadDataFromDB = count != this.medicines.Count;
 					await this.Log($"isReloadingData: {this.shouldReloadDataFromDB}", LogLevel.Info);
 				}
 			}

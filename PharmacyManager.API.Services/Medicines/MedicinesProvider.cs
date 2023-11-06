@@ -73,36 +73,41 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
 		{
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-			this.medicines.Add(medicine.Id, medicine);
 			lock (lockObject)
 			{
+				this.medicines.Add(medicine.Id, medicine);
 				this.idsToAdd.Add(medicine.Id);
+				return this.medicines[medicine.Id];
 			}
-			return this.medicines[medicine.Id];
 		}
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
-			var isRemoved = this.medicines.Remove(medicineId);
-			if (isRemoved)
+			lock (lockObject)
 			{
-				lock (lockObject)
+				var isRemoved = this.medicines.Remove(medicineId);
+				if (isRemoved)
 				{
 					this.idsToRemove.Add(medicineId);
 				}
+				return isRemoved;
 			}
-			return isRemoved;
 		}
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
+			var medicinesCopy = new List<MedicineModel>();
+			lock (lockObject)
+			{
+				medicinesCopy.AddRange(medicines.Values);
+			}
 			if (this.isReloadingData)
 			{
 				await this.LoadMedicines();
 			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
-			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicines.Values);
+			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, medicinesCopy);
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
 		}
 
@@ -212,7 +217,11 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = this.BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					var medicine = this.medicines[medicineId];
+					MedicineModel medicine = null;
+					lock (lockObject)
+					{
+						medicine = this.medicines[medicineId];
+					}
 					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
 					{
 						await addCommand.ExecuteNonQueryAsync();

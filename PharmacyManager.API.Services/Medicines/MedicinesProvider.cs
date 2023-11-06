@@ -165,15 +165,10 @@ namespace PharmacyManager.API.Services.Medicines
 				await dbClient.OpenAsync();
 				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES {medicinesList.ToString().Trim()};", dbClient))
 				{
-					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{id}'", dbClient))
+					var rows = await addCommand.ExecuteNonQueryAsync();
+					if (rows != 0)
 					{
-						var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
-						if (data == null)
-						{
-							throw new Exception($"Failed to fetch medicine for id = {id}");
-						}
-						await this.Log($"Successfully added medicine: {JsonSerializer.Serialize(data)}", LogLevel.Info);
+						await this.Log($"Successfully added medicines", LogLevel.Info);
 					}
 				}
 			}

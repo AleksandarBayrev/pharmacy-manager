@@ -38,5 +38,7 @@
   "HEADER_HOME": "Home",
   "RESULTS_MAKE_QUERY": "Please, make a query.",
   "RESULTS_NO_RESULTS_FOR_QUERY": "No results for given query.",
-  "FORM_GET_MEDICINE_LOADING_PAGE": "Loading page"
+  "FORM_GET_MEDICINE_LOADING_PAGE": "Loading page",
+  "FORM_GET_MEDICINE_AVAILABLE_MEDICINES_COUNT": "Total medicines count in system: ",
+  "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES_COUNT": "Total filtered medicines count in system: "
 }

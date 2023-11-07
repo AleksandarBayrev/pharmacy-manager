@@ -4,6 +4,7 @@ using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using Timer = System.Timers.Timer;
@@ -34,10 +35,7 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			if (this.memoryCache.TryGetValue(cacheKey, out _)) { return; }
 			await this.Log($"Started loading medicines from database", LogLevel.Info);
-			if (!this.memoryCache.TryGetValue(cacheKey, out _))
-			{
-				this.CreateOrUpdateCache(null);
-			}
+			this.CreateOrUpdateCache(null);
 			using (var dbClient = this.BuildConnection())
 			{
 				await dbClient.OpenAsync();
@@ -158,11 +156,12 @@ namespace PharmacyManager.API.Services.Medicines
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price}, {medicine.Quantity});", dbClient))
+				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
 				{
 					var rows = await addCommand.ExecuteScalarAsync();
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
 				}
+				medicine = null;
 			}
 		}
 
@@ -176,7 +175,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 				if (medicine != null)
 				{
-					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price}, quantity={medicine.Quantity}", dbClient))
+					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity}", dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
 						await addCommand.ExecuteNonQueryAsync();

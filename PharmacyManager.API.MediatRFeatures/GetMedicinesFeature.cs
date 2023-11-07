@@ -20,16 +20,19 @@ namespace PharmacyManager.API.MediatRFeatures
         public class GetMedicinesQueryHandler : IRequestHandler<GetMedicinesQuery, MedicinesResponse>
         {
             private readonly ILogger logger;
-            private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
+			private readonly IPriceParser priceParser;
+			private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
             private readonly IPageCalculation<PageCalculations> pageCalculation;
             private readonly string loggerContext = nameof(GetMedicinesFeature);
 
             public GetMedicinesQueryHandler(
                 ILogger logger,
+                IPriceParser priceParser,
                 IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider,
                 IPageCalculation<PageCalculations> pageCalculation)
             {
                 this.logger = logger;
+                this.priceParser = priceParser;
                 this.medicinesProvider = medicinesProvider;
                 this.pageCalculation = pageCalculation;
             }
@@ -62,10 +65,23 @@ namespace PharmacyManager.API.MediatRFeatures
                 return pageCalculations.Pages;
             }
 
-            private async Task<IEnumerable<MedicineModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request, CancellationToken cancellationToken)
+            private async Task<IEnumerable<MedicineFrontendModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request, CancellationToken cancellationToken)
             {
                 await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}", LogLevel.Info, cancellationToken);
-                return medicines.Skip(request.ItemsPerPage * (request.Page - 1)).Take(request.ItemsPerPage);
+                return medicines
+                    .Skip(request.ItemsPerPage * (request.Page - 1))
+                    .Take(request.ItemsPerPage)
+                    .Select(x => new MedicineFrontendModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Description = x.Description,
+                        ExpirationDate = x.ExpirationDate,
+                        Manufacturer = x.Manufacturer,
+                        ManufacturingDate = x.ManufacturingDate,
+                        Price = this.priceParser.Parse(x.Price).GetAwaiter().GetResult(),
+                        Quantity = x.Quantity
+                    });
             }
         }
     }

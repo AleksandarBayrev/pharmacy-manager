@@ -2,7 +2,7 @@
 {
     public class MedicinesResponse
     {
-        public IEnumerable<MedicineModel> Medicines { get; set; } = new List<MedicineModel>();
+        public IEnumerable<MedicineFrontendModel> Medicines { get; set; } = new List<MedicineFrontendModel>();
         public decimal Pages { get; set; }
 		public int TotalFilteredCount { get; set; }
 		public int TotalCount { get; set; }

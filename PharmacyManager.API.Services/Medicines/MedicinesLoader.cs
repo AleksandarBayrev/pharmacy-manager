@@ -12,16 +12,16 @@ namespace PharmacyManager.API.Services.Medicines
     {
         private readonly string cacheKey = "medicines";
         private readonly ILogger logger;
-        private readonly IApplicationConfiguration applicationConfiguration;
+		private readonly IConnectionStringProvider connectionStringProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 
 		public MedicinesLoader(
             ILogger logger,
-            IApplicationConfiguration applicationConfiguration,
+            IConnectionStringProvider connectionStringProvider,
             IMedicinesState<string, MedicineModel> medicinesState)
         {
             this.logger = logger;
-            this.applicationConfiguration = applicationConfiguration;
+            this.connectionStringProvider = connectionStringProvider;
             this.medicinesState = medicinesState;
         }
 
@@ -95,15 +95,7 @@ namespace PharmacyManager.API.Services.Medicines
 
         private NpgsqlConnection BuildConnection()
         {
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
-            {
-                Host = applicationConfiguration.DatabaseConfiguration.Host,
-                Username = applicationConfiguration.DatabaseConfiguration.Username,
-                Password = applicationConfiguration.DatabaseConfiguration.Password,
-                Database = applicationConfiguration.DatabaseConfiguration.Database,
-                Port = applicationConfiguration.DatabaseConfiguration.Port,
-            };
-            return new NpgsqlConnection(connectionStringBuilder.ToString());
+            return new NpgsqlConnection(connectionStringProvider.ConnectionString);
         }
     }
 }

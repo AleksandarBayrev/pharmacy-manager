@@ -7,14 +7,14 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesDeleter : BackgroundService
 	{
 		private readonly ILogger logger;
-		private readonly IApplicationConfiguration applicationConfiguration;
+		private readonly IConnectionStringProvider connectionStringProvider;
 
 		public MedicinesDeleter(
 			ILogger logger,
-			IApplicationConfiguration applicationConfiguration)
+			IConnectionStringProvider connectionStringProvider)
 		{
 			this.logger = logger;
-			this.applicationConfiguration = applicationConfiguration;
+			this.connectionStringProvider = connectionStringProvider;
 		}
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
@@ -37,15 +37,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private NpgsqlConnection BuildConnection()
 		{
-			var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
-			{
-				Host = applicationConfiguration.DatabaseConfiguration.Host,
-				Username = applicationConfiguration.DatabaseConfiguration.Username,
-				Password = applicationConfiguration.DatabaseConfiguration.Password,
-				Database = applicationConfiguration.DatabaseConfiguration.Database,
-				Port = applicationConfiguration.DatabaseConfiguration.Port,
-			};
-			return new NpgsqlConnection(connectionStringBuilder.ToString());
+			return new NpgsqlConnection(connectionStringProvider.ConnectionString);
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesDeleter), message, logLevel);

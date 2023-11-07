@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using Npgsql;
+﻿using Npgsql;
 using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
-using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 
@@ -12,18 +10,18 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
 		private readonly ILogger logger;
-		private readonly IApplicationConfiguration applicationConfiguration;
+		private readonly IConnectionStringProvider connectionStringProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
 
 		public MedicinesProvider(
 			ILogger logger,
-			IApplicationConfiguration applicationConfiguration,
+			IConnectionStringProvider connectionStringProvider,
 			IMedicinesState<string, MedicineModel> medicinesState,
 			IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)
 		{
 			this.logger = logger;
-			this.applicationConfiguration = applicationConfiguration;
+			this.connectionStringProvider = connectionStringProvider;
 			this.medicinesState = medicinesState;
 			this.medicinesFilter = medicinesFilter;
 		}
@@ -61,15 +59,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private NpgsqlConnection BuildConnection()
 		{
-			var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
-			{
-				Host = this.applicationConfiguration.DatabaseConfiguration.Host,
-				Username = this.applicationConfiguration.DatabaseConfiguration.Username,
-				Password = this.applicationConfiguration.DatabaseConfiguration.Password,
-				Database = this.applicationConfiguration.DatabaseConfiguration.Database,
-				Port = this.applicationConfiguration.DatabaseConfiguration.Port,
-			};
-			return new NpgsqlConnection(connectionStringBuilder.ToString());
+			return new NpgsqlConnection(connectionStringProvider.ConnectionString);
 		}
 
 		private async Task AddMedicineToDB(string medicineId)

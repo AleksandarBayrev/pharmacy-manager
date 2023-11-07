@@ -10,5 +10,6 @@
         public DateTime ExpirationDate { get; set; }
         public decimal Price { get; set; }
         public long Quantity { get; set; }
+        public bool Deleted { get; set; }
     }
 }

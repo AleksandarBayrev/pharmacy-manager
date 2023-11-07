@@ -5,133 +5,58 @@ using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using System.Collections.Concurrent;
 using System.Globalization;
-using System.Text;
 using System.Text.Json;
-using Timer = System.Timers.Timer;
 
 namespace PharmacyManager.API.Services.Medicines
 {
 	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
-		private readonly string cacheKey = "medicines";
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
-		private readonly IMemoryCache memoryCache;
+		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
 
 		public MedicinesProvider(
 			ILogger logger,
 			IApplicationConfiguration applicationConfiguration,
-			IMemoryCache memoryCache,
+			IMedicinesState<string, MedicineModel> medicinesState,
 			IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)
 		{
 			this.logger = logger;
 			this.applicationConfiguration = applicationConfiguration;
-			this.memoryCache = memoryCache;
+			this.medicinesState = medicinesState;
 			this.medicinesFilter = medicinesFilter;
 		}
 
-		public async Task LoadMedicines()
-		{
-			if (this.memoryCache.TryGetValue(cacheKey, out _)) { return; }
-			await this.Log($"Started loading medicines from database", LogLevel.Info);
-			this.CreateOrUpdateCache(null);
-			using (var dbClient = this.BuildConnection())
-			{
-				await dbClient.OpenAsync();
-				using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
-				using (var reader = await command.ExecuteReaderAsync())
-				{
-					while (await reader.ReadAsync())
-					{
-						var medicine = await this.BuildMedicine(reader);
-						medicines.AddOrUpdate(medicine.Id, medicine, (key, current) =>
-						{
-							current.Id = medicine.Id;
-							current.Name = medicine.Name;
-							current.Manufacturer = medicine.Manufacturer;
-							current.Description = medicine.Description;
-							current.ExpirationDate = medicine.ExpirationDate;
-							current.ManufacturingDate = medicine.ManufacturingDate;
-							current.Price = medicine.Price;
-							current.Quantity = medicine.Quantity;
-							return current;
-						});
-					}
-				}
-			}
-			this.CreateOrUpdateCache(medicines);
-			await this.Log($"Finished loading medicines from database", LogLevel.Info);
-		}
 
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
 		{
-			if (this.medicines == null)
-			{
-				await this.LoadMedicines();
-			}
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-			this.medicines.TryAdd(medicine.Id, medicine);
-			this.medicines.TryGetValue(medicine.Id, out medicine);
+			this.medicinesState.Medicines.TryAdd(medicine.Id, medicine);
+			this.medicinesState.Medicines.TryGetValue(medicine.Id, out medicine);
 			await this.AddMedicineToDB(medicine.Id);
 			return medicine;
 		}
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
-			if (this.medicines == null)
-			{
-				await this.LoadMedicines();
-			}
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
-			this.medicines.Remove(medicineId, out var _);
+			this.medicinesState.Medicines.Remove(medicineId, out var _);
 			await this.DeleteMedicineInDB(medicineId);
-			return this.medicines.TryGetValue(medicineId, out var _);
+			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
 		}
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
-			if (this.medicines == null)
-			{
-				await this.LoadMedicines();
-			}
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
-			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, this.medicines.Values);
+			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, this.medicinesState.Medicines.Values);
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
 		}
 
 		public async Task<int> GetTotalCount()
 		{
-			if (this.medicines == null)
-			{
-				await this.LoadMedicines();
-			}
 			await this.Log($"Getting total medicines count", LogLevel.Info);
-			return this.medicines.Count;
-		}
-
-		private async Task<MedicineModel> BuildMedicine(NpgsqlDataReader reader)
-		{
-			var id = await reader.GetFieldValueAsync<Guid>(0);
-			var manufacturer = await reader.GetFieldValueAsync<string>(1);
-			var name = await reader.GetFieldValueAsync<string>(2);
-			var description = await reader.GetFieldValueAsync<string>(3);
-			var manufacturingDate = await reader.GetFieldValueAsync<DateTime>(4);
-			var expirationDate = await reader.GetFieldValueAsync<DateTime>(5);
-			var price = await reader.GetFieldValueAsync<decimal>(6);
-			var quantity = await reader.GetFieldValueAsync<long>(7);
-
-			return new MedicineModel
-			{
-				Id = id.ToString(),
-				Manufacturer = manufacturer,
-				Name = name,
-				Description = description,
-				ManufacturingDate = manufacturingDate,
-				ExpirationDate = expirationDate,
-				Price = price,
-				Quantity = quantity
-			};
+			return this.medicinesState.Medicines.Count;
 		}
 
 		private NpgsqlConnection BuildConnection()
@@ -152,7 +77,7 @@ namespace PharmacyManager.API.Services.Medicines
 			using (var dbClient = this.BuildConnection())
 			{
 				MedicineModel? medicine;
-				this.medicines.TryGetValue(medicineId, out medicine);
+				this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 
@@ -171,7 +96,7 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				await dbClient.OpenAsync();
 				MedicineModel? medicine;
-				this.medicines.TryGetValue(medicineId, out medicine);
+				this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
 
 				if (medicine != null)
 				{
@@ -199,13 +124,13 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
-				using (var addCommand = new NpgsqlCommand($"DELETE FROM public.medicines WHERE id='{medicineId}'", dbClient))
+				using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET deleted=true WHERE id='{medicineId}'", dbClient))
 				{
 					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
+					using (var getCommand = new NpgsqlCommand($"SELECT COUNT(*) FROM public.medicines WHERE id='{medicineId}' AND deleted=true", dbClient))
 					{
-						var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
-						if (data == null)
+						var data = (await getCommand.ExecuteScalarAsync()) as int?;
+						if (data == 1)
 						{
 							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
 						}
@@ -217,13 +142,5 @@ namespace PharmacyManager.API.Services.Medicines
 		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesProvider), message, logLevel);
-
-		private ConcurrentDictionary<string, MedicineModel> medicines => this.memoryCache.Get<ConcurrentDictionary<string, MedicineModel>>(cacheKey);
-
-		private void CreateOrUpdateCache(ConcurrentDictionary<string, MedicineModel>? medicines)
-		{
-			var data = medicines == null ? new ConcurrentDictionary<string, MedicineModel>() : medicines;
-			this.memoryCache.Set<ConcurrentDictionary<string, MedicineModel>>(cacheKey, data, TimeSpan.FromSeconds(10));
-		}
 	}
 }

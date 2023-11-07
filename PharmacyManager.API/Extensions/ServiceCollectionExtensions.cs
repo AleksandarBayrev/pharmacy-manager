@@ -77,8 +77,9 @@ namespace PharmacyManager.API.Extensions
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Interfaces.Base.ILogger, Logger>();
-
-            services.AddMemoryCache();
+            services.AddSingleton<IMedicinesState<string, MedicineModel>, MedicinesState>();
+            services.AddHostedService<MedicinesLoader>();
+            services.AddHostedService<MedicinesDeleter>();
 
             #region Setup Page calculation service
             services.AddSingleton<IPageCalculation<PageCalculations>, PageCalculation>();
@@ -88,19 +89,17 @@ namespace PharmacyManager.API.Extensions
             services.AddSingleton<IMedicinesProvider<MedicineRequest, string, MedicineModel>>((sp) =>
             {
                 var appConfig = sp.GetRequiredService<IApplicationConfiguration>();
+                var medicinesState = sp.GetRequiredService<IMedicinesState<string, MedicineModel>>();
                 var idGenerator = sp.GetRequiredService<IIdGenerator>();
                 var logger = sp.GetRequiredService<PharmacyManager.API.Interfaces.Base.ILogger>();
                 var medicinesFilter = sp.GetRequiredService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
-                var memoryCache = sp.GetRequiredService<IMemoryCache>();
 
                 if (appConfig.Mocks.Use)
                 {
-                    var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, memoryCache, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
-                    mockInstance.LoadMedicines().GetAwaiter().GetResult();
+                    var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                     return mockInstance;
                 }
-                var instance = new MedicinesProvider(logger, appConfig, memoryCache, medicinesFilter);
-                instance.LoadMedicines().GetAwaiter().GetResult();
+                var instance = new MedicinesProvider(logger, appConfig, medicinesState, medicinesFilter);
 				return instance;
             });
             #endregion

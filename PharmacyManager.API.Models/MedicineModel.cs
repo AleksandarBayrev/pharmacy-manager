@@ -1,8 +1,6 @@
-﻿using System.Numerics;
-
-namespace PharmacyManager.API.Models
+﻿namespace PharmacyManager.API.Models
 {
-    public class MedicineModel
+	public class MedicineModel
     {
         public string Id { get; set; }
         public string Manufacturer { get; set; }

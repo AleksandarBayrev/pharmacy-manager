@@ -20,7 +20,7 @@ npm run copy-to-server
 echo "Finished building FE"
 cd ../../
 echo "Start publishing application..."
-dotnet publish ./PharmacyManager.API/PharmacyManager.API.csproj --sc --os linux --arch x64 --configuration Release
+dotnet publish ./PharmacyManager.API/PharmacyManager.API.csproj --sc --os linux --arch x64 --configuration Release -p:PublishSingleFile=true -p:DebugType="none" -p:DebugSymbols=false
 mkdir out
 cp -R ./PharmacyManager.API/bin/Release/net6.0/linux-x64/publish/ out/
 echo "Finished publishing application"

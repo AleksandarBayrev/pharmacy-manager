@@ -20,12 +20,7 @@ namespace PharmacyManager.API
         private static async Task ConfigureAndStartApplication(WebApplicationBuilder builder)
         {
             var app = builder.Build();
-            var logger = app.Services.GetService<Interfaces.Base.ILogger>();
-
-            if (logger == null)
-            {
-                throw new NullReferenceException("Missing application logger!");
-            }
+            var logger = app.Services.GetRequiredService<Interfaces.Base.ILogger>();
 
             await logger.Log(nameof(Program), "Configuring application...", Interfaces.Base.LogLevel.Info);
             await app.ConfigureApplication();

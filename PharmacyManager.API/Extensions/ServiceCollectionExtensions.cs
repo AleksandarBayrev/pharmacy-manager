@@ -31,7 +31,7 @@ namespace PharmacyManager.API.Extensions
             #region Instantiate Application Configuration
             services.AddSingleton<IApplicationConfiguration>((sp) =>
             {
-                var configuration = sp.GetService<IConfiguration>();
+                var configuration = sp.GetRequiredService<IConfiguration>();
 
                 if (configuration == null)
                 {
@@ -87,36 +87,11 @@ namespace PharmacyManager.API.Extensions
             #region Setup Medicines Provider
             services.AddSingleton<IMedicinesProvider<MedicineRequest, string, MedicineModel>>((sp) =>
             {
-                var appConfig = sp.GetService<IApplicationConfiguration>();
-                var idGenerator = sp.GetService<IIdGenerator>();
-                var logger = sp.GetService<PharmacyManager.API.Interfaces.Base.ILogger>();
-                var medicinesFilter = sp.GetService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
-                var memoryCache = sp.GetService<IMemoryCache>();
-
-                if (appConfig == null)
-                {
-                    throw new NullReferenceException("Application configuration not available!");
-                }
-                
-                if (logger == null)
-                {
-                    throw new NullReferenceException("Application logger not available!");
-                }
-
-                if (idGenerator == null)
-                {
-                    throw new NullReferenceException("IdGenerator not available!");
-                }
-                
-                if (medicinesFilter == null)
-                {
-                    throw new NullReferenceException("MedicinesFilter not available!");
-                }
-
-                if (memoryCache == null)
-                {
-                    throw new NullReferenceException("MemoryCache not available!");
-                }
+                var appConfig = sp.GetRequiredService<IApplicationConfiguration>();
+                var idGenerator = sp.GetRequiredService<IIdGenerator>();
+                var logger = sp.GetRequiredService<PharmacyManager.API.Interfaces.Base.ILogger>();
+                var medicinesFilter = sp.GetRequiredService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
+                var memoryCache = sp.GetRequiredService<IMemoryCache>();
 
                 if (appConfig.Mocks.Use)
                 {

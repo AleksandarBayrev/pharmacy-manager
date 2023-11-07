@@ -17,17 +17,9 @@ namespace PharmacyManager.API.Extensions
             app
                 .ConfigureProxySupport()
                 .ConfigureMiddlewares();
-            var configuration = app.Services.GetService<IApplicationConfiguration>();
-            if (configuration == null)
-            {
-                throw new NullReferenceException("Application not configured!");
-            }
+            var configuration = app.Services.GetRequiredService<IApplicationConfiguration>();
             app.ConfigureSwaggerAndStaticFiles(configuration);
-            var translationManager = app.Services.GetService<ITranslationManager>();
-            if (translationManager == null)
-            {
-                throw new NullReferenceException("TranslationManager not configured!");
-            }
+            var translationManager = app.Services.GetRequiredService<ITranslationManager>();
             await translationManager.LoadDictionaries();
             app.UseAuthorization();
             app.MapControllers();

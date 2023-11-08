@@ -105,11 +105,6 @@ namespace PharmacyManager.API.Services.Medicines
             return this.medicines.Remove(item);
 		}
 
-		public Task StartWorkers()
-		{
-            return Task.CompletedTask;
-		}
-
 		public async Task<int> GetTotalCount()
 		{
             return this.medicines.Count;

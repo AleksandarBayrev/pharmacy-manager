@@ -41,10 +41,10 @@ namespace PharmacyManager.API.Services.Medicines
 							var medicine = await BuildMedicine(reader);
                             if (medicine.Deleted)
                             {
-                                this.medicinesState.Medicines.TryRemove(medicine.Id, out var _);
+                                this.medicinesState.RemoveMedicine(medicine.Id, out var _);
                                 continue;
                             }
-							this.medicinesState.Medicines.AddOrUpdate(medicine.Id, medicine, (key, current) =>
+							this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, current) =>
 							{
 								current.Id = medicine.Id;
 								current.Name = medicine.Name;
@@ -59,7 +59,8 @@ namespace PharmacyManager.API.Services.Medicines
 						}
 					}
 				}
-                await Task.Delay(TimeSpan.FromSeconds(10));
+				await Log($"Finished loading medicines from database", LogLevel.Info);
+				await Task.Delay(TimeSpan.FromSeconds(10));
 			}
 		}
 

@@ -33,7 +33,7 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
 		{
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-			this.medicinesState.Medicines.TryAdd(medicine.Id, medicine);
+			this.medicinesState.TryAdd(medicine.Id, medicine);
 			this.medicinesState.Medicines.TryGetValue(medicine.Id, out medicine);
 			await this.medicinesOperations.AddMedicineToDB(medicine.Id);
 			return medicine;
@@ -42,7 +42,7 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
-			this.medicinesState.Medicines.Remove(medicineId, out var _);
+			this.medicinesState.DeleteMedicine(medicineId);
 			await this.medicinesOperations.DeleteMedicineInDB(medicineId);
 			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
 		}

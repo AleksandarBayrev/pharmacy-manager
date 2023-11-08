@@ -33,10 +33,13 @@ namespace PharmacyManager.API.Middlewares
             {
                 httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await LogEndOfRequest(httpContext, ex);
-                if (this.environment.IsDevelopment())
+                await httpContext.Response.WriteAsJsonAsync(new
                 {
-                    throw;
-                }
+                    method = httpContext.Request.Method,
+                    path = httpContext.Request.Path,
+                    status = httpContext.Response.StatusCode,
+                    message = "Please check server logs"
+                });
             }
         }
         private async Task LogStartOfRequest(HttpContext httpContext)

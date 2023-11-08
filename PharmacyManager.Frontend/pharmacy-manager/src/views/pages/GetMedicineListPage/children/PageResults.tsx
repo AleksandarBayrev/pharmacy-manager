@@ -22,7 +22,9 @@ export class PageResults extends React.Component<PageResultsProps> {
                 {this.renderLoaderOrData(
                     this.props.store.medicines,
                     this.props.dateFormatter,
-                    this.props.store
+                    this.props.store,
+                    this.props.appStore,
+                    this.props.translationManager
                 )}
             </div>
         )
@@ -31,15 +33,19 @@ export class PageResults extends React.Component<PageResultsProps> {
     private renderLoaderOrData(
         medicines: MedicineModel[],
         dateFormatter: IDateFormatter,
-        store: IGetMedicineListPageStore
+        store: IGetMedicineListPageStore,
+        appStore: IAppStore,
+        translationManager: ITranslationManager
     ) {
         return (
-            this.props.store.loadingData.get() ? <LoadingData rerenderDotsInMs={100} appStore={this.props.appStore} translationManager={this.props.translationManager} />
+            store.loadingData.get() ? <LoadingData rerenderDotsInMs={100} appStore={this.props.appStore} translationManager={this.props.translationManager} />
                 :
                 this.renderMedicines(
                     medicines,
                     dateFormatter,
-                    this.props.store
+                    store,
+                    appStore,
+                    translationManager
                 )
         )
     }
@@ -47,26 +53,28 @@ export class PageResults extends React.Component<PageResultsProps> {
     private renderMedicines(
         medicines: MedicineModel[],
         dateFormatter: IDateFormatter,
-        store: IGetMedicineListPageStore
+        store: IGetMedicineListPageStore,
+        appStore: IAppStore,
+        translationManager: ITranslationManager
     ) {
         return (
-            !this.props.store.isInitialRequestMade.get() ? <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_MAKE_QUERY")}</div>
+            !store.isInitialRequestMade.get() ? <div className='no-results'>{translationManager.getTranslation(appStore.language.get(), "RESULTS_MAKE_QUERY")}</div>
                 :
                 !medicines.length ?
-                    this.props.store.fetchingError.get() ?
-                        <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_FAILED_FETCHING")}</div>
+                    store.fetchingError.get() ?
+                        <div className='no-results'>{translationManager.getTranslation(appStore.language.get(), "RESULTS_FAILED_FETCHING")}</div>
                         :
-                        <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_NO_RESULTS_FOR_QUERY")}</div>
+                        <div className='no-results'>{translationManager.getTranslation(appStore.language.get(), "RESULTS_NO_RESULTS_FOR_QUERY")}</div>
                         :                
                         <>
-                            {this.props.store.isLoadingPage.get() ? <LoadingPage appStore={this.props.appStore} rerenderDotsInMs={500} pageNumber={this.props.store.request.page} translationManager={this.props.translationManager} /> : <></>}
-                            {this.props.store.additionalMessage.get()}
+                            {store.isLoadingPage.get() ? <LoadingPage appStore={appStore} rerenderDotsInMs={500} pageNumber={store.request.page} translationManager={translationManager} /> : <></>}
+                            {store.additionalMessage.get()}
                             <MedicinesWrapper
                                 dateFormatter={dateFormatter}
                                 store={store}
                                 medicines={medicines}
-                                pages={this.props.store.pages.get()}
-                                currentPage={this.props.store.request.page} />
+                                pages={store.pages.get()}
+                                currentPage={store.request.page} />
                         </>
         )
     }

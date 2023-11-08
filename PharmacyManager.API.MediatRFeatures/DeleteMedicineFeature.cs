@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 using PharmacyManager.API.Models.APIResponses;

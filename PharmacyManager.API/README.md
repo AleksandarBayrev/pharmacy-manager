@@ -17,3 +17,6 @@ deleted => boolean
 
 ## Build notes
 * For Linux you can build the application with the publish-linux shell script.
+
+## Running the application
+* !!! IMPORTANT !!! - run only ONE instance of the application simultaneously, since it uses an in memory cache to store data and there can be data discrepancies if you try to run two instances. A future release will probably extract the data into a separate cache application if such case for multiple web server instances needed.

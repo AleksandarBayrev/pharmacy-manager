@@ -20,7 +20,8 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 					RelativeHtmlPath: "",
 					new List<string>(),
 					new List<string>(),
-					new DatabaseConfiguration()
+					new DatabaseConfiguration(),
+					"yyyy-MM-ddTHH:mm:ss.fffZ"
 				));
 				await logger.Log("Test", "Test", LogLevel.Info);
 

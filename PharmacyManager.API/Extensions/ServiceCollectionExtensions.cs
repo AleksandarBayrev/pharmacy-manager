@@ -57,7 +57,8 @@ namespace PharmacyManager.API.Extensions
 						Database = configuration.GetValue<string>("DatabaseConfiguration:Database"),
 						Port = configuration.GetValue<int>("DatabaseConfiguration:Port"),
                         SchemaAndTable = configuration.GetValue<string>("DatabaseConfiguration:SchemaAndTable")
-					}
+					},
+                    configuration.GetValue<string>("PreferredDateFormatForRecords")
                 );
             });
 			#endregion
@@ -82,6 +83,7 @@ namespace PharmacyManager.API.Extensions
 
         private static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IDateFormatter, DateFormatter>();
 			services.AddSingleton<IMedicinesState<string, MedicineModel>, MedicinesState>();
             services.AddSingleton<IMedicinesOperations<string>, MedicinesOperations>();
             services.AddHostedService<MedicinesLoader>();

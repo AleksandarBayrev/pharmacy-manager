@@ -16,7 +16,8 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
                 RelativeHtmlPath: "",
                 Dictionaries: Enumerable.Empty<string>(),
                 DictionaryValidationKeys: Enumerable.Empty<string>(),
-                DatabaseConfiguration: new DatabaseConfiguration());
+                DatabaseConfiguration: new DatabaseConfiguration(),
+                PreferredDateFormatForRecords: "my-date-format");
 
             applicationConfiguration.EnableSwagger.Should().Be(true);
 			applicationConfiguration.Mocks.Use.Should().Be(true);
@@ -29,6 +30,7 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 			applicationConfiguration.DatabaseConfiguration.Password.Should().Be(null);
 			applicationConfiguration.DatabaseConfiguration.Database.Should().Be(null);
 			applicationConfiguration.DatabaseConfiguration.Port.Should().Be(0);
+            applicationConfiguration.PreferredDateFormatForRecords.Should().Be("my-date-format");
 		}
     }
 }

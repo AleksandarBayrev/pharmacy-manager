@@ -9,5 +9,6 @@
         public string RelativeHtmlPath { get; }
         public IEnumerable<string> Dictionaries { get; }
         public IEnumerable<string> DictionaryValidationKeys { get; }
+        public string PreferredDateFormatForRecords { get; }
     }
 }

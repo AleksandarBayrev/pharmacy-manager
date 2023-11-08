@@ -12,15 +12,18 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly ILogger logger;
 		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
+		private readonly IDateFormatter dateFormatter;
 
 		public MedicinesOperations(
 			ILogger logger,
 			IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider,
-			IMedicinesState<string, MedicineModel> medicinesState)
+			IMedicinesState<string, MedicineModel> medicinesState,
+			IDateFormatter dateFormatter)
 		{
 			this.logger = logger;
 			this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
 			this.medicinesState = medicinesState;
+			this.dateFormatter = dateFormatter;
 		}
 
 		public async Task AddMedicineToDB(string medicineId)
@@ -32,7 +35,7 @@ namespace PharmacyManager.API.Services.Medicines
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable}(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
+				using (var addCommand = new NpgsqlCommand($"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable}(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.dateFormatter.FormatDate(medicine.ManufacturingDate)}', '{this.dateFormatter.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
 				{
 					var rows = await addCommand.ExecuteScalarAsync();
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
@@ -51,7 +54,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 				if (medicine != null)
 				{
-					using (var updateCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{this.FormatDate(medicine.ManufacturingDate)}', \"expirationDate\"='{this.FormatDate(medicine.ExpirationDate)}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity} WHERE id='{medicine.Id}'", dbClient))
+					using (var updateCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{this.dateFormatter.FormatDate(medicine.ManufacturingDate)}', \"expirationDate\"='{this.dateFormatter.FormatDate(medicine.ExpirationDate)}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity} WHERE id='{medicine.Id}'", dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
 						await updateCommand.ExecuteNonQueryAsync();
@@ -96,7 +99,5 @@ namespace PharmacyManager.API.Services.Medicines
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesOperations), message, logLevel);
-
-		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");
 	}
 }

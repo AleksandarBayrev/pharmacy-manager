@@ -13,15 +13,18 @@ namespace PharmacyManager.API.Services.Medicines
         private readonly ILogger logger;
 		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
+		private readonly IDateFormatter dateFormatter;
 
 		public MedicinesLoader(
             ILogger logger,
             IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider,
-            IMedicinesState<string, MedicineModel> medicinesState)
+            IMedicinesState<string, MedicineModel> medicinesState,
+            IDateFormatter dateFormatter)
         {
             this.logger = logger;
             this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
             this.medicinesState = medicinesState;
+			this.dateFormatter = dateFormatter;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -89,7 +92,6 @@ namespace PharmacyManager.API.Services.Medicines
                 Deleted = deleted
             };
         }
-        private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");
 
         private Task Log(string message, LogLevel logLevel) => logger.Log(nameof(MedicinesLoader), message, logLevel);
 

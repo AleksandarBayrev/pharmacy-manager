@@ -17,7 +17,7 @@ namespace PharmacyManager.API.Services.Base
 			this.logger = logger;
 			this.applicationConfiguration = applicationConfiguration;
 			this.connectionString = BuildConnectionString(); 
-			this.schemaAndTable = applicationConfiguration.DatabaseConfiguration.SchemaAndTable;
+			this.schemaAndTable = GetSchemaAndTable();
 		}
 		public string ConnectionString => this.connectionString;
 

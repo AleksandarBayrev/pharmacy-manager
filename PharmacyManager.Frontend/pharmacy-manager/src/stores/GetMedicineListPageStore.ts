@@ -156,9 +156,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
                 this.totalFilteredCount.set(response.totalFilteredCount);
                 this.loadingData.set(false);
                 this.showPageCount.set(true);
-                if (response.error) {
-                    this.fetchingError.set(response.error);
-                }
+                this.fetchingError.set(response.error || false);
             });
         }, timeout);
     }

@@ -14,6 +14,7 @@ price => numeric(30,8)
 quantity => bigint
 deleted => boolean
 ```
+* OR you can use `pharmacymanager.tar` file to restore the structure in PostgreSQL
 
 ## Build notes
 * For Linux you can build the application with the publish-linux shell script.

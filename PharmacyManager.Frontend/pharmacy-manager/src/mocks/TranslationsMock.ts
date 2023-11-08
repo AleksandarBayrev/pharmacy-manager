@@ -19,6 +19,9 @@ export const TranslationsMock = Object.freeze({
         "FORM_MEDICINE_CLEAR": "Clear Form",
         "FORM_MEDICINE_ADD_SUCCESS": "Medicine was added successfully",
         "FORM_MEDICINE_ADD_FAILURE": "Medicine could not be added",
+        "FORM_MEDICINE_UPDATE": "Update medicine",
+        "FORM_MEDICINE_UPDATE_SUCCESS": "Successfully updated medicine",
+        "FORM_MEDICINE_UPDATE_FAILURE": "Failed updating medicine",
         "LANG_BULGARIAN": "Bulgarian",
         "LANG_ENGLISH": "English",
         "CURRENT_TIME": "Current time: ",
@@ -39,7 +42,11 @@ export const TranslationsMock = Object.freeze({
         "HEADER_HOME": "Home",
         "RESULTS_MAKE_QUERY": "Please, make a query.",
         "RESULTS_NO_RESULTS_FOR_QUERY": "No results for given query.",
-        "FORM_GET_MEDICINE_LOADING_PAGE": "Loading page"
+        "FORM_GET_MEDICINE_LOADING_PAGE": "Loading page",
+        "FORM_GET_MEDICINE_AVAILABLE_MEDICINES_COUNT": "Total medicines count in system: ",
+        "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES_COUNT": "Total filtered medicines count in system: ",
+        "RESULTS_FAILED_FETCHING": "Failed loading medicines. Please contact support.",
+        "FORM_MEDICINE_UPDATE_RESET": "Reset medicine data to initial"
     },
     bg: {
         "LOADING_TEXT": "Зареждам, моля изчакайте...",
@@ -61,6 +68,9 @@ export const TranslationsMock = Object.freeze({
         "FORM_MEDICINE_CLEAR": "Изчисти форма",
         "FORM_MEDICINE_ADD_SUCCESS": "Лекарството беше добавено успешно",
         "FORM_MEDICINE_ADD_FAILURE": "Лекарството не можа да бъде добавено",
+        "FORM_MEDICINE_UPDATE": "Промени лекарство",
+        "FORM_MEDICINE_UPDATE_SUCCESS": "Лекарството беше променено успешно",
+        "FORM_MEDICINE_UPDATE_FAILURE": "Лекарството не можа да бъде променено",
         "LANG_BULGARIAN": "Български",
         "LANG_ENGLISH": "Английски",
         "CURRENT_TIME": "Дата и час: ",
@@ -81,6 +91,10 @@ export const TranslationsMock = Object.freeze({
         "HEADER_HOME": "Начало",
         "RESULTS_MAKE_QUERY": "Моля, направете заявка.",
         "RESULTS_NO_RESULTS_FOR_QUERY": "Няма резултати за направената от Вас заявка.",
-        "FORM_GET_MEDICINE_LOADING_PAGE": "Зареждам страница"
+        "FORM_GET_MEDICINE_LOADING_PAGE": "Зареждам страница",
+        "FORM_GET_MEDICINE_AVAILABLE_MEDICINES_COUNT": "Общ брой лекарства в системата: ",
+        "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES_COUNT": "Общ брой на лекарствата спрямо търсенето: ",
+        "RESULTS_FAILED_FETCHING": "Грешка при зареждането на лекарствата. Моля, свържете се с поддръжка.",
+        "FORM_MEDICINE_UPDATE_RESET": "Върни началните данни на лекарството"
     }
 });

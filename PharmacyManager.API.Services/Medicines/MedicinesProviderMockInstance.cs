@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
-using PharmacyManager.API.Interfaces.Base;
+﻿using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
 
@@ -11,7 +10,7 @@ namespace PharmacyManager.API.Services.Medicines
         private readonly IIdGenerator idGenerator;
         private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
 		private readonly int generatedNumberOfPharmacies;
-		private IList<MedicineModel> _medicines;
+		private IList<MedicineModel> medicines;
         private readonly string loggerContext = nameof(MedicinesProviderMockInstance);
 
         public MedicinesProviderMockInstance(
@@ -24,7 +23,7 @@ namespace PharmacyManager.API.Services.Medicines
             this.idGenerator = idGenerator;
             this.medicinesFilter = medicinesFilter;
             this.generatedNumberOfPharmacies = generatedNumberOfPharmacies;
-            this._medicines = new List<MedicineModel>
+            this.medicines = new List<MedicineModel>
             {
                 new MedicineModel
                 {
@@ -75,7 +74,7 @@ namespace PharmacyManager.API.Services.Medicines
 
         public Task<MedicineModel> AddMedicine(MedicineModel medicine)
         {
-            this._medicines.Add(medicine);
+            this.medicines.Add(medicine);
             return Task.FromResult(medicine);
         }
 
@@ -84,7 +83,7 @@ namespace PharmacyManager.API.Services.Medicines
             return await OrderDescending(
                 await this.medicinesFilter.ApplyFilters(
                     request,
-                    this._medicines
+                    this.medicines
                 ));
         }
 
@@ -96,14 +95,14 @@ namespace PharmacyManager.API.Services.Medicines
 
         private async Task<int> GetCount(MedicineRequest request)
         {
-            var result = await OrderDescending(await this.medicinesFilter.ApplyFilters(request, this._medicines));
+            var result = await OrderDescending(await this.medicinesFilter.ApplyFilters(request, this.medicines));
             return result.Count();
         }
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
-            var item = this._medicines.First(x => x.Id == medicineId);
-            return this._medicines.Remove(item);
+            var item = this.medicines.First(x => x.Id == medicineId);
+            return this.medicines.Remove(item);
 		}
 
 		public Task StartWorkers()
@@ -113,7 +112,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<int> GetTotalCount()
 		{
-            return this._medicines.Count;
+            return this.medicines.Count;
 		}
 	}
 }

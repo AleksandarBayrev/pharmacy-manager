@@ -13,7 +13,7 @@ namespace PharmacyManager.API.Services.Base
 	{
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
-		private readonly string _connectionString;
+		private readonly string connectionString;
 
 		public ConnectionStringProvider(
 			ILogger logger,
@@ -21,9 +21,9 @@ namespace PharmacyManager.API.Services.Base
 		{
 			this.logger = logger;
 			this.applicationConfiguration = applicationConfiguration;
-			this._connectionString = BuildConnectionString(); 
+			this.connectionString = BuildConnectionString(); 
 		}
-		public string ConnectionString => _connectionString;
+		public string ConnectionString => this.connectionString;
 
 		private string BuildConnectionString()
 		{

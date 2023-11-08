@@ -12,17 +12,20 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly ILogger logger;
 		private readonly IConnectionStringProvider connectionStringProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
+		private readonly IMedicinesOperations<string> medicinesOperations;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
 
 		public MedicinesProvider(
 			ILogger logger,
 			IConnectionStringProvider connectionStringProvider,
 			IMedicinesState<string, MedicineModel> medicinesState,
+			IMedicinesOperations<string> medicinesOperations,
 			IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)
 		{
 			this.logger = logger;
 			this.connectionStringProvider = connectionStringProvider;
 			this.medicinesState = medicinesState;
+			this.medicinesOperations = medicinesOperations;
 			this.medicinesFilter = medicinesFilter;
 		}
 
@@ -32,7 +35,7 @@ namespace PharmacyManager.API.Services.Medicines
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 			this.medicinesState.Medicines.TryAdd(medicine.Id, medicine);
 			this.medicinesState.Medicines.TryGetValue(medicine.Id, out medicine);
-			await this.AddMedicineToDB(medicine.Id);
+			await this.medicinesOperations.AddMedicineToDB(medicine.Id);
 			return medicine;
 		}
 
@@ -40,7 +43,7 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
 			this.medicinesState.Medicines.Remove(medicineId, out var _);
-			await this.DeleteMedicineInDB(medicineId);
+			await this.medicinesOperations.DeleteMedicineInDB(medicineId);
 			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
 		}
 
@@ -61,75 +64,6 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			return new NpgsqlConnection(connectionStringProvider.ConnectionString);
 		}
-
-		private async Task AddMedicineToDB(string medicineId)
-		{
-			using (var dbClient = this.BuildConnection())
-			{
-				MedicineModel? medicine;
-				this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
-				await dbClient.OpenAsync();
-				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
-				{
-					var rows = await addCommand.ExecuteScalarAsync();
-					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
-				}
-				medicine = null;
-			}
-		}
-
-		private async Task UpdateMedicineInDB(string medicineId)
-		{
-			using (var dbClient = this.BuildConnection())
-			{
-				await dbClient.OpenAsync();
-				MedicineModel? medicine;
-				this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
-
-				if (medicine != null)
-				{
-					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity}", dbClient))
-					{
-						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
-						await addCommand.ExecuteNonQueryAsync();
-						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
-						{
-							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
-							if (data != null)
-							{
-								await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
-							}
-						}
-					}
-					medicine = null;
-				}
-			}
-		}
-
-		private async Task DeleteMedicineInDB(string medicineId)
-		{
-			using (var dbClient = this.BuildConnection())
-			{
-				await dbClient.OpenAsync();
-				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
-				using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET deleted=true WHERE id='{medicineId}'", dbClient))
-				{
-					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT COUNT(*) FROM public.medicines WHERE id='{medicineId}' AND deleted=true", dbClient))
-					{
-						var data = (await getCommand.ExecuteScalarAsync()) as int?;
-						if (data == 1)
-						{
-							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
-						}
-					}
-				}
-			}
-		}
-
-		private string FormatDate(DateTime date) => date.ToString("yyyy-MM-ddThh:mm:ssZ");
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesProvider), message, logLevel);
 	}

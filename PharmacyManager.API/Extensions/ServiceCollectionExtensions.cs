@@ -1,6 +1,5 @@
 ﻿using PharmacyManager.API.Interfaces.Base;
 using PharmacyManager.API.Services.Base;
-using MediatR;
 using PharmacyManager.API.MediatRFeatures;
 using PharmacyManager.API.Interfaces.Medicines;
 using PharmacyManager.API.Models;
@@ -8,12 +7,10 @@ using PharmacyManager.API.Services.Medicines;
 using PharmacyManager.API.Interfaces.Frontend;
 using PharmacyManager.API.Services.Frontend;
 using PharmacyManager.API.Features;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace PharmacyManager.API.Extensions
 {
-    public static class ServiceCollectionExtensions
+	public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
@@ -84,6 +81,7 @@ namespace PharmacyManager.API.Extensions
         private static void ConfigureServices(IServiceCollection services)
         {
 			services.AddSingleton<IMedicinesState<string, MedicineModel>, MedicinesState>();
+            services.AddSingleton<IMedicinesOperations<string>, MedicinesOperations>();
             services.AddHostedService<MedicinesLoader>();
             services.AddHostedService<MedicinesDeleter>();
 
@@ -96,17 +94,18 @@ namespace PharmacyManager.API.Extensions
             {
                 var appConfig = sp.GetRequiredService<IApplicationConfiguration>();
                 var connectionStringProvider = sp.GetRequiredService<IConnectionStringProvider>();
-                var medicinesState = sp.GetRequiredService<IMedicinesState<string, MedicineModel>>();
-                var idGenerator = sp.GetRequiredService<IIdGenerator>();
-                var logger = sp.GetRequiredService<PharmacyManager.API.Interfaces.Base.ILogger>();
-                var medicinesFilter = sp.GetRequiredService<PharmacyManager.API.Interfaces.Medicines.IMedicinesFilter<MedicineRequest, MedicineModel>>();
+				var medicinesState = sp.GetRequiredService<IMedicinesState<string, MedicineModel>>();
+				var medicinesOperations = sp.GetRequiredService<IMedicinesOperations<string>>();
+				var idGenerator = sp.GetRequiredService<IIdGenerator>();
+				var logger = sp.GetRequiredService<Interfaces.Base.ILogger>();
+				var medicinesFilter = sp.GetRequiredService<IMedicinesFilter<MedicineRequest, MedicineModel>>();
 
                 if (appConfig.Mocks.Use)
                 {
                     var mockInstance = new MedicinesProviderMockInstance(logger, idGenerator, medicinesFilter, appConfig.Mocks.GeneratedNumberOfPharmacies);
                     return mockInstance;
                 }
-                var instance = new MedicinesProvider(logger, connectionStringProvider, medicinesState, medicinesFilter);
+                var instance = new MedicinesProvider(logger, connectionStringProvider, medicinesState, medicinesOperations, medicinesFilter);
 				return instance;
             });
             #endregion

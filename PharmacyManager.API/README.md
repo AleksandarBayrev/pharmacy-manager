@@ -2,7 +2,7 @@
 ## Notes
 ### Database structure
 * Setup your server connection in appsettings.json
-* Structure for the table that will store the medicines:
+* Structure for the table that will store the medicines (example for PostgreSQL, recommended database):
 ```t
 id => uuid
 manufacturer => text

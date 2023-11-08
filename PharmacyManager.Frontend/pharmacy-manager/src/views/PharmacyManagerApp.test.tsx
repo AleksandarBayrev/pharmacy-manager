@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { DependencyInjection } from '../base';
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore, Pages } from '../types';
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetDateTimeStore, IGetMedicineListPageStore, ILogManager, IPageRenderer, ITimeFormatter, ITranslationManager, Language, IAppStore, Pages, IUpdateMedicinePageStore } from '../types';
 import { observable } from 'mobx';
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from './pages';
 import { LogManager, PageRenderer } from '../services';
@@ -35,7 +35,9 @@ test('matches snapshot', async () => {
       getInitialPageCalculations: jest.fn(),
       getTranslations: jest.fn(),
       reloadTranslations: jest.fn(),
-      deleteMedicine: jest.fn()
+      deleteMedicine: jest.fn(),
+      updateMedicine: jest.fn(),
+      getMedicine: jest.fn()
     };
     const dateFormatter: IDateFormatter = {
       getDateForInput: jest.fn((date) => "01.01.2023"),
@@ -106,6 +108,27 @@ test('matches snapshot', async () => {
       resetRequestToDefault: jest.fn(),
       updateRequest: jest.fn()
     };
+    const updateMedicinePageStore: IUpdateMedicinePageStore = {
+      isUpdatingMedicine: observable.box(false),
+      isRequestSuccessful: observable.box(undefined),
+      isLoadingMedicine: observable.box(false),
+      request: observable({
+        id: "",
+        name: "",
+        manufacturer: "",
+        description: "",
+        manufacturingDate: new Date(),
+        expirationDate: new Date(),
+        price: "0",
+        quantity: "0"
+      }),
+      load: jest.fn(),
+      unload: jest.fn(),
+      updateMedicine: jest.fn(),
+      resetMessage: jest.fn(),
+      resetRequestToDefault: jest.fn(),
+      updateRequest: jest.fn()
+    };
     const translationManager: ITranslationManager = {
       loadTranslations: jest.fn(),
       reloadTranslations: jest.fn(),
@@ -114,7 +137,7 @@ test('matches snapshot', async () => {
     pageRenderer.add(pages.Home, <HomePage translationManager={translationManager} appStore={appStore} />);
     pageRenderer.add(pages.GetMedicinesList, <GetMedicineListPage dateFormatter={dateFormatter} store={getMedicineListPageStore} translationManager={translationManager} appStore={appStore} />);
     pageRenderer.add(pages.AddMedicines, <AddMedicinePage dateFormatter={dateFormatter} store={addMedicinePageStore}  translationManager={translationManager} appStore={appStore} />);
-    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} appStore={appStore} translationManager={translationManager} />);
+    pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage backendService={backendService} appStore={appStore} dateFormatter={dateFormatter} translationManager={translationManager} store={updateMedicinePageStore} />);
     pageRenderer.add(pages.Settings, <SettingsPage translationManager={translationManager} appStore={appStore} />);
     return {
       'IPageRenderer': pageRenderer,
@@ -125,7 +148,9 @@ test('matches snapshot', async () => {
       'IGetMedicineListPageStore': getMedicineListPageStore,
       'IGetDateTimeStore': getDateTimeStore,
       'ITranslationManager': translationManager,
-      'IAppStore': appStore
+      'IAppStore': appStore,
+      'IUpdateMedicinePageStore': updateMedicinePageStore,
+      'IAddMedicinePageStore': addMedicinePageStore
     }
   });
   const DI: DependencyInjection = {

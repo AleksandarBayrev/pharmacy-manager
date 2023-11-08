@@ -109,5 +109,22 @@ namespace PharmacyManager.API.Services.Medicines
 		{
             return this.medicines.Count;
 		}
+
+		public async Task<bool> UpdateMedicine(MedicineModel medicine)
+		{
+            var medicineInStore = this.medicines.First(x => x.Id == medicine.Id);
+            medicineInStore.Name = medicine.Name;
+            medicineInStore.Description = medicine.Description;
+            medicineInStore.ExpirationDate = medicine.ExpirationDate;
+            medicineInStore.ManufacturingDate = medicine.ManufacturingDate;
+            medicineInStore.Price = medicine.Price;
+            medicineInStore.Quantity = medicine.Quantity;
+            return true;
+		}
+
+		public async Task<MedicineModel> GetMedicineById(string medicineId)
+		{
+            return this.medicines.FirstOrDefault(x => x.Id == medicineId);
+		}
 	}
 }

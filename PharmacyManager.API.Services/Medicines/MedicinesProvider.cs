@@ -47,6 +47,29 @@ namespace PharmacyManager.API.Services.Medicines
 			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
 		}
 
+		public async Task<bool> UpdateMedicine(MedicineModel medicine)
+		{
+			var oldMedicine = this.medicinesState.Medicines[medicine.Id];
+			if (oldMedicine == null)
+			{
+				await this.Log($"Failed updating medicine with ID = {medicine.Id}, medicine not found!", LogLevel.Error);
+				return false;
+			}
+			await this.Log($"Updating medicine with ID = {medicine.Id}", LogLevel.Info);
+			this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, value) =>
+			{
+				value.Name = medicine.Name;
+				value.Description = medicine.Description;
+				value.ExpirationDate = medicine.ExpirationDate;
+				value.ManufacturingDate = medicine.ManufacturingDate;
+				value.Price = medicine.Price;
+				value.Quantity = medicine.Quantity;
+				return value;
+			});
+			await this.medicinesOperations.UpdateMedicineInDB(medicine.Id);
+			return this.medicinesState.Medicines.TryGetValue(medicine.Id, out var _);
+		}
+
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
 			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
@@ -58,6 +81,11 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			await this.Log($"Getting total medicines count", LogLevel.Info);
 			return this.medicinesState.Medicines.Count;
+		}
+
+		public async Task<MedicineModel> GetMedicineById(string medicineId)
+		{
+			return this.medicinesState.Medicines[medicineId];
 		}
 
 		private NpgsqlConnection BuildConnection()

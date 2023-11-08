@@ -35,6 +35,8 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
                     <Separator />
                     <div className='row-header'>Quantity</div>
                     <Separator />
+                    <div className='row-header'>Update</div>
+                    <Separator />
                     <div className='row-header'>Delete</div>
                 </div>
                 <div className="Medicines-list">

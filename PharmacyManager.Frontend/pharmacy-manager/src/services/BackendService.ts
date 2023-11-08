@@ -1,5 +1,5 @@
 import { enhanceClass } from "../base/enhanceClass";
-import { AddMedicineRequest, DeleteMedicineResponse, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse, TranslationsResponse } from "../types";
+import { AddMedicineRequest, DeleteMedicineResponse, IBackendService, ILogger, MedicineModel, MedicineRequest, MedicineResponse, PageCalculationsResponse, TranslationsResponse, UpdateMedicineRequest } from "../types";
 
 class BackendService implements IBackendService {
     private readonly baseUrl: string;
@@ -10,6 +10,34 @@ class BackendService implements IBackendService {
         logger: ILogger) {
         this.baseUrl = baseUrl;
         this.logger = logger;
+    }
+
+    public async getMedicine(medicineId: string): Promise<MedicineModel | null> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/medicines/getMedicine`, {
+                method: "POST",
+                headers: this.getHeaders(),
+                body: JSON.stringify({id: medicineId})
+            });
+            return await result.json() as MedicineModel;
+        } catch (err) {
+            this.logger.Error(err as Error);
+            return null;
+        }
+    }
+    
+    public async updateMedicine(updateMedicineRequest: UpdateMedicineRequest): Promise<boolean> {
+        try {
+            const result = await fetch(`${this.baseUrl}/api/medicines/updateMedicine`, {
+                method: "POST",
+                headers: this.getHeaders(),
+                body: JSON.stringify(updateMedicineRequest)
+            });
+            return await result.json() as boolean;
+        } catch (err) {
+            this.logger.Error(err as Error);
+            return false;
+        }
     }
 
     public async deleteMedicine(medicineId: string): Promise<DeleteMedicineResponse> {

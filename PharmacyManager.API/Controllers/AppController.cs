@@ -27,7 +27,8 @@ namespace PharmacyManager.API.Controllers
         [HttpGet]
         [HttpGet("medicines/get")]
         [HttpGet("medicines/add")]
-        [HttpGet("medicines/update")]
+		[HttpGet("medicines/update")]
+		[HttpGet("medicines/update/{id}")]
         [HttpGet("settings")]
         [HttpGet("404")]
         public async Task<IActionResult> GetHTML()

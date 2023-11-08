@@ -51,10 +51,10 @@ namespace PharmacyManager.API.Services.Medicines
 
 				if (medicine != null)
 				{
-					using (var addCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity}", dbClient))
+					using (var updateCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{this.FormatDate(medicine.ManufacturingDate)}', \"expirationDate\"='{this.FormatDate(medicine.ExpirationDate)}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity} WHERE id='{medicine.Id}'", dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
-						await addCommand.ExecuteNonQueryAsync();
+						await updateCommand.ExecuteNonQueryAsync();
 						using (var getCommand = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}'", dbClient))
 						{
 							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;

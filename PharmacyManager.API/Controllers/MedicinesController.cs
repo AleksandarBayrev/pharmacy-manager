@@ -40,5 +40,17 @@ namespace PharmacyManager.API.Controllers
 		{
 			return this.mediator.Send(request);
 		}
+
+		[HttpPost("updateMedicine")]
+		public Task<MedicineFrontendModel> UpdateMedicine([FromBody] UpdateMedicineFeature.UpdateMedicineFeatureQuery request)
+		{
+			return this.mediator.Send(request);
+		}
+
+		[HttpPost("getMedicine")]
+		public Task<MedicineFrontendModel> GetMedicine([FromBody] GetMedicineFeature.GetMedicineFeatureQuery request)
+		{
+			return this.mediator.Send(request);
+		}
 	}
 }

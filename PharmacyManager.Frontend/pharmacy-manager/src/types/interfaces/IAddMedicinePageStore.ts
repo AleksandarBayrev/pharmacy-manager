@@ -1,6 +1,6 @@
 import { IObservableValue } from "mobx";
 import React from "react";
-import { AddMedicineRequest } from "../models";
+import { AddMedicineRequest } from "../requests";
 import { IBaseStore } from "./IBaseStore";
 
 export interface IAddMedicinePageStore extends IBaseStore {

@@ -50,6 +50,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
                 <Route path={`${pages.GetMedicinesList}`} element={this.pageRenderer.get(pages.GetMedicinesList)} />
                 <Route path={`${pages.AddMedicines}`} element={this.pageRenderer.get(pages.AddMedicines)} />
                 <Route path={`${pages.UpdateMedicines}`} element={this.pageRenderer.get(pages.UpdateMedicines)} />
+                <Route path={`${pages.UpdateMedicines}/*`} element={this.pageRenderer.get(pages.UpdateMedicines)} />
                 <Route path={`${pages.Settings}`} element={this.pageRenderer.get(pages.Settings)} />
                 <Route path={`*`} element={<NotFoundPage />} />
               </Routes>

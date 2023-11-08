@@ -30,6 +30,8 @@ export class Medicine extends React.Component<MedicineProps> {
                     <Separator />
                     <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.quantity}</div>
                     <Separator />
+                    <div className={this.getClassNames(this.props.medicine)}><button onClick={() => window.location.replace(`/medicines/update/${this.props.medicine.id}`)}>Update</button></div>
+                    <Separator />
                     <div className={this.getClassNames(this.props.medicine)}><button onClick={() => this.props.store.deleteMedicine(this.props.medicine.id)}>Delete</button></div>
                 </div>
             </div>

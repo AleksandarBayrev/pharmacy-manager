@@ -2,7 +2,7 @@ import React from "react";
 import { DependencyInjection } from "../base";
 import { pages } from "../constants";
 import { HomePage, GetMedicineListPage, AddMedicinePage, UpdateMedicinePage } from "../views/pages";
-import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetMedicineListPageStore, IPageRenderer, ITranslationManager, IAppStore } from "../types";
+import { IAddMedicinePageStore, IBackendService, IDateFormatter, IGetMedicineListPageStore, IPageRenderer, ITranslationManager, IAppStore, IUpdateMedicinePageStore } from "../types";
 import { SettingsPage } from "../views/pages/SettingsPage";
 
 export const setupPageRenderer = (DI: DependencyInjection) => {
@@ -24,6 +24,8 @@ export const setupPageRenderer = (DI: DependencyInjection) => {
     );
     pageRenderer.add(pages.UpdateMedicines, <UpdateMedicinePage
         backendService={DI.getService<IBackendService>("IBackendService")}
+        store={DI.getService<IUpdateMedicinePageStore>("IUpdateMedicinePageStore")}
+        dateFormatter={DI.getService<IDateFormatter>("IDateFormatter")}
         translationManager={DI.getService<ITranslationManager>("ITranslationManager")}
         appStore={DI.getService<IAppStore>("IAppStore")} />
     );

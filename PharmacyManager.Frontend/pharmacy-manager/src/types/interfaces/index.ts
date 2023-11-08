@@ -10,3 +10,4 @@ export * from "./IAddMedicinePageStore";
 export * from "./IBaseStore";
 export * from "./ITranslationManager";
 export * from "./IAppStore";
+export * from "./IUpdateMedicinePageStore";

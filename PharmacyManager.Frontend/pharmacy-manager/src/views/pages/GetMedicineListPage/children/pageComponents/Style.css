@@ -10,6 +10,10 @@
     font-size: 14pt;
 }
 
+.column-deleted {
+    text-decoration: line-through;
+}
+
 .column-separator {
     font-weight: bold;
     margin-left: 10px;

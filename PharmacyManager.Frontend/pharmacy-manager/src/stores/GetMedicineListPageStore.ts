@@ -65,8 +65,14 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         try {
             var result = await this.backendService.deleteMedicine(medicineId);
             if (result.deleted) {
-                await this.getMedicines(this.request, false);
+                const medicine = this.medicines.find(x => x.id === medicineId);
+                runInAction(() => {
+                    if (medicine) {
+                        medicine.deleted = result.deleted;
+                    }
+                })
                 this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
+                setTimeout(() => this.getMedicines(this.request, false), 1000);
             }
             if (result.error) {
                 this.additionalMessage.set(`Failed deleting medicine ID ${medicineId}!`);
@@ -74,7 +80,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         } catch (err) {
             this.additionalMessage.set((err as Error).message);
         } finally {
-            setTimeout(() => runInAction(() => {this.additionalMessage.set("")}), 5000);
+            setTimeout(() => runInAction(() => {this.additionalMessage.set("")}), 1000);
         }
     }
 

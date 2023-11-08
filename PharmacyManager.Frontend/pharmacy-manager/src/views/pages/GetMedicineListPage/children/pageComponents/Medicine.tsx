@@ -14,25 +14,33 @@ export class Medicine extends React.Component<MedicineProps> {
         return (
             <div className={'Medicine-content'} key={`Medicine-${this.props.medicine.id}`}>
                 <div className='row'>
-                    <div className='column'>{this.props.medicine.id}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.id}</div>
                     <Separator />
-                    <div className='column'>{this.props.medicine.name}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.name}</div>
                     <Separator />
-                    <div className='column'>{this.props.medicine.description}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.description}</div>
                     <Separator />
-                    <div className='column'>{this.props.medicine.manufacturer}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.manufacturer}</div>
                     <Separator />
-                    <div className='column'>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.manufacturingDate))}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.manufacturingDate))}</div>
                     <Separator />
-                    <div className='column'>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.expirationDate))}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.dateFormatter.getDateForTable(new Date(this.props.medicine.expirationDate))}</div>
                     <Separator />
-                    <div className='column'>{this.props.medicine.price}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.price}</div>
                     <Separator />
-                    <div className='column'>{this.props.medicine.quantity}</div>
+                    <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.quantity}</div>
                     <Separator />
-                    <div className='column'><button onClick={() => this.props.store.deleteMedicine(this.props.medicine.id)}>Delete</button></div>
+                    <div className={this.getClassNames(this.props.medicine)}><button onClick={() => this.props.store.deleteMedicine(this.props.medicine.id)}>Delete</button></div>
                 </div>
             </div>
         )
+    }
+
+    private getClassNames = (medicine: MedicineModel) => {
+        const classNames = ['column'];
+        if (medicine.deleted) {
+            classNames.push('column-deleted');
+        }
+        return classNames.join(" ").trim();
     }
 }

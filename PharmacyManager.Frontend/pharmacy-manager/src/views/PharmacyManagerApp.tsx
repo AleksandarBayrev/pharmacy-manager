@@ -32,7 +32,6 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
               <Link to={`${pages.Home}`} className={this.getAppMenuClasses(pages.Home)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_HOME")}</Link>
               <Link to={`${pages.GetMedicinesList}`} className={this.getAppMenuClasses(pages.GetMedicinesList)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_GET_MEDICINE_LIST")}</Link>
               <Link to={`${pages.AddMedicines}`} className={this.getAppMenuClasses(pages.AddMedicines)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_ADD_MEDICINE")}</Link>
-              <Link to={`${pages.UpdateMedicines}`} className={this.getAppMenuClasses(pages.UpdateMedicines)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_UPDATE_MEDICINE")}</Link>
               <Link to={`${pages.Settings}`} className={this.getAppMenuClasses(pages.Settings)}>{this.translationsManager.getTranslation(this.appStore.language.get(), "MENU_SETTINGS")}</Link>
             </div>
           </header>

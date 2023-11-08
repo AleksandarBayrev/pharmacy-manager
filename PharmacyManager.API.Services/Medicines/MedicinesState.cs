@@ -10,8 +10,8 @@ namespace PharmacyManager.API.Services.Medicines
 		private readonly ConcurrentDictionary<string, MedicineModel> deletedMedicines = new ConcurrentDictionary<string, MedicineModel>();
 		private readonly ConcurrentDictionary<string, MedicineModel> medicines = new ConcurrentDictionary<string, MedicineModel>();
 
-		public ConcurrentDictionary<string, MedicineModel> Medicines => medicines;
-		public ConcurrentDictionary<string, MedicineModel> DeletedMedicines => deletedMedicines;
+		public IReadOnlyDictionary<string, MedicineModel> Medicines => medicines;
+		public IReadOnlyDictionary<string, MedicineModel> DeletedMedicines => deletedMedicines;
 
 		public void DeleteMedicine(string medicineId)
 		{

@@ -20,8 +20,8 @@ namespace PharmacyManager.API.Services.Medicines
 		}
 		public bool RemoveMedicine(string medicineId, out MedicineModel? medicine)
 		{
-			var isRemovedMain = this.medicines.Remove(medicineId, out medicine);
-			var isRemovedDeleted = this.deletedMedicines.Remove(medicineId, out medicine);
+			var isRemovedMain = this.medicines.TryRemove(medicineId, out _);
+			var isRemovedDeleted = this.deletedMedicines.TryRemove(medicineId, out medicine);
 			return isRemovedDeleted && isRemovedMain;
 		}
 		public bool TryAdd(string medicineId, MedicineModel medicine)

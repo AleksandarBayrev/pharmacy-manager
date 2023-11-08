@@ -59,6 +59,7 @@ namespace PharmacyManager.API.Services.Medicines
 			this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, value) =>
 			{
 				value.Name = medicine.Name;
+				value.Manufacturer = medicine.Manufacturer;
 				value.Description = medicine.Description;
 				value.ExpirationDate = medicine.ExpirationDate;
 				value.ManufacturingDate = medicine.ManufacturingDate;

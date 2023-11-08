@@ -59,7 +59,8 @@ class BackendService implements IBackendService {
                 medicines: [],
                 totalCount: 0,
                 totalFilteredCount: 0,
-                pages: 1
+                pages: 1,
+                error: true
             }
         }
     }

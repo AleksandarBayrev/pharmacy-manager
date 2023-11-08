@@ -14,6 +14,7 @@ export interface IGetMedicineListPageStore extends IBaseStore {
     isInitialRequestMade: IObservableValue<boolean>;
     showPageCount: IObservableValue<boolean>;
     additionalMessage: IObservableValue<string>;
+    fetchingError: IObservableValue<boolean>;
     readonly defaultRequest: MedicineRequest;
 
     updateRequestProperties(request: Partial<MedicineRequest>): void;

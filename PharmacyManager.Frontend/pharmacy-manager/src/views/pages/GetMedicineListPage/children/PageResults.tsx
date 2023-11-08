@@ -52,17 +52,22 @@ export class PageResults extends React.Component<PageResultsProps> {
         return (
             !this.props.store.isInitialRequestMade.get() ? <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_MAKE_QUERY")}</div>
                 :
-                !medicines.length ? <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_NO_RESULTS_FOR_QUERY")}</div> :
-                    <>
-                        {this.props.store.isLoadingPage.get() ? <LoadingPage appStore={this.props.appStore} rerenderDotsInMs={500} pageNumber={this.props.store.request.page} translationManager={this.props.translationManager} /> : <></>}
-                        {this.props.store.additionalMessage.get()}
-                        <MedicinesWrapper
-                            dateFormatter={dateFormatter}
-                            store={store}
-                            medicines={medicines}
-                            pages={this.props.store.pages.get()}
-                            currentPage={this.props.store.request.page} />
-                    </>
+                !medicines.length ?
+                    this.props.store.fetchingError.get() ?
+                        <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_FAILED_FETCHING")}</div>
+                        :
+                        <div className='no-results'>{this.props.translationManager.getTranslation(this.props.appStore.language.get(), "RESULTS_NO_RESULTS_FOR_QUERY")}</div>
+                        :                
+                        <>
+                            {this.props.store.isLoadingPage.get() ? <LoadingPage appStore={this.props.appStore} rerenderDotsInMs={500} pageNumber={this.props.store.request.page} translationManager={this.props.translationManager} /> : <></>}
+                            {this.props.store.additionalMessage.get()}
+                            <MedicinesWrapper
+                                dateFormatter={dateFormatter}
+                                store={store}
+                                medicines={medicines}
+                                pages={this.props.store.pages.get()}
+                                currentPage={this.props.store.request.page} />
+                        </>
         )
     }
 }

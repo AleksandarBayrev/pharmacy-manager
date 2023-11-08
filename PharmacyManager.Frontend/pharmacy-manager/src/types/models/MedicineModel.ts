@@ -7,4 +7,5 @@ export type MedicineModel = {
     expirationDate: string;
     price: number;
     quantity: number;
+    deleted: boolean;
 }

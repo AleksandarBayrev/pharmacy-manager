@@ -7,28 +7,22 @@ namespace PharmacyManager.API.Services.Medicines
 {
 	public class MedicinesState : IMedicinesState<string, MedicineModel>
 	{
+		private readonly ConcurrentDictionary<string, MedicineModel> deletedMedicines = new ConcurrentDictionary<string, MedicineModel>();
 		private readonly ConcurrentDictionary<string, MedicineModel> medicines = new ConcurrentDictionary<string, MedicineModel>();
-		public ConcurrentDictionary<string, MedicineModel> Medicines
-		{
-			get
-			{
-				return medicines.Where(x => !x.Value.Deleted).ToConcurrentDictionary(x => x.Key, x => x.Value);
-			}
-		}
-		public ConcurrentDictionary<string, MedicineModel> DeletedMedicines
-		{
-			get
-			{
-				return medicines.Where(x => x.Value.Deleted).ToConcurrentDictionary(x => x.Key, x => x.Value);
-			}
-		}
+
+		public ConcurrentDictionary<string, MedicineModel> Medicines => medicines;
+		public ConcurrentDictionary<string, MedicineModel> DeletedMedicines => deletedMedicines;
+
 		public void DeleteMedicine(string medicineId)
 		{
 			this.medicines[medicineId].Deleted = true;
+			this.deletedMedicines.TryAdd(medicineId, this.medicines[medicineId]);
 		}
 		public bool RemoveMedicine(string medicineId, out MedicineModel? medicine)
 		{
-			return this.medicines.Remove(medicineId, out medicine);
+			var isRemovedMain = this.medicines.Remove(medicineId, out medicine);
+			var isRemovedDeleted = this.deletedMedicines.Remove(medicineId, out medicine);
+			return isRemovedDeleted && isRemovedMain;
 		}
 		public bool TryAdd(string medicineId, MedicineModel medicine)
 		{

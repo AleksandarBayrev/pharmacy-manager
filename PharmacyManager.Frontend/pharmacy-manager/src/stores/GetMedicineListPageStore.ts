@@ -35,6 +35,9 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
     @observable
     public additionalMessage: IObservableValue<string>;
 
+    @observable
+    fetchingError: IObservableValue<boolean>;
+
 
     private updateInterval: NodeJS.Timeout | undefined = undefined;
     private loadDataTimeout: NodeJS.Timeout | undefined = undefined;
@@ -54,6 +57,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.isInitialRequestMade = observable.box(false);
         this.showPageCount = observable.box(false);
         this.additionalMessage = observable.box("");
+        this.fetchingError = observable.box(false);
     }
 
     @action
@@ -65,7 +69,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
                 this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
             }
             if (result.error) {
-                throw new Error(`Failed deleting medicine ID ${medicineId}`);
+                this.additionalMessage.set(`Failed deleting medicine ID ${medicineId}!`);
             }
         } catch (err) {
             this.additionalMessage.set((err as Error).message);
@@ -146,6 +150,9 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
                 this.totalFilteredCount.set(response.totalFilteredCount);
                 this.loadingData.set(false);
                 this.showPageCount.set(true);
+                if (response.error) {
+                    this.fetchingError.set(response.error);
+                }
             });
         }, timeout);
     }

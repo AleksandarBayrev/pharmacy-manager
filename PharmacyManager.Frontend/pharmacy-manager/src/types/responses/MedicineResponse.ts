@@ -5,4 +5,5 @@ export type MedicineResponse = {
     totalCount: number;
     totalFilteredCount: number;
     pages: number;
+    error?: boolean;
 }

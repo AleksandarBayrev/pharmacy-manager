@@ -10,16 +10,16 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesOperations : IMedicinesOperations<string>
 	{
 		private readonly ILogger logger;
-		private readonly IConnectionStringProvider connectionStringProvider;
+		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 
 		public MedicinesOperations(
 			ILogger logger,
-			IConnectionStringProvider connectionStringProvider,
+			IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider,
 			IMedicinesState<string, MedicineModel> medicinesState)
 		{
 			this.logger = logger;
-			this.connectionStringProvider = connectionStringProvider;
+			this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
 			this.medicinesState = medicinesState;
 		}
 
@@ -32,7 +32,7 @@ namespace PharmacyManager.API.Services.Medicines
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO public.medicines(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
+				using (var addCommand = new NpgsqlCommand($"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable}(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.FormatDate(medicine.ManufacturingDate)}', '{this.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
 				{
 					var rows = await addCommand.ExecuteScalarAsync();
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
@@ -51,11 +51,11 @@ namespace PharmacyManager.API.Services.Medicines
 
 				if (medicine != null)
 				{
-					using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity}", dbClient))
+					using (var addCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{medicine.ManufacturingDate}', \"expirationDate\"='{medicine.ExpirationDate}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity}", dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
 						await addCommand.ExecuteNonQueryAsync();
-						using (var getCommand = new NpgsqlCommand($"SELECT * FROM public.medicines WHERE id='{medicineId}'", dbClient))
+						using (var getCommand = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}'", dbClient))
 						{
 							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
 							if (data != null)
@@ -75,10 +75,10 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
-				using (var addCommand = new NpgsqlCommand($"UPDATE public.medicines SET deleted=true WHERE id='{medicineId}'", dbClient))
+				using (var addCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET deleted=true WHERE id='{medicineId}'", dbClient))
 				{
 					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT COUNT(*) FROM public.medicines WHERE id='{medicineId}' AND deleted=true", dbClient))
+					using (var getCommand = new NpgsqlCommand($"SELECT COUNT(*) FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}' AND deleted=true", dbClient))
 					{
 						var data = (await getCommand.ExecuteScalarAsync()) as int?;
 						if (data == 1)
@@ -92,7 +92,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private NpgsqlConnection BuildConnection()
 		{
-			return new NpgsqlConnection(connectionStringProvider.ConnectionString);
+			return new NpgsqlConnection(connectionStringSchemaTableProvider.ConnectionString);
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesOperations), message, logLevel);

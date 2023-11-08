@@ -7,14 +7,14 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesDeleter : BackgroundService
 	{
 		private readonly ILogger logger;
-		private readonly IConnectionStringProvider connectionStringProvider;
+		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 
 		public MedicinesDeleter(
 			ILogger logger,
-			IConnectionStringProvider connectionStringProvider)
+			IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider)
 		{
 			this.logger = logger;
-			this.connectionStringProvider = connectionStringProvider;
+			this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
 		}
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
@@ -25,7 +25,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand("DELETE FROM public.medicines WHERE deleted=true", dbClient))
+					using (var command = new NpgsqlCommand($"DELETE FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE deleted=true", dbClient))
 					{
 						var rowsAffected = await command.ExecuteNonQueryAsync();
 						await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Info);
@@ -37,7 +37,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		private NpgsqlConnection BuildConnection()
 		{
-			return new NpgsqlConnection(connectionStringProvider.ConnectionString);
+			return new NpgsqlConnection(connectionStringSchemaTableProvider.ConnectionString);
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesDeleter), message, logLevel);

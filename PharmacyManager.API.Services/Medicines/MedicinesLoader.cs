@@ -10,18 +10,17 @@ namespace PharmacyManager.API.Services.Medicines
 {
 	public class MedicinesLoader : BackgroundService
     {
-        private readonly string cacheKey = "medicines";
         private readonly ILogger logger;
-		private readonly IConnectionStringProvider connectionStringProvider;
+		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 
 		public MedicinesLoader(
             ILogger logger,
-            IConnectionStringProvider connectionStringProvider,
+            IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider,
             IMedicinesState<string, MedicineModel> medicinesState)
         {
             this.logger = logger;
-            this.connectionStringProvider = connectionStringProvider;
+            this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
             this.medicinesState = medicinesState;
         }
 
@@ -34,7 +33,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand("SELECT * FROM public.medicines", dbClient))
+					using (var command = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable}", dbClient))
 					using (var reader = await command.ExecuteReaderAsync())
 					{
 						while (await reader.ReadAsync())
@@ -95,7 +94,7 @@ namespace PharmacyManager.API.Services.Medicines
 
         private NpgsqlConnection BuildConnection()
         {
-            return new NpgsqlConnection(connectionStringProvider.ConnectionString);
+            return new NpgsqlConnection(connectionStringSchemaTableProvider.ConnectionString);
         }
     }
 }

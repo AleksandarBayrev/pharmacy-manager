@@ -1,33 +1,31 @@
-﻿using Microsoft.Extensions.Hosting;
-using Npgsql;
+﻿using Npgsql;
 using PharmacyManager.API.Interfaces.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PharmacyManager.API.Services.Base
 {
-	public class ConnectionStringProvider : IConnectionStringProvider
+	public class ConnectionStringSchemaTableProvider : IConnectionStringSchemaTableProvider
 	{
 		private readonly ILogger logger;
 		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly string connectionString;
+		private readonly string schemaAndTable;
 
-		public ConnectionStringProvider(
+		public ConnectionStringSchemaTableProvider(
 			ILogger logger,
 			IApplicationConfiguration applicationConfiguration)
 		{
 			this.logger = logger;
 			this.applicationConfiguration = applicationConfiguration;
 			this.connectionString = BuildConnectionString(); 
+			this.schemaAndTable = applicationConfiguration.DatabaseConfiguration.SchemaAndTable;
 		}
 		public string ConnectionString => this.connectionString;
 
+		public string SchemaAndTable => this.schemaAndTable;
+
 		private string BuildConnectionString()
 		{
-			this.logger.Log(nameof(ConnectionStringProvider), "Generating connection string", LogLevel.Info);
+			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Generating connection string", LogLevel.Info);
 			return new NpgsqlConnectionStringBuilder()
 			{
 				Host = this.applicationConfiguration.DatabaseConfiguration.Host,
@@ -36,6 +34,12 @@ namespace PharmacyManager.API.Services.Base
 				Database = this.applicationConfiguration.DatabaseConfiguration.Database,
 				Port = this.applicationConfiguration.DatabaseConfiguration.Port,
 			}.ToString();
+		}
+
+		private string GetSchemaAndTable()
+		{
+			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Fetching schema and table configuration", LogLevel.Info);
+			return applicationConfiguration.DatabaseConfiguration.SchemaAndTable;
 		}
 	}
 }

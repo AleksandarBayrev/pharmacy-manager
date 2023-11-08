@@ -7,6 +7,7 @@ using PharmacyManager.API.Services.Medicines;
 using PharmacyManager.API.Interfaces.Frontend;
 using PharmacyManager.API.Services.Frontend;
 using PharmacyManager.API.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PharmacyManager.API.Extensions
 {
@@ -39,29 +40,30 @@ namespace PharmacyManager.API.Extensions
                 }
 
                 return new ApplicationConfiguration(
-                    configuration.GetSection("EnableSwagger").Get<bool>(),
+                    configuration.GetValue<bool>("EnableSwagger"),
                     new MocksConfiguration(
-                        Use: configuration.GetSection("Mocks").GetSection("Use").Get<bool>(),
-                        GeneratedNumberOfPharmacies: configuration.GetSection("Mocks").GetSection("GeneratedNumberOfPharmacies").Get<int>()
+                        Use: configuration.GetValue<bool>("Mocks:Use"),
+                        GeneratedNumberOfPharmacies: configuration.GetValue<int>("Mocks:GeneratedNumberOfPharmacies")
                     ),
-                    configuration.GetSection("LogErrorsOnly").Get<bool>(),
-                    configuration.GetSection("RelativeHtmlPath").Get<string>(),
+                    configuration.GetValue<bool>("LogErrorsOnly"),
+                    configuration.GetValue<string>("RelativeHtmlPath"),
                     configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
                     configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>(),
                     new DatabaseConfiguration
                     {
-                        Host = configuration.GetSection("DatabaseConfiguration").GetSection("Host").Get<string>(),
-						Username = configuration.GetSection("DatabaseConfiguration").GetSection("Username").Get<string>(),
-						Password = configuration.GetSection("DatabaseConfiguration").GetSection("Password").Get<string>(),
-						Database = configuration.GetSection("DatabaseConfiguration").GetSection("Database").Get<string>(),
-						Port = configuration.GetSection("DatabaseConfiguration").GetSection("Port").Get<int>(),
+                        Host = configuration.GetValue<string>("DatabaseConfiguration:Host"),
+						Username = configuration.GetValue<string>("DatabaseConfiguration:Username"),
+						Password = configuration.GetValue<string>("DatabaseConfiguration:Password"),
+						Database = configuration.GetValue<string>("DatabaseConfiguration:Database"),
+						Port = configuration.GetValue<int>("DatabaseConfiguration:Port"),
+                        SchemaAndTable = configuration.GetValue<string>("DatabaseConfiguration:SchemaAndTable")
 					}
                 );
             });
 			#endregion
 
 			#region Instantiate connection string provider
-			services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
+			services.AddSingleton<IConnectionStringSchemaTableProvider, ConnectionStringSchemaTableProvider>();
 			#endregion
 
 			#region Instantiate ID Generator
@@ -93,7 +95,7 @@ namespace PharmacyManager.API.Extensions
             services.AddSingleton<IMedicinesProvider<MedicineRequest, string, MedicineModel>>((sp) =>
             {
                 var appConfig = sp.GetRequiredService<IApplicationConfiguration>();
-                var connectionStringProvider = sp.GetRequiredService<IConnectionStringProvider>();
+                var connectionStringProvider = sp.GetRequiredService<IConnectionStringSchemaTableProvider>();
 				var medicinesState = sp.GetRequiredService<IMedicinesState<string, MedicineModel>>();
 				var medicinesOperations = sp.GetRequiredService<IMedicinesOperations<string>>();
 				var idGenerator = sp.GetRequiredService<IIdGenerator>();

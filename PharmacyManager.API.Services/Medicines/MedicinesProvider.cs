@@ -10,14 +10,14 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesProvider : IMedicinesProvider<MedicineRequest, string, MedicineModel>
 	{
 		private readonly ILogger logger;
-		private readonly IConnectionStringProvider connectionStringProvider;
+		private readonly IConnectionStringSchemaTableProvider connectionStringProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 		private readonly IMedicinesOperations<string> medicinesOperations;
 		private readonly IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter;
 
 		public MedicinesProvider(
 			ILogger logger,
-			IConnectionStringProvider connectionStringProvider,
+			IConnectionStringSchemaTableProvider connectionStringProvider,
 			IMedicinesState<string, MedicineModel> medicinesState,
 			IMedicinesOperations<string> medicinesOperations,
 			IMedicinesFilter<MedicineRequest, MedicineModel> medicinesFilter)

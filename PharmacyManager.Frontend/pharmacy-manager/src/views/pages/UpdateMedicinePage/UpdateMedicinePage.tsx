@@ -137,10 +137,10 @@ export class UpdateMedicinePage extends React.Component<UpdateMedicinePageProps>
                         <div className="row">
                             <div className="column">
                                 <button
-                                    onClick={this.clearInput}
+                                    onClick={this.resetInput}
                                     disabled={this.props.store.isUpdatingMedicine.get()}
                                 >
-                                    {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_CLEAR")}
+                                    {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_UPDATE_RESET")}
                                 </button>
                             </div>
                         </div>
@@ -156,7 +156,7 @@ export class UpdateMedicinePage extends React.Component<UpdateMedicinePageProps>
         return `Pharmacy Manager - ${this.props.translationManager.getTranslation(this.props.appStore.language.get(), "HEADER_UPDATE_MEDICINE")}`
     }
 
-    private clearInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    private resetInput = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         this.props.store.resetRequestToDefault();
     }
 

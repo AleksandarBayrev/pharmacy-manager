@@ -44,5 +44,6 @@
   "FORM_GET_MEDICINE_LOADING_PAGE": "Loading page",
   "FORM_GET_MEDICINE_AVAILABLE_MEDICINES_COUNT": "Total medicines count in system: ",
   "FORM_GET_MEDICINE_AVAILABLE_FILTERED_MEDICINES_COUNT": "Total filtered medicines count in system: ",
-  "RESULTS_FAILED_FETCHING": "Failed loading medicines. Please contact support."
+  "RESULTS_FAILED_FETCHING": "Failed loading medicines. Please contact support.",
+  "FORM_MEDICINE_UPDATE_RESET": "Reset medicine data to initial"
 }

@@ -17,6 +17,9 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
     
     @observable
     public isRequestSuccessful: IObservableValue<boolean | undefined>;
+
+    @observable
+    private defaultRequest: UpdateMedicineRequest;
     
     
     private readonly backendService: IBackendService;
@@ -25,6 +28,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.backendService = backendService;
         this.isLoadingMedicine = observable.box(true);
         this.medicineExists = observable.box(false);
+        this.defaultRequest = observable(this.getDefaultRequest());
         this.request = observable({ ...this.defaultRequest });
         this.isUpdatingMedicine = observable.box(false);
         this.isRequestSuccessful = observable.box(undefined);
@@ -38,7 +42,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
             this.medicineExists.set(false);
             return;
         }
-        this.updateRequest({
+        const update = {
             id: medicine.id,
             name: medicine.name,
             description: medicine.description,
@@ -47,7 +51,9 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
             manufacturingDate: new Date(medicine.manufacturingDate),
             price: medicine.price.toString(),
             quantity: medicine.quantity.toString()
-        });
+        };
+        this.updateDefaultRequest(update);
+        this.updateRequest(update);
     }
 
     @action
@@ -106,11 +112,22 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.request.quantity = request.quantity ?? this.request.quantity;
     }
 
-    @computed
-    private get defaultRequest(): UpdateMedicineRequest {
+    @action
+    private updateDefaultRequest = (request: Partial<UpdateMedicineRequest>) => {
+        this.defaultRequest.id = request.id ?? this.defaultRequest.id;
+        this.defaultRequest.name = request.name ?? this.defaultRequest.name;
+        this.defaultRequest.manufacturer = request.manufacturer ?? this.defaultRequest.manufacturer;
+        this.defaultRequest.description = request.description ?? this.defaultRequest.description;
+        this.defaultRequest.expirationDate = request.expirationDate ?? this.defaultRequest.expirationDate;
+        this.defaultRequest.manufacturingDate = request.manufacturingDate ?? this.defaultRequest.manufacturingDate;
+        this.defaultRequest.price = request.price ?? this.defaultRequest.price;
+        this.defaultRequest.quantity = request.quantity ?? this.defaultRequest.quantity;
+    }
+
+    private getDefaultRequest(): UpdateMedicineRequest {
         const path = window.location.pathname.split('/');
         return {
-            id: path[path.length-1],
+            id: path[path.length - 1],
             name: "",
             manufacturer: "",
             description: "",

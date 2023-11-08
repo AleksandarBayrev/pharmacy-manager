@@ -66,7 +66,7 @@ namespace PharmacyManager.API.Services.Medicines
 
         private async Task<MedicineModel> BuildMedicine(NpgsqlDataReader reader)
         {
-            var id = await reader.GetFieldValueAsync<Guid>(0);
+            var id = await reader.GetFieldValueAsync<string>(0);
             var manufacturer = await reader.GetFieldValueAsync<string>(1);
             var name = await reader.GetFieldValueAsync<string>(2);
             var description = await reader.GetFieldValueAsync<string>(3);

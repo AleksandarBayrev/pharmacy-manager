@@ -6,7 +6,12 @@ namespace PharmacyManager.API.Services.Base
     {
         public string GenerateId()
         {
-            return Guid.NewGuid().ToString();
+            return $"{GenerateIdWithoutDashes()}{GenerateIdWithoutDashes()}";
+        }
+
+        private string GenerateIdWithoutDashes()
+        {
+            return Guid.NewGuid().ToString().Replace("-", "").Replace("{", "").Replace("}", "");
         }
     }
 }

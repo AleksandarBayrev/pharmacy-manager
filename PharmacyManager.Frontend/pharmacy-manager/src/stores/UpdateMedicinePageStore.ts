@@ -108,7 +108,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
 
     @action
     updateRequest = (request: Partial<UpdateMedicineRequest>) => {
-        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
+        this.hasChanges.set(this.computeHasChanges());
         this.request.name = request.name ?? this.request.name;
         this.request.manufacturer = request.manufacturer ?? this.request.manufacturer;
         this.request.description = request.description ?? this.request.description;
@@ -120,7 +120,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
 
     @action
     private updateDefaultRequest = (request: Partial<UpdateMedicineRequest>) => {
-        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
+        this.hasChanges.set(this.computeHasChanges());
         this.defaultRequest.id = request.id ?? this.defaultRequest.id;
         this.defaultRequest.name = request.name ?? this.defaultRequest.name;
         this.defaultRequest.manufacturer = request.manufacturer ?? this.defaultRequest.manufacturer;
@@ -129,6 +129,11 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.defaultRequest.manufacturingDate = request.manufacturingDate ?? this.defaultRequest.manufacturingDate;
         this.defaultRequest.price = request.price ?? this.defaultRequest.price;
         this.defaultRequest.quantity = request.quantity ?? this.defaultRequest.quantity;
+    }
+
+    @action
+    private computeHasChanges = () => {
+        return Object.keys(this.defaultRequest).map((x) => this.defaultRequest[x as keyof UpdateMedicineRequest] !== this.request[x as keyof UpdateMedicineRequest]).filter(x => x).length !== 0;
     }
 
     private getDefaultRequest(): UpdateMedicineRequest {

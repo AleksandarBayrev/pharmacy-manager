@@ -138,7 +138,7 @@ export class UpdateMedicinePage extends React.Component<UpdateMedicinePageProps>
                             <div className="column">
                                 <button
                                     onClick={this.resetInput}
-                                    disabled={this.props.store.isUpdatingMedicine.get()}
+                                    disabled={this.props.store.isUpdatingMedicine.get() || !this.props.store.hasChanges.get()}
                                 >
                                     {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_UPDATE_RESET")}
                                 </button>

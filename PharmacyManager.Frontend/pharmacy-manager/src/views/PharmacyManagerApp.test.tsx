@@ -122,6 +122,7 @@ test('matches snapshot', async () => {
         price: "0",
         quantity: "0"
       }),
+      hasChanges: observable.box(false),
       load: jest.fn(),
       unload: jest.fn(),
       updateMedicine: jest.fn(),

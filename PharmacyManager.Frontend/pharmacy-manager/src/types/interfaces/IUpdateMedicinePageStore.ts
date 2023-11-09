@@ -8,6 +8,7 @@ export interface IUpdateMedicinePageStore extends IBaseStore {
     isLoadingMedicine: IObservableValue<boolean>;
     isUpdatingMedicine: IObservableValue<boolean>;
     isRequestSuccessful: IObservableValue<boolean | undefined>;
+    hasChanges: IObservableValue<boolean>;
     updateMedicine(_: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void>;
     resetMessage(): void;
     resetRequestToDefault(): void;

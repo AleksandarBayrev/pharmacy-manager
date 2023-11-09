@@ -19,6 +19,9 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
     public isRequestSuccessful: IObservableValue<boolean | undefined>;
 
     @observable
+    public hasChanges: IObservableValue<boolean>;
+
+    @observable
     private defaultRequest: UpdateMedicineRequest;
     
     
@@ -32,6 +35,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.request = observable({ ...this.defaultRequest });
         this.isUpdatingMedicine = observable.box(false);
         this.isRequestSuccessful = observable.box(undefined);
+        this.hasChanges = observable.box(false);
     }
 
     @action
@@ -54,6 +58,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         };
         this.updateDefaultRequest(update);
         this.updateRequest(update);
+        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
     }
 
     @action
@@ -103,6 +108,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
 
     @action
     updateRequest = (request: Partial<UpdateMedicineRequest>) => {
+        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
         this.request.name = request.name ?? this.request.name;
         this.request.manufacturer = request.manufacturer ?? this.request.manufacturer;
         this.request.description = request.description ?? this.request.description;
@@ -114,6 +120,7 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
 
     @action
     private updateDefaultRequest = (request: Partial<UpdateMedicineRequest>) => {
+        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
         this.defaultRequest.id = request.id ?? this.defaultRequest.id;
         this.defaultRequest.name = request.name ?? this.defaultRequest.name;
         this.defaultRequest.manufacturer = request.manufacturer ?? this.defaultRequest.manufacturer;

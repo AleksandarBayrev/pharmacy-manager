@@ -1,4 +1,4 @@
-import { IObservableValue, action, computed, observable } from "mobx";
+import { IObservableValue, Lambda, action, computed, observable, observe } from "mobx";
 import { enhanceClass } from "../base/enhanceClass";
 import { IBackendService, IUpdateMedicinePageStore, UpdateMedicineRequest } from "../types";
 
@@ -26,6 +26,8 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
     
     
     private readonly backendService: IBackendService;
+
+    private readonly observerLambdas: Lambda[] = [];
 
     constructor(backendService: IBackendService) {
         this.backendService = backendService;
@@ -58,12 +60,21 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         };
         this.updateDefaultRequest(update);
         this.updateRequest(update);
-        this.hasChanges.set(JSON.stringify(this.defaultRequest) !== JSON.stringify(this.request));
+        this.observerLambdas.push(observe(this.request, (change) => {
+            this.hasChanges.set(this.computeHasChanges());
+        }));
+        this.observerLambdas.push(observe(this.defaultRequest, (change) => {
+            this.hasChanges.set(this.computeHasChanges());
+        }));
     }
 
     @action
     unload = async () => {
         this.resetRequestToDefault();
+        this.observerLambdas.map(x => x());
+        while (this.observerLambdas.length) {
+            this.observerLambdas.pop();
+        }
         this.isUpdatingMedicine.set(false);
         this.isRequestSuccessful.set(undefined);
     }
@@ -115,7 +126,6 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.request.manufacturingDate = request.manufacturingDate ?? this.request.manufacturingDate;
         this.request.price = request.price ?? this.request.price;
         this.request.quantity = request.quantity ?? this.request.quantity;
-        this.hasChanges.set(this.computeHasChanges());
     }
 
     @action
@@ -128,7 +138,6 @@ class UpdateMedicinePageStore implements IUpdateMedicinePageStore {
         this.defaultRequest.manufacturingDate = request.manufacturingDate ?? this.defaultRequest.manufacturingDate;
         this.defaultRequest.price = request.price ?? this.defaultRequest.price;
         this.defaultRequest.quantity = request.quantity ?? this.defaultRequest.quantity;
-        this.hasChanges.set(this.computeHasChanges());
     }
 
     @action

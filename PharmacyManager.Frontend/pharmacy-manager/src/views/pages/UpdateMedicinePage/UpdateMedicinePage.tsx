@@ -128,7 +128,7 @@ export class UpdateMedicinePage extends React.Component<UpdateMedicinePageProps>
                             <div className="column">
                                 <button
                                     onClick={this.props.store.updateMedicine}
-                                    disabled={this.isInputInvalid() || this.props.store.isUpdatingMedicine.get()}
+                                    disabled={this.isInputInvalid() || this.props.store.isUpdatingMedicine.get() || !this.props.store.hasChanges.get()}
                                 >
                                     {this.props.translationManager.getTranslation(this.props.appStore.language.get(), "FORM_MEDICINE_UPDATE")}
                                 </button>

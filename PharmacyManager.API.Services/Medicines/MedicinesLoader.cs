@@ -11,17 +11,20 @@ namespace PharmacyManager.API.Services.Medicines
 	public class MedicinesLoader : BackgroundService
     {
         private readonly ILogger logger;
+		private readonly IApplicationConfiguration applicationConfiguration;
 		private readonly IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider;
 		private readonly IMedicinesState<string, MedicineModel> medicinesState;
 		private readonly IDateFormatter dateFormatter;
 
 		public MedicinesLoader(
             ILogger logger,
+            IApplicationConfiguration applicationConfiguration,
             IConnectionStringSchemaTableProvider connectionStringSchemaTableProvider,
             IMedicinesState<string, MedicineModel> medicinesState,
             IDateFormatter dateFormatter)
         {
             this.logger = logger;
+			this.applicationConfiguration = applicationConfiguration;
             this.connectionStringSchemaTableProvider = connectionStringSchemaTableProvider;
             this.medicinesState = medicinesState;
 			this.dateFormatter = dateFormatter;
@@ -29,6 +32,11 @@ namespace PharmacyManager.API.Services.Medicines
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            if (this.applicationConfiguration.Mocks.Use)
+			{
+				await Log($"{nameof(MedicinesLoader)} is not used when mocks are enabled", LogLevel.Info);
+				return;
+            }
             while (true)
 			{
 				await Log($"Started loading medicines from database", LogLevel.Info);

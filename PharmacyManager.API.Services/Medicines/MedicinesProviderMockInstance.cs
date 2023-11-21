@@ -70,6 +70,22 @@ namespace PharmacyManager.API.Services.Medicines
                     Quantity = 0
                 }
             };
+
+            for (var i = 0; i < generatedNumberOfPharmacies; i++)
+            {
+                this.medicines.Add(new MedicineModel
+                {
+                    Id = this.idGenerator.GenerateId(),
+                    Description = $"Headmaster Generated {i + 1}",
+					Name = $"Headmaster Generated {i + 1}",
+                    Manufacturer = "Head",
+                    ManufacturingDate = new DateTime(2020, 1, 1),
+                    ExpirationDate = new DateTime(2100, 1, 1),
+                    Price = 2.99m,
+                    Quantity = 0
+                });
+
+            }
         }
 
         public Task<MedicineModel> AddMedicine(MedicineModel medicine)

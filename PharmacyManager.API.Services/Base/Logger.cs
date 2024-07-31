@@ -14,7 +14,7 @@ namespace PharmacyManager.API.Services.Base
         public async Task Log(string context, string message, LogLevel logLevel, CancellationToken? cancellationToken = null)
         {
             if ((cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested)
-                || (this.applicationConfiguration.LogErrorsOnly && logLevel != LogLevel.Error))
+                || LogLevel.Check(logLevel, this.applicationConfiguration.MinLogLevel))
             {
                 return;
             }

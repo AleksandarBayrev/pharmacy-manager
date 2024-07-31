@@ -34,26 +34,33 @@ namespace PharmacyManager.API.Services.Medicines
 			}
 			while (true)
 			{
-				await Log($"Started deleting medicines marked for deletion from database", LogLevel.Information);
+				try
+				{
+					await Log($"Started deleting medicines marked for deletion from database", LogLevel.Information);
 
-				using (var dbClient = BuildConnection())
-				{
-					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand(DeleteQuery, dbClient))
+					using (var dbClient = BuildConnection())
 					{
-						var rowsAffected = await command.ExecuteNonQueryAsync();
-						await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Information);
+						await dbClient.OpenAsync();
+						using (var command = new NpgsqlCommand(DeleteQuery, dbClient))
+						{
+							var rowsAffected = await command.ExecuteNonQueryAsync();
+							await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Information);
+						}
 					}
-				}
-				foreach (var key in this.medicinesState.DeletedMedicines.Keys)
-				{
-					this.medicinesState.RemoveMedicine(key, out var medicine);
-					if (medicine != null)
+					foreach (var key in this.medicinesState.DeletedMedicines.Keys)
 					{
-						await Log($"Failed to delete {medicine.Id} from state", LogLevel.Information);
+						this.medicinesState.RemoveMedicine(key, out var medicine);
+						if (medicine != null)
+						{
+							await Log($"Failed to delete {medicine.Id} from state", LogLevel.Information);
+						}
 					}
+					await Task.Delay(TimeSpan.FromSeconds(2));
 				}
-				await Task.Delay(TimeSpan.FromSeconds(2));
+                catch (Exception ex)
+                {
+                    await this.logger.Log(nameof(MedicinesDeleter), ex.Message, LogLevel.Error);
+                }
 			}
 		}
 

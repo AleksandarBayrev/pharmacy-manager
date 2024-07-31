@@ -39,39 +39,46 @@ namespace PharmacyManager.API.Services.Medicines
             }
             while (true)
 			{
-				await Log($"Started loading medicines from database", LogLevel.Information);
+                try
+                {
+                    await Log($"Started loading medicines from database", LogLevel.Information);
 
-				using (var dbClient = BuildConnection())
-				{
-					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand(SelectQuery, dbClient))
-					using (var reader = await command.ExecuteReaderAsync())
-					{
-						while (await reader.ReadAsync())
-						{
-							var medicine = await BuildMedicine(reader);
-                            if (medicine.Deleted)
+                    using (var dbClient = BuildConnection())
+                    {
+                        await dbClient.OpenAsync();
+                        using (var command = new NpgsqlCommand(SelectQuery, dbClient))
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
                             {
-                                this.medicinesState.RemoveMedicine(medicine.Id, out var _);
-                                continue;
+                                var medicine = await BuildMedicine(reader);
+                                if (medicine.Deleted)
+                                {
+                                    this.medicinesState.RemoveMedicine(medicine.Id, out var _);
+                                    continue;
+                                }
+                                this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, current) =>
+                                {
+                                    current.Id = medicine.Id;
+                                    current.Name = medicine.Name;
+                                    current.Manufacturer = medicine.Manufacturer;
+                                    current.Description = medicine.Description;
+                                    current.ExpirationDate = medicine.ExpirationDate;
+                                    current.ManufacturingDate = medicine.ManufacturingDate;
+                                    current.Price = medicine.Price;
+                                    current.Quantity = medicine.Quantity;
+                                    return current;
+                                });
                             }
-							this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, current) =>
-							{
-								current.Id = medicine.Id;
-								current.Name = medicine.Name;
-								current.Manufacturer = medicine.Manufacturer;
-								current.Description = medicine.Description;
-								current.ExpirationDate = medicine.ExpirationDate;
-								current.ManufacturingDate = medicine.ManufacturingDate;
-								current.Price = medicine.Price;
-								current.Quantity = medicine.Quantity;
-								return current;
-							});
-						}
-					}
-				}
-				await Log($"Finished loading medicines from database", LogLevel.Information);
-				await Task.Delay(TimeSpan.FromSeconds(10));
+                        }
+                    }
+                    await Log($"Finished loading medicines from database", LogLevel.Information);
+                    await Task.Delay(TimeSpan.FromSeconds(10));
+                }
+                catch (Exception ex)
+                {
+                    await this.logger.Log(nameof(MedicinesLoader), ex.Message, LogLevel.Error);
+                }
 			}
 		}
 

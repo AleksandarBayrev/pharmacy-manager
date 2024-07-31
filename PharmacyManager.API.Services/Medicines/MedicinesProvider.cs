@@ -35,9 +35,9 @@ namespace PharmacyManager.API.Services.Medicines
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Information);
 			this.medicinesState.TryAdd(medicine.Id, medicine);
 			this.medicinesState.Medicines.TryGetValue(medicine.Id, out var storedMedicine);
-			if (storedMedicine != null)
+			if (storedMedicine == null)
 			{
-				throw new KeyNotFoundException($"Medicine already exists for id = {medicine.Id}");
+				throw new KeyNotFoundException($"Medicine not added in store for id = {medicine.Id}");
 			}
 			await this.medicinesOperations.AddMedicineToDB(medicine.Id);
 			return medicine;

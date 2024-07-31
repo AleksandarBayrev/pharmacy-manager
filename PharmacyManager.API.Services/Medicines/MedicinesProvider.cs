@@ -32,7 +32,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<MedicineModel> AddMedicine(MedicineModel medicine)
 		{
-			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
+			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Information);
 			this.medicinesState.TryAdd(medicine.Id, medicine);
 			this.medicinesState.Medicines.TryGetValue(medicine.Id, out var storedMedicine);
 			if (storedMedicine != null)
@@ -45,7 +45,7 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
-			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Info);
+			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Information);
 			this.medicinesState.DeleteMedicine(medicineId);
 			await this.medicinesOperations.DeleteMedicineInDB(medicineId);
 			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
@@ -59,7 +59,7 @@ namespace PharmacyManager.API.Services.Medicines
 				await this.Log($"Failed updating medicine with ID = {medicine.Id}, medicine not found!", LogLevel.Error);
 				return false;
 			}
-			await this.Log($"Updating medicine with ID = {medicine.Id}", LogLevel.Info);
+			await this.Log($"Updating medicine with ID = {medicine.Id}", LogLevel.Information);
 			this.medicinesState.AddOrUpdate(medicine.Id, medicine, (key, value) =>
 			{
 				value.Name = medicine.Name;
@@ -77,14 +77,14 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task<IEnumerable<MedicineModel>> GetFilteredMedicines(MedicineRequest request)
 		{
-			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Info);
+			await this.Log($"Getting medicines for request: {JsonSerializer.Serialize(request)}", LogLevel.Information);
 			var filteredMedicines = await this.medicinesFilter.ApplyFilters(request, this.medicinesState.Medicines.Values);
 			return filteredMedicines.OrderByDescending(x => x.ExpirationDate);
 		}
 
 		public async Task<int> GetTotalCount()
 		{
-			await this.Log($"Getting total medicines count", LogLevel.Info);
+			await this.Log($"Getting total medicines count", LogLevel.Information);
 			return this.medicinesState.Medicines.Count;
 		}
 

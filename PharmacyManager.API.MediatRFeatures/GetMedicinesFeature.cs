@@ -38,7 +38,7 @@ namespace PharmacyManager.API.MediatRFeatures
             }
             public async Task<MedicinesResponse> Handle(GetMedicinesQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}", LogLevel.Info, cancellationToken);
+                await logger.Log(this.loggerContext, $"Requesting medicines for query: {JsonSerializer.Serialize(request)}", LogLevel.Information, cancellationToken);
                 var filteredMedicines = await this.medicinesProvider.GetFilteredMedicines(new MedicineRequest
                 {
                     AvailableOnly = request.AvailableOnly,
@@ -67,7 +67,7 @@ namespace PharmacyManager.API.MediatRFeatures
 
             private async Task<IEnumerable<MedicineFrontendModel>> GetPageItems(IEnumerable<MedicineModel> medicines, GetMedicinesQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}", LogLevel.Info, cancellationToken);
+                await logger.Log(this.loggerContext, $"Getting page {request.Page}, items per page {request.ItemsPerPage}", LogLevel.Information, cancellationToken);
                 return medicines
                     .Skip(request.ItemsPerPage * (request.Page - 1))
                     .Take(request.ItemsPerPage)

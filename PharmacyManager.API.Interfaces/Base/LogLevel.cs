@@ -16,8 +16,8 @@
 				&& _logLevelMapping[logLevelAsString] >= _logLevelMapping[minLogLevel];
 		}
 		public static readonly string Error = nameof(Error);
-		public static readonly string Info = nameof(Info);
-		public static readonly string Warn = nameof(Warn);
+		public static readonly string Information = nameof(Information);
+		public static readonly string Warning = nameof(Warning);
 
 		private static readonly IDictionary<string, LogLevel> _logLevelMapping;
 
@@ -25,8 +25,8 @@
 		{
 			var mapping = new Dictionary<string, LogLevel>
             {
-                { Info, LogLevel.Info },
-                { Warn, LogLevel.Warn },
+                { Information, LogLevel.Information },
+                { Warning, LogLevel.Warning },
                 { Error, LogLevel.Error }
             };
 			return mapping;
@@ -35,8 +35,8 @@
 	}
 	public enum LogLevel
 	{
-		Info = 0,
-		Warn = 1,
+		Information = 0,
+		Warning = 1,
 		Error = 2
 	}
 }

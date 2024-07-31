@@ -29,12 +29,12 @@ namespace PharmacyManager.API.Services.Medicines
 		{
 			if (this.applicationConfiguration.Mocks.Use)
 			{
-				await Log($"{nameof(MedicinesDeleter)} is not used when mocks are enabled", LogLevel.Info);
+				await Log($"{nameof(MedicinesDeleter)} is not used when mocks are enabled", LogLevel.Information);
 				return;
 			}
 			while (true)
 			{
-				await Log($"Started deleting medicines marked for deletion from database", LogLevel.Info);
+				await Log($"Started deleting medicines marked for deletion from database", LogLevel.Information);
 
 				using (var dbClient = BuildConnection())
 				{
@@ -42,7 +42,7 @@ namespace PharmacyManager.API.Services.Medicines
 					using (var command = new NpgsqlCommand(DeleteQuery, dbClient))
 					{
 						var rowsAffected = await command.ExecuteNonQueryAsync();
-						await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Info);
+						await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Information);
 					}
 				}
 				foreach (var key in this.medicinesState.DeletedMedicines.Keys)
@@ -50,7 +50,7 @@ namespace PharmacyManager.API.Services.Medicines
 					this.medicinesState.RemoveMedicine(key, out var medicine);
 					if (medicine != null)
 					{
-						await Log($"Failed to delete {medicine.Id} from state", LogLevel.Info);
+						await Log($"Failed to delete {medicine.Id} from state", LogLevel.Information);
 					}
 				}
 				await Task.Delay(TimeSpan.FromSeconds(2));

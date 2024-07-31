@@ -23,7 +23,7 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 					new DatabaseConfiguration(),
 					"yyyy-MM-ddTHH:mm:ss.fffZ"
 				));
-				await logger.Log("Test", "Test", LogLevel.Info);
+				await logger.Log("Test", "Test", LogLevel.Information);
 
 				string expected = "<Test>: Test";
 				sw.ToString().Should().Contain(expected);

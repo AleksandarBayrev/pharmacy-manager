@@ -34,12 +34,12 @@ namespace PharmacyManager.API.Services.Medicines
         {
             if (this.applicationConfiguration.Mocks.Use)
 			{
-				await Log($"{nameof(MedicinesLoader)} is not used when mocks are enabled", LogLevel.Info);
+				await Log($"{nameof(MedicinesLoader)} is not used when mocks are enabled", LogLevel.Information);
 				return;
             }
             while (true)
 			{
-				await Log($"Started loading medicines from database", LogLevel.Info);
+				await Log($"Started loading medicines from database", LogLevel.Information);
 
 				using (var dbClient = BuildConnection())
 				{
@@ -70,7 +70,7 @@ namespace PharmacyManager.API.Services.Medicines
 						}
 					}
 				}
-				await Log($"Finished loading medicines from database", LogLevel.Info);
+				await Log($"Finished loading medicines from database", LogLevel.Information);
 				await Task.Delay(TimeSpan.FromSeconds(10));
 			}
 		}

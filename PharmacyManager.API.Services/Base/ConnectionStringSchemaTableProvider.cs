@@ -25,7 +25,7 @@ namespace PharmacyManager.API.Services.Base
 
 		private string BuildConnectionString()
 		{
-			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Generating connection string", LogLevel.Info);
+			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Generating connection string", LogLevel.Information);
 			return new NpgsqlConnectionStringBuilder()
 			{
 				Host = this.applicationConfiguration.DatabaseConfiguration.Host,
@@ -38,7 +38,7 @@ namespace PharmacyManager.API.Services.Base
 
 		private string GetSchemaAndTable()
 		{
-			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Fetching schema and table configuration", LogLevel.Info);
+			this.logger.Log(nameof(ConnectionStringSchemaTableProvider), "Fetching schema and table configuration", LogLevel.Information);
 			return applicationConfiguration.DatabaseConfiguration.SchemaAndTable;
 		}
 	}

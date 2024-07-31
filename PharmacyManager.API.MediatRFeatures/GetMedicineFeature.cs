@@ -30,7 +30,7 @@ namespace PharmacyManager.API.MediatRFeatures
 			}
 			public async Task<MedicineFrontendModel> Handle(GetMedicineFeatureQuery request, CancellationToken cancellationToken)
 			{
-				await logger.Log(this.loggerContext, $"Requesting single medicine for query: {JsonSerializer.Serialize(request)}", LogLevel.Info, cancellationToken);
+				await logger.Log(this.loggerContext, $"Requesting single medicine for query: {JsonSerializer.Serialize(request)}", LogLevel.Information, cancellationToken);
 				var medicine = await this.medicinesProvider.GetMedicineById(request.Id);
 				return new MedicineFrontendModel
 				{

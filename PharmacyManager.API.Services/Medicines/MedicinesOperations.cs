@@ -37,7 +37,7 @@ namespace PharmacyManager.API.Services.Medicines
 			using (var dbClient = this.BuildConnection())
 			{
 				await dbClient.OpenAsync();
-				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
+				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Information);
 				using (var addCommand = new NpgsqlCommand(InsertQuery, dbClient))
 				{
 					addCommand.Parameters.Add(new NpgsqlParameter("@id", medicine.Id));
@@ -49,7 +49,7 @@ namespace PharmacyManager.API.Services.Medicines
 					addCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price.ToString(CultureInfo.InvariantCulture)));
 					addCommand.Parameters.Add(new NpgsqlParameter("@quantity", medicine.Quantity));
 					var rows = await addCommand.ExecuteScalarAsync();
-					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
+					await this.Log($"Successfully added {rows} medicines", LogLevel.Information);
 				}
 				medicine = null;
 			}
@@ -67,7 +67,7 @@ namespace PharmacyManager.API.Services.Medicines
 				{
 					using (var updateCommand = new NpgsqlCommand(UpdateQuery, dbClient))
 					{
-						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
+						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Information);
 						updateCommand.Parameters.Add(new NpgsqlParameter("@id", medicine.Id));
 						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturer", medicine.Manufacturer));
 						updateCommand.Parameters.Add(new NpgsqlParameter("@name", medicine.Name));
@@ -83,7 +83,7 @@ namespace PharmacyManager.API.Services.Medicines
 							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
 							if (data != null)
 							{
-								await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Info);
+								await this.Log($"Successfully updated medicine ID: {medicineId}", LogLevel.Information);
 							}
 						}
 					}
@@ -97,7 +97,7 @@ namespace PharmacyManager.API.Services.Medicines
 			using (var dbClient = this.BuildConnection())
 			{
 				await dbClient.OpenAsync();
-				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
+				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Information);
 				using (var deleteCommand = new NpgsqlCommand(DeleteQuery, dbClient))
 				{
 					deleteCommand.Parameters.Add(new NpgsqlParameter("@id", medicineId));
@@ -107,7 +107,7 @@ namespace PharmacyManager.API.Services.Medicines
 						var data = await getCommand.ExecuteNonQueryAsync();
 						if (data == 1)
 						{
-							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
+							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Information);
 						}
 					}
 				}

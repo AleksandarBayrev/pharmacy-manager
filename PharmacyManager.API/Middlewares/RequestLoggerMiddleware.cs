@@ -44,11 +44,11 @@ namespace PharmacyManager.API.Middlewares
         }
         private async Task LogStartOfRequest(HttpContext httpContext)
         {
-            await logger.Log(nameof(RequestLoggerMiddleware), $"({httpContext.Request.Method}) Requesting {httpContext.Request.Path}", LogLevel.Info);
+            await logger.Log(nameof(RequestLoggerMiddleware), $"({httpContext.Request.Method}) Requesting {httpContext.Request.Path}", LogLevel.Information);
         }
         private async Task LogEndOfRequest(HttpContext httpContext)
         {
-            await logger.Log(nameof(RequestLoggerMiddleware), $"({httpContext.Request.Method} HTTP Status {httpContext.Response.StatusCode}) Finished request to {httpContext.Request.Path}", LogLevel.Info);
+            await logger.Log(nameof(RequestLoggerMiddleware), $"({httpContext.Request.Method} HTTP Status {httpContext.Response.StatusCode}) Finished request to {httpContext.Request.Path}", LogLevel.Information);
         }
         private async Task LogEndOfRequest(HttpContext httpContext, Exception ex)
         {

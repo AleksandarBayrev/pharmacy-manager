@@ -45,7 +45,7 @@ namespace PharmacyManager.API.Extensions
                         Use: configuration.GetValue<bool>("Mocks:Use"),
                         GeneratedNumberOfPharmacies: configuration.GetValue<int>("Mocks:GeneratedNumberOfPharmacies")
                     ),
-                    configuration.GetValue<string>("Logging:LogLevel:Default"),
+                    configuration.GetValue<string>("Logging:LogLevel:PharmacyManager.API"),
                     configuration.GetValue<string>("RelativeHtmlPath"),
                     configuration.GetSection("Dictionaries").Get<IEnumerable<string>>(),
                     configuration.GetSection("DictionaryValidationKeys").Get<IEnumerable<string>>(),

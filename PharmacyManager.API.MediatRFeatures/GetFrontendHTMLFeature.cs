@@ -26,7 +26,7 @@ namespace PharmacyManager.API.MediatRFeatures
             }
             public async Task<byte[]> Handle(GetFrontendHTMLFeatureQuery request, CancellationToken cancellationToken)
             {
-                await logger.Log(loggerContext, "Reading HTML for UI", LogLevel.Info, cancellationToken);
+                await logger.Log(loggerContext, "Reading HTML for UI", LogLevel.Information, cancellationToken);
                 return Encoding.UTF8.GetBytes(await reader.ReadHTML(request.Path));
             }
         }

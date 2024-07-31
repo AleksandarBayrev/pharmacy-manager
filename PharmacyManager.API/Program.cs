@@ -22,9 +22,9 @@ namespace PharmacyManager.API
             var app = builder.Build();
             var logger = app.Services.GetRequiredService<Interfaces.Base.ILogger>();
 
-            await logger.Log(nameof(Program), "Configuring application...", Interfaces.Base.LogLevel.Info);
+            await logger.Log(nameof(Program), "Configuring application...", Interfaces.Base.LogLevel.Information);
             await app.ConfigureApplication();
-            await logger.Log(nameof(Program), "Starting application...", Interfaces.Base.LogLevel.Info);
+            await logger.Log(nameof(Program), "Starting application...", Interfaces.Base.LogLevel.Information);
             app.Run();
         }
     }

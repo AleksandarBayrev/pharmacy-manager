@@ -32,7 +32,7 @@ namespace PharmacyManager.API.MediatRFeatures
 
             public async Task<TranslationsResponse> Handle(GetTranslationsFeatureQuery request, CancellationToken cancellationToken)
             {
-                await this.logger.Log(loggerContext, "Getting translations", LogLevel.Info);
+                await this.logger.Log(loggerContext, "Getting translations", LogLevel.Information);
                 if (!ValidateTranslations())
                 {
                     throw new KeyNotFoundException("Not all keys are present in the dictionaries");

@@ -22,19 +22,19 @@ namespace PharmacyManager.API.Services.Medicines
 				{
 					return x.Quantity > 0;
                 }, request.AvailableOnly,
-                () => logger.Log(this.loggerContext, "Filtering by Available Only", LogLevel.Info, new CancellationToken()))
+                () => logger.Log(this.loggerContext, "Filtering by Available Only", LogLevel.Information, new CancellationToken()))
                 .WhereWhen(x =>
 				{
 					return x.ExpirationDate > DateTime.Now;
                 },
                 request.NotExpired,
-                () => logger.Log(this.loggerContext, "Filtering by Not Expired", LogLevel.Info, new CancellationToken()))
+                () => logger.Log(this.loggerContext, "Filtering by Not Expired", LogLevel.Information, new CancellationToken()))
                 .WhereWhen(x =>
 				{
 					return x.Manufacturer.ToLower().Contains(request.Manufacturer.ToLower());
                 },
                 request.Manufacturer != null && request.Manufacturer.Length != 0,
-                () => logger.Log(this.loggerContext, "Filtering by Manufacturer Name", LogLevel.Info, new CancellationToken())));
+                () => logger.Log(this.loggerContext, "Filtering by Manufacturer Name", LogLevel.Information, new CancellationToken())));
         }
     }
 }

@@ -39,7 +39,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand($"DELETE FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE deleted=true", dbClient))
+					using (var command = new NpgsqlCommand(DeleteQuery, dbClient))
 					{
 						var rowsAffected = await command.ExecuteNonQueryAsync();
 						await Log($"Deleted {rowsAffected} medicines from database", LogLevel.Info);
@@ -63,5 +63,7 @@ namespace PharmacyManager.API.Services.Medicines
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesDeleter), message, logLevel);
+
+		private string DeleteQuery => $"DELETE FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE deleted=true";
 	}
 }

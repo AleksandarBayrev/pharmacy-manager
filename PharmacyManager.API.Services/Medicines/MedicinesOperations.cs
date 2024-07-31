@@ -28,15 +28,26 @@ namespace PharmacyManager.API.Services.Medicines
 
 		public async Task AddMedicineToDB(string medicineId)
 		{
+			MedicineModel? medicine;
+			this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
+			if (medicine == null)
+			{
+				throw new KeyNotFoundException($"Medicine with id = {medicineId} not found.");
+			}
 			using (var dbClient = this.BuildConnection())
 			{
-				MedicineModel? medicine;
-				this.medicinesState.Medicines.TryGetValue(medicineId, out medicine);
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to add medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
-
-				using (var addCommand = new NpgsqlCommand($"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable}(id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES ('{medicine.Id}', '{medicine.Manufacturer}', '{medicine.Name}', '{medicine.Description}', '{this.dateFormatter.FormatDate(medicine.ManufacturingDate)}', '{this.dateFormatter.FormatDate(medicine.ExpirationDate)}', {medicine.Price.ToString(CultureInfo.InvariantCulture)}, {medicine.Quantity});", dbClient))
+				using (var addCommand = new NpgsqlCommand(InsertQuery, dbClient))
 				{
+					addCommand.Parameters.Add(new NpgsqlParameter("@id", medicine.Id));
+					addCommand.Parameters.Add(new NpgsqlParameter("@manufacturer", medicine.Manufacturer));
+					addCommand.Parameters.Add(new NpgsqlParameter("@name", medicine.Name));
+					addCommand.Parameters.Add(new NpgsqlParameter("@description", medicine.Description));
+					addCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", this.dateFormatter.FormatDate(medicine.ManufacturingDate)));
+					addCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", this.dateFormatter.FormatDate(medicine.ExpirationDate)));
+					addCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price.ToString(CultureInfo.InvariantCulture)));
+					addCommand.Parameters.Add(new NpgsqlParameter("@quantity", medicine.Quantity));
 					var rows = await addCommand.ExecuteScalarAsync();
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Info);
 				}
@@ -54,12 +65,21 @@ namespace PharmacyManager.API.Services.Medicines
 
 				if (medicine != null)
 				{
-					using (var updateCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='{medicine.Manufacturer}', name='{medicine.Name}', description='{medicine.Description}', \"manufacturingDate\"='{this.dateFormatter.FormatDate(medicine.ManufacturingDate)}', \"expirationDate\"='{this.dateFormatter.FormatDate(medicine.ExpirationDate)}', price={medicine.Price.ToString(CultureInfo.InvariantCulture)}, quantity={medicine.Quantity} WHERE id='{medicine.Id}'", dbClient))
+					using (var updateCommand = new NpgsqlCommand(UpdateQuery, dbClient))
 					{
 						await this.Log($"Trying to update medicine ID: {medicineId}", LogLevel.Info);
+						updateCommand.Parameters.Add(new NpgsqlParameter("@id", medicine.Id));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturer", medicine.Manufacturer));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@name", medicine.Name));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@description", medicine.Description));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", this.dateFormatter.FormatDate(medicine.ManufacturingDate)));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", this.dateFormatter.FormatDate(medicine.ExpirationDate)));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price.ToString(CultureInfo.InvariantCulture)));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@quantity", medicine.Quantity));
 						await updateCommand.ExecuteNonQueryAsync();
-						using (var getCommand = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}'", dbClient))
+						using (var getCommand = new NpgsqlCommand(SelectQuery, dbClient))
 						{
+							getCommand.Parameters.Add(new NpgsqlParameter("@id", medicine.Id));
 							var data = await getCommand.ExecuteScalarAsync() as MedicineModel;
 							if (data != null)
 							{
@@ -78,12 +98,13 @@ namespace PharmacyManager.API.Services.Medicines
 			{
 				await dbClient.OpenAsync();
 				await this.Log($"Trying to delete medicine ID: {medicineId}", LogLevel.Info);
-				using (var addCommand = new NpgsqlCommand($"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET deleted=true WHERE id='{medicineId}'", dbClient))
+				using (var deleteCommand = new NpgsqlCommand(DeleteQuery, dbClient))
 				{
-					await addCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT COUNT(*) FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}' AND deleted=true", dbClient))
+					deleteCommand.Parameters.Add(new NpgsqlParameter("@id", medicineId));
+					await deleteCommand.ExecuteNonQueryAsync();
+					using (var getCommand = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}' AND deleted=true", dbClient))
 					{
-						var data = (await getCommand.ExecuteScalarAsync()) as int?;
+						var data = await getCommand.ExecuteNonQueryAsync();
 						if (data == 1)
 						{
 							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Info);
@@ -99,5 +120,10 @@ namespace PharmacyManager.API.Services.Medicines
 		}
 
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesOperations), message, logLevel);
+
+		private string InsertQuery => $"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable} (id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES(@id, @manufacturer, @name, @description, @manufacturingDate, @expirationDate, @price, @quantity)";
+		private string UpdateQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='@manufacturer', name='@name', description='@description', \"manufacturingDate\"='@manufacturingDate', \"expirationDate\"='@expirationDate', price=@price, quantity=@quantity WHERE id='@id'";
+		private string SelectQuery => $"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='@id'";
+		private string DeleteQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET deleted=true WHERE id='@id'";
 	}
 }

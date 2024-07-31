@@ -44,7 +44,7 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var dbClient = BuildConnection())
 				{
 					await dbClient.OpenAsync();
-					using (var command = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable}", dbClient))
+					using (var command = new NpgsqlCommand(SelectQuery, dbClient))
 					using (var reader = await command.ExecuteReaderAsync())
 					{
 						while (await reader.ReadAsync())
@@ -107,5 +107,7 @@ namespace PharmacyManager.API.Services.Medicines
         {
             return new NpgsqlConnection(connectionStringSchemaTableProvider.ConnectionString);
         }
+
+        private string SelectQuery => $"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable}";
     }
 }

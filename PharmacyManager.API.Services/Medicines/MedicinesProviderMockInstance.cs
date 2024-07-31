@@ -115,18 +115,18 @@ namespace PharmacyManager.API.Services.Medicines
             return result.Count();
         }
 
-		public async Task<bool> RemoveMedicine(string medicineId)
+		public Task<bool> RemoveMedicine(string medicineId)
 		{
             var item = this.medicines.First(x => x.Id == medicineId);
-            return this.medicines.Remove(item);
+            return Task.FromResult(this.medicines.Remove(item));
 		}
 
-		public async Task<int> GetTotalCount()
+		public Task<int> GetTotalCount()
 		{
-            return this.medicines.Count;
+            return Task.FromResult(this.medicines.Count);
 		}
 
-		public async Task<bool> UpdateMedicine(MedicineModel medicine)
+		public Task<bool> UpdateMedicine(MedicineModel medicine)
 		{
             var medicineInStore = this.medicines.First(x => x.Id == medicine.Id);
             medicineInStore.Name = medicine.Name;
@@ -135,12 +135,17 @@ namespace PharmacyManager.API.Services.Medicines
             medicineInStore.ManufacturingDate = medicine.ManufacturingDate;
             medicineInStore.Price = medicine.Price;
             medicineInStore.Quantity = medicine.Quantity;
-            return true;
+            return Task.FromResult(true);
 		}
 
-		public async Task<MedicineModel> GetMedicineById(string medicineId)
+		public Task<MedicineModel> GetMedicineById(string medicineId)
 		{
-            return this.medicines.FirstOrDefault(x => x.Id == medicineId);
+            var medicine = this.medicines.FirstOrDefault(x => x.Id == medicineId);
+            if (medicine == null)
+            {
+				throw new KeyNotFoundException($"Medicine for id {medicineId} not found");
+            }
+            return Task.FromResult(medicine);
 		}
 	}
 }

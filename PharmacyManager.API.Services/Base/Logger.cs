@@ -11,17 +11,14 @@ namespace PharmacyManager.API.Services.Base
             this.applicationConfiguration = applicationConfiguration;
         }
 
-        public Task Log(string context, string message, LogLevel logLevel, CancellationToken? cancellationToken = null)
+        public async Task Log(string context, string message, LogLevel logLevel, CancellationToken? cancellationToken = null)
         {
-            return Task.Run(() =>
+            if ((cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested)
+                || (this.applicationConfiguration.LogErrorsOnly && logLevel != LogLevel.Error))
             {
-                if ((cancellationToken.HasValue && cancellationToken.Value.IsCancellationRequested)
-                    || (this.applicationConfiguration.LogErrorsOnly && logLevel != LogLevel.Error))
-                {
-                    return;
-                }
-                Console.WriteLine(BuildLog(context, message, logLevel));
-            });
+                return;
+            }
+            await Console.Out.WriteLineAsync(BuildLog(context, message, logLevel));
         }
 
         private string BuildLog(string context, string message, LogLevel logLevel)

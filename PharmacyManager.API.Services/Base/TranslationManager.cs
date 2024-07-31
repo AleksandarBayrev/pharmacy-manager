@@ -45,14 +45,22 @@ namespace PharmacyManager.API.Services.Base
         private async Task<IDictionary<string, string>> LoadBulgarianDictionary()
         {
             var bulgarianDictionaryFilePath = this.applicationConfiguration.Dictionaries.First(x => x.Contains("Bulgarian.json"));
-            var bulgarianDictionaryContent = await File.ReadAllTextAsync(bulgarianDictionaryFilePath);
-            return JsonSerializer.Deserialize<ConcurrentDictionary<string, string>>(bulgarianDictionaryContent);
+            using var bulgarianDictionaryContent = File.OpenRead(bulgarianDictionaryFilePath);
+            if (bulgarianDictionaryContent == null)
+            {
+                throw new Exception($"Failed reading english dictionary for path = {bulgarianDictionaryFilePath}");
+            }
+            return await JsonSerializer.DeserializeAsync<ConcurrentDictionary<string, string>>(bulgarianDictionaryContent) ?? new ConcurrentDictionary<string, string>();
         }
         private async Task<IDictionary<string, string>> LoadEnglishDictionary()
         {
             var englishDictionaryFilePath = this.applicationConfiguration.Dictionaries.First(x => x.Contains("English.json"));
-            var englishDictionaryContent = await File.ReadAllTextAsync(englishDictionaryFilePath);
-            return JsonSerializer.Deserialize<ConcurrentDictionary<string, string>>(englishDictionaryContent);
+            using var englishDictionaryContent = File.OpenRead(englishDictionaryFilePath);
+            if (englishDictionaryContent == null)
+            {
+                throw new Exception($"Failed reading english dictionary for path = {englishDictionaryFilePath}");
+            }
+            return await JsonSerializer.DeserializeAsync<ConcurrentDictionary<string, string>>(englishDictionaryContent) ?? new ConcurrentDictionary<string, string>();
         }
     }
 }

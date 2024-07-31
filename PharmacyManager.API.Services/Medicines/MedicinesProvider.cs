@@ -30,11 +30,15 @@ namespace PharmacyManager.API.Services.Medicines
 		}
 
 
-		public async Task<MedicineModel?> AddMedicine(MedicineModel medicine)
+		public async Task<MedicineModel> AddMedicine(MedicineModel medicine)
 		{
 			await this.Log($"Adding medicine: {JsonSerializer.Serialize(medicine)}", LogLevel.Info);
 			this.medicinesState.TryAdd(medicine.Id, medicine);
-			this.medicinesState.Medicines.TryGetValue(medicine.Id, out medicine);
+			this.medicinesState.Medicines.TryGetValue(medicine.Id, out var storedMedicine);
+			if (storedMedicine != null)
+			{
+				throw new KeyNotFoundException($"Medicine already exists for id = {medicine.Id}");
+			}
 			await this.medicinesOperations.AddMedicineToDB(medicine.Id);
 			return medicine;
 		}
@@ -84,9 +88,14 @@ namespace PharmacyManager.API.Services.Medicines
 			return this.medicinesState.Medicines.Count;
 		}
 
-		public async Task<MedicineModel> GetMedicineById(string medicineId)
+		public Task<MedicineModel> GetMedicineById(string medicineId)
 		{
-			return this.medicinesState.Medicines[medicineId];
+			var medicine = this.medicinesState.Medicines[medicineId];
+			if (medicine == null)
+			{
+				throw new KeyNotFoundException($"Medicine for id {medicineId} not found");
+			}
+			return Task.FromResult(medicine);
 		}
 
 		private NpgsqlConnection BuildConnection()

@@ -24,7 +24,7 @@ namespace PharmacyManager.API.Services.Frontend
                 await logger.Log(this.loggerContext, $"Path {path} found in cache, returning content", LogLevel.Info);
                 return this.htmlCache[path];
             }
-            var content = File.ReadAllText(path);
+            var content = await File.ReadAllTextAsync(path);
             this.htmlCache.TryAdd(path, content);
             return this.htmlCache[path];
         }
@@ -34,7 +34,7 @@ namespace PharmacyManager.API.Services.Frontend
             await logger.Log(this.loggerContext, $"Reloading path {path}", LogLevel.Info);
             if (this.htmlCache.ContainsKey(path))
             {
-                var content = File.ReadAllText(path);
+                var content = await File.ReadAllTextAsync(path);
                 this.htmlCache[path] = content;
             }
             return this.htmlCache.ContainsKey(path);

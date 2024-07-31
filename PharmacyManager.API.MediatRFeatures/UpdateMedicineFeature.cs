@@ -22,7 +22,6 @@ namespace PharmacyManager.API.MediatRFeatures
 		public class UpdateMedicineFeatureQueryHandler : IRequestHandler<UpdateMedicineFeatureQuery, MedicineFrontendModel>
 		{
 			private readonly IMedicinesProvider<MedicineRequest, string, MedicineModel> medicinesProvider;
-			private readonly IIdGenerator idGenerator;
 			private readonly IPriceParser priceParser;
 
 			public UpdateMedicineFeatureQueryHandler(
@@ -30,7 +29,6 @@ namespace PharmacyManager.API.MediatRFeatures
 				IPriceParser priceParser)
 			{
 				this.medicinesProvider = medicinesProvider;
-				this.idGenerator = idGenerator;
 				this.priceParser = priceParser;
 			}
 

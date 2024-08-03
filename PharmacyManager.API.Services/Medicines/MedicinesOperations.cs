@@ -44,9 +44,9 @@ namespace PharmacyManager.API.Services.Medicines
 					addCommand.Parameters.Add(new NpgsqlParameter("@manufacturer", medicine.Manufacturer));
 					addCommand.Parameters.Add(new NpgsqlParameter("@name", medicine.Name));
 					addCommand.Parameters.Add(new NpgsqlParameter("@description", medicine.Description));
-					addCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", this.dateFormatter.FormatDate(medicine.ManufacturingDate)));
-					addCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", this.dateFormatter.FormatDate(medicine.ExpirationDate)));
-					addCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price.ToString(CultureInfo.InvariantCulture)));
+					addCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", medicine.ManufacturingDate));
+					addCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", medicine.ExpirationDate));
+					addCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price));
 					addCommand.Parameters.Add(new NpgsqlParameter("@quantity", medicine.Quantity));
 					var rows = await addCommand.ExecuteScalarAsync();
 					await this.Log($"Successfully added {rows} medicines", LogLevel.Information);
@@ -72,9 +72,9 @@ namespace PharmacyManager.API.Services.Medicines
 						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturer", medicine.Manufacturer));
 						updateCommand.Parameters.Add(new NpgsqlParameter("@name", medicine.Name));
 						updateCommand.Parameters.Add(new NpgsqlParameter("@description", medicine.Description));
-						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", this.dateFormatter.FormatDate(medicine.ManufacturingDate)));
-						updateCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", this.dateFormatter.FormatDate(medicine.ExpirationDate)));
-						updateCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price.ToString(CultureInfo.InvariantCulture)));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@manufacturingDate", medicine.ManufacturingDate));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@expirationDate", medicine.ExpirationDate));
+						updateCommand.Parameters.Add(new NpgsqlParameter("@price", medicine.Price));
 						updateCommand.Parameters.Add(new NpgsqlParameter("@quantity", medicine.Quantity));
 						await updateCommand.ExecuteNonQueryAsync();
 						using (var getCommand = new NpgsqlCommand(SelectQuery, dbClient))
@@ -101,15 +101,12 @@ namespace PharmacyManager.API.Services.Medicines
 				using (var deleteCommand = new NpgsqlCommand(DeleteQuery, dbClient))
 				{
 					deleteCommand.Parameters.Add(new NpgsqlParameter("@id", medicineId));
-					await deleteCommand.ExecuteNonQueryAsync();
-					using (var getCommand = new NpgsqlCommand($"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='{medicineId}' AND deleted=true", dbClient))
+					var deleteResult = await deleteCommand.ExecuteNonQueryAsync();
+					if (deleteResult != 1)
 					{
-						var data = await getCommand.ExecuteNonQueryAsync();
-						if (data == 1)
-						{
-							await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Information);
-						}
+						throw new Exception($"Failed to delete medicine with id = {medicineId}");
 					}
+					await this.Log($"Successfully removed medicine ID: {medicineId}", LogLevel.Information);
 				}
 			}
 		}

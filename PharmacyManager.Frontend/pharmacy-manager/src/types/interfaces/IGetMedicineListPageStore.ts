@@ -21,8 +21,8 @@ export interface IGetMedicineListPageStore extends IBaseStore {
     updateCurrentRequest(): void;
     resetUpdateInterval(): void;
     stopUpdateInterval(): void;
-    getMedicines(request: MedicineRequest, useLoadingTimeout: boolean): Promise<void>;
+    getMedicines(request: MedicineRequest, useLoadingTimeout: boolean): void;
     refetch(shouldWait: boolean): void;
     resetRequestToDefaults(reloadData: boolean, shouldUpdateUrl: boolean): void;
-    deleteMedicine(medicineId: string): Promise<void>;
+    deleteMedicine(medicineId: string): void;
 }

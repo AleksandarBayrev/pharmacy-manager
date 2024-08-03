@@ -7,7 +7,7 @@ export interface IAddMedicinePageStore extends IBaseStore {
     request: AddMedicineRequest;
     isAddingMedicine: IObservableValue<boolean>;
     isRequestSuccessful: IObservableValue<boolean | undefined>;
-    addMedicine(_: React.MouseEvent<HTMLButtonElement, MouseEvent>): Promise<void>;
+    addMedicine(_: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
     resetMessage(): void;
     resetRequestToDefault(): void;
     updateRequest(request: Partial<AddMedicineRequest>): void;

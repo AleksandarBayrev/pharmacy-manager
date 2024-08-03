@@ -1,5 +1,5 @@
 import { IGetDateTimeStore } from "../types";
-import { observable, IObservableValue, action } from "mobx";
+import { observable, IObservableValue, runInAction } from "mobx";
 import { enhanceClass } from "../base/enhanceClass";
 
 class GetDateTimeStore implements IGetDateTimeStore {
@@ -12,9 +12,10 @@ class GetDateTimeStore implements IGetDateTimeStore {
     async load(): Promise<void> {}
     async unload(): Promise<void> {}
 
-    @action.bound
-    public setDate(date: Date) {
-        this.date.set(date);
+    public setDate = (date: Date) => {
+        runInAction(() => {
+            this.date.set(date);
+        });
     }
 }
 

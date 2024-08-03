@@ -1,4 +1,4 @@
-import { action, IObservableValue, observable } from "mobx";
+import { action, IObservableValue, observable, runInAction } from "mobx";
 import { pages } from "../constants";
 import { Language } from "../types";
 import { IAppStore } from "../types/interfaces/IAppStore";
@@ -16,14 +16,16 @@ export class AppStore implements IAppStore {
         this.language = observable.box(this.loadLanguageFromStorage());
     }
 
-    @action
     setCurrentPage = (currentPage: string) => {
-        this.currentPage.set(currentPage);
+        runInAction(() => {
+            this.currentPage.set(currentPage);
+        });
     }
 
-    @action
     selectLanguage = (language: Language) => {
-        this.language.set(language);
+        runInAction(() => {
+            this.language.set(language);
+        });
         localStorage.setItem(this.storageKey, language);
     }
 

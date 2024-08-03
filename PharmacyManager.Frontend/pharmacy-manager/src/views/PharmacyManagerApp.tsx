@@ -60,8 +60,7 @@ export class PharmacyManagerApp extends React.Component<PharmacyManagerAppProps>
     );
   }
 
-  @action
-  private getAppMenuClasses(path: string) {
+  private getAppMenuClasses = (path: string) => {
     const classList: string[] = [];
     classList.push("App-menu-item");
     if (path === window.location.pathname && this.appStore.currentPage.get() === path) {

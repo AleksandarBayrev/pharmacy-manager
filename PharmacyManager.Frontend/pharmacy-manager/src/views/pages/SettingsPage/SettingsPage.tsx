@@ -54,8 +54,6 @@ export class SettingsPage extends React.Component<SettingsPageProps> {
         )
     }
 
-
-    @action
     private reloadTranslations = async () => {
         await this.props.translationManager.reloadTranslations();
         window.location.reload();

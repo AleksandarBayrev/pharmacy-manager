@@ -49,7 +49,6 @@ export class MedicinesWrapper extends React.Component<MedicinesWrapperProps> {
         )
     }
 
-    @action.bound
     private setPage(page: number) {
         this.props.store.updateRequestProperties({
             page

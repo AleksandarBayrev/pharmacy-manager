@@ -60,7 +60,6 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.fetchingError = observable.box(false);
     }
 
-    @action
     deleteMedicine = async (medicineId: string): Promise<void> => {
         try {
             var result = await this.backendService.deleteMedicine(medicineId);
@@ -70,7 +69,7 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
                     if (medicine) {
                         medicine.deleted = result.deleted;
                     }
-                })
+                });
                 this.additionalMessage.set(`Medicine ID ${medicineId} deleted successfully!`);
                 setTimeout(() => this.getMedicines(this.request, false), 1000);
             }
@@ -84,28 +83,30 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         }
     }
 
-    @action
-    load = async () => {
-        this.url = new URL(window.location.href);
-        this.updateRequestProperties(this.buildRequestFromURL());
-        this.loadingData.set(true);
-        const pageCalculations = await this.backendService.getInitialPageCalculations(this.request);
-        this.pages.set(pageCalculations.pages);
-        this.showPageCount.set(true);
-        await this.getMedicines(this.request, true);
-        this.updateCurrentRequest();
+    load = () => {
+        return Promise.resolve(runInAction(async () => {
+            this.url = new URL(window.location.href);
+            this.updateRequestProperties(this.buildRequestFromURL());
+            this.loadingData.set(true);
+            const pageCalculations = await this.backendService.getInitialPageCalculations(this.request);
+            this.pages.set(pageCalculations.pages);
+            this.showPageCount.set(true);
+            await this.getMedicines(this.request, true);
+            this.updateCurrentRequest();
+        }));
     }
 
-    @action
-    unload = async () => {
-        clearTimeout(this.loadDataTimeout);
-        this.resetRequestToDefaults(false, false);
-        this.stopUpdateInterval();
-        this.medicines.replace([]);
-        this.pages.set(1);
-        this.loadingData.set(false);
-        this.isInitialRequestMade.set(false);
-        this.showPageCount.set(false); 
+    unload = () => {
+        return Promise.resolve(runInAction(() => {
+            clearTimeout(this.loadDataTimeout);
+            this.resetRequestToDefaults(false, false);
+            this.stopUpdateInterval();
+            this.medicines.replace([]);
+            this.pages.set(1);
+            this.loadingData.set(false);
+            this.isInitialRequestMade.set(false);
+            this.showPageCount.set(false); 
+        }));
     }
 
     @computed
@@ -117,7 +118,6 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         itemsPerPage: dropdownOptions[0]
     };
 
-    @action
     public updateCurrentRequest = () => {
         if (!this.updateInterval) {
             this.updateInterval = setInterval(() => {
@@ -126,19 +126,16 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         }
     }
 
-    @action
     public stopUpdateInterval = () => {
         clearInterval(this.updateInterval);
         this.updateInterval = undefined;
     }
 
-    @action
     public resetUpdateInterval = () => {
         this.stopUpdateInterval();
         this.updateCurrentRequest();
     }
 
-    @action
     public getMedicines = async (request: MedicineRequest, useLoadingTimeout: boolean) => {
         if (useLoadingTimeout) {
             this.loadingData.set(true);
@@ -161,18 +158,17 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         }, timeout);
     }
 
-
-    @action
     public updateRequestProperties = (request: Partial<MedicineRequest>) => {
-        this.request.availableOnly = request.availableOnly ?? this.request.availableOnly;
-        this.request.itemsPerPage = request.itemsPerPage ?? this.request.itemsPerPage;
-        this.request.manufacturer = request.manufacturer ?? this.request.manufacturer;
-        this.request.notExpired = request.notExpired ?? this.request.notExpired;
-        this.request.page = request.page ?? this.request.page;
+        runInAction(() => {
+            this.request.availableOnly = request.availableOnly ?? this.request.availableOnly;
+            this.request.itemsPerPage = request.itemsPerPage ?? this.request.itemsPerPage;
+            this.request.manufacturer = request.manufacturer ?? this.request.manufacturer;
+            this.request.notExpired = request.notExpired ?? this.request.notExpired;
+            this.request.page = request.page ?? this.request.page;
+        });
         this.updateURL();
     }
 
-    @action
     public refetch = (shouldWait: boolean) => {
         if (shouldWait) {
             clearTimeout(this.loadDataTimeout);
@@ -184,16 +180,19 @@ class GetMedicineListPageStore implements IGetMedicineListPageStore {
         this.getMedicines(this.request, true).then(this.resetUpdateInterval);
     }
 
-    @action
     public resetRequestToDefaults = (reloadData: boolean, shouldUpdateUrl: boolean) => {
-        this.request.availableOnly = this.defaultRequest.availableOnly;
-        this.request.itemsPerPage = this.defaultRequest.itemsPerPage;
-        this.request.manufacturer = this.defaultRequest.manufacturer;
-        this.request.notExpired = this.defaultRequest.notExpired;
-        this.request.page = this.defaultRequest.page;
+        runInAction(() => {
+            this.request.availableOnly = this.defaultRequest.availableOnly;
+            this.request.itemsPerPage = this.defaultRequest.itemsPerPage;
+            this.request.manufacturer = this.defaultRequest.manufacturer;
+            this.request.notExpired = this.defaultRequest.notExpired;
+            this.request.page = this.defaultRequest.page;
+        });
+
         if (shouldUpdateUrl) {
             this.updateURL();
         }
+
         if (reloadData) {
             this.getMedicines(this.request, true)
                 .then(() => {

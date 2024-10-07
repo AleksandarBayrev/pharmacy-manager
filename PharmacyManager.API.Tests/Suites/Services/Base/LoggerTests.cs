@@ -16,7 +16,7 @@ namespace PharmacyManager.API.Tests.Suites.Services.Base
 				ILogger logger = new Logger(new ApplicationConfiguration(
 					EnableSwagger: false,
 					new MocksConfiguration(true, 1000),
-					LogErrorsOnly: true,
+					MinLogLevel: "Information",
 					RelativeHtmlPath: "",
 					new List<string>(),
 					new List<string>(),

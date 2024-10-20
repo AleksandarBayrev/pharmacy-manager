@@ -41,8 +41,8 @@ namespace PharmacyManager.API.Services.Medicines
 		public async Task<bool> RemoveMedicine(string medicineId)
 		{
 			await this.Log($"Removing medicine with ID = {medicineId}", LogLevel.Information);
-			this.medicinesState.DeleteMedicine(medicineId);
 			await this.medicinesOperations.DeleteMedicineInDB(medicineId);
+			this.medicinesState.DeleteMedicine(medicineId);
 			return this.medicinesState.Medicines.TryGetValue(medicineId, out var _);
 		}
 

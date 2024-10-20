@@ -119,8 +119,8 @@ namespace PharmacyManager.API.Services.Medicines
 		private Task Log(string message, LogLevel logLevel) => this.logger.Log(nameof(MedicinesOperations), message, logLevel);
 
 		private string InsertQuery => $"INSERT INTO {connectionStringSchemaTableProvider.SchemaAndTable} (id, manufacturer, name, description, \"manufacturingDate\", \"expirationDate\", price, quantity) VALUES(@id, @manufacturer, @name, @description, @manufacturingDate, @expirationDate, @price, @quantity)";
-		private string UpdateQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer='@manufacturer', name='@name', description='@description', \"manufacturingDate\"='@manufacturingDate', \"expirationDate\"='@expirationDate', price=@price, quantity=@quantity WHERE id='@id'";
-		private string SelectQuery => $"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id='@id'";
-		private string DeleteQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET deleted=true WHERE id='@id'";
+		private string UpdateQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET manufacturer=@manufacturer, name=@name, description=@description, \"manufacturingDate\"=@manufacturingDate, \"expirationDate\"=@expirationDate, price=@price, quantity=@quantity WHERE id=@id";
+		private string SelectQuery => $"SELECT * FROM {connectionStringSchemaTableProvider.SchemaAndTable} WHERE id=@id";
+		private string DeleteQuery => $"UPDATE {connectionStringSchemaTableProvider.SchemaAndTable} SET deleted=true WHERE id=@id";
 	}
 }

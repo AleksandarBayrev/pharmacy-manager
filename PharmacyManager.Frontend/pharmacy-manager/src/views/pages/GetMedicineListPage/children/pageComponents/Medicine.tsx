@@ -30,13 +30,17 @@ export class Medicine extends React.Component<MedicineProps> {
                     <Separator />
                     <div className={this.getClassNames(this.props.medicine)}>{this.props.medicine.quantity}</div>
                     <Separator />
-                    <div className={this.getClassNames(this.props.medicine)}><button onClick={() => window.location.replace(`/medicines/update/${this.props.medicine.id}`)}>Update</button></div>
+                    <div className={this.getClassNames(this.props.medicine)}><button disabled={this.props.medicine.deleted} onClick={this.updateMedicine}>Update</button></div>
                     <Separator />
-                    <div className={this.getClassNames(this.props.medicine)}><button onClick={() => this.props.store.deleteMedicine(this.props.medicine.id)}>Delete</button></div>
+                    <div className={this.getClassNames(this.props.medicine)}><button disabled={this.props.medicine.deleted} onClick={this.deleteMedicine}>Delete</button></div>
                 </div>
             </div>
         )
     }
+
+    private updateMedicine = () => window.location.replace(`/medicines/update/${this.props.medicine.id}`);
+
+    private deleteMedicine = () => this.props.store.deleteMedicine(this.props.medicine.id);
 
     private getClassNames = (medicine: MedicineModel) => {
         const classNames = ['column'];
